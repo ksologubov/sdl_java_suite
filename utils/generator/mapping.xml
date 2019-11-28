@@ -1,0 +1,18 @@
+<enum name="BitsPerSample">
+    <element name="8_BIT" internal_name="BitsPerSample_8_BIT"
+             method_name="BitsPerSample_8_BIT">
+    </element>
+    <element name="16_BIT" internal_name="BitsPerSample_16_BIT"
+             method_name="BitsPerSample_16_BIT">
+    </element>
+</enum>
+
+
+<function name="AddCommand" functionID="AddCommandID" messagetype="request">
+<param name="menuParams" type="MenuParams"
+       setter="setParameter">
+</param>
+<param name="cmdIcon" type="Image"
+       setter="setParameter">
+</param>
+</function>
