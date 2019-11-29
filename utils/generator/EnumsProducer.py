@@ -2,62 +2,87 @@ import logging
 import textwrap
 from collections import namedtuple
 
-from InterfaceProducerCommon import InterfaceProducerCommon
-from rpc_spec.InterfaceParser.parsers.Model import Interface, Enum
+from generator.InterfaceProducerCommon import InterfaceProducerCommon
+from InterfaceParser.parsers.Model import EnumElement, Enum
 
 
 class EnumsProducer(InterfaceProducerCommon):
-    def __init__(self, interface: Interface, prop):
-        super(EnumsProducer, self).__init__(prop)
+    def __init__(self, paths, mapping=None):
+        super(EnumsProducer, self).__init__(
+            container_name='elements',
+            directory=paths.ENUMS_DIR_NAME,
+            enums_dir_name=paths.ENUMS_DIR_NAME,
+            structs_dir_name=paths.STRUCTS_DIR_NAME,
+            mapping=mapping['enums'] if mapping and 'enums' in mapping else {})
         self.logger = logging.getLogger('Generator.EnumsProducer')
-        self.enums = list(interface.enums.values())
-        self.enum_class = prop.PATH_TO_ENUM_CLASS
-
-    @property
-    def items(self) -> list:
-        return self.enums
-
-    @property
-    def directory(self) -> str:
-        return self.enums_dir
-
-    @property
-    def container_name(self) -> str:
-        return 'elements'
+        self.enum_class = paths.PATH_TO_ENUM_CLASS
 
     @property
     def methods(self):
-        return namedtuple('Methods', 'name description type')
+        """
+        Override
+        :return: namedtuple methods(origin='', method_title='', description='', type='')
+        """
+        return namedtuple('Methods', 'origin method_title description type')
 
     def transform(self, item: Enum) -> dict:
-        methods = []
-        for param in getattr(item, self.container_name).values():
-            (n, d) = self.extract_name_description(param)
-            if item.name == 'AudioType':
-                print('AudioType')
-            t = 'Number' if getattr(param, 'hexvalue', None) else 'String'
-            d = textwrap.wrap(d, 118 - len(t))
-            n = self.ending_cutter(n)
-            methods.append(self.methods(name=n, description=d, type=t))
+        """
+        Override
+        :param item: particular element from initial Model
+        :return: dictionary to be applied to jinja2 template
+        """
+        tmp = super(EnumsProducer, self).transform(item)
         what_where = self.extract_imports(self.enum_class)
-        tmp = {'name': item.name,
-               'imports': [what_where],
-               'extend': what_where.what,
-               'params': self.form_map(item),
-               'methods': methods}
-        if getattr(item, 'description', None):
-            tmp.update({'description': self.extract_description(item.description)})
+        tmp.update({'extend': what_where.what})
+        tmp['imports'].append(what_where)
         return tmp
 
-    def form_map(self, item: Enum) -> str:
-        tmp = []
-        for param in getattr(item, self.container_name).values():
-            if getattr(param, 'hexvalue', None):
-                if len(param.hexvalue) > 1:
-                    value = '0x{}'.format(param.hexvalue)
-                else:
-                    value = '0x0{}'.format(param.hexvalue)
+    def common_flow(self, param: EnumElement, item_type=None):
+        """
+        Override
+        Main transformation flow, for Enum
+        :param param: sub-element (EnumElement) of element from initial Model
+        :param item_type: not used
+        :return: tuple with 3 element, which going to be applied to jinja2 template
+        """
+        (n, d) = self.extract_name_description(param)
+        t = self.extract_type(param)
+        d = textwrap.wrap(d, 118 - len(t))
+        n = self.ending_cutter(n)
+
+        methods = self.methods(origin=param.name, method_title=n, description=d, type=t)
+        params = self.extract_param(param)
+
+        imports = None
+        return imports, methods, params
+
+    def extract_param(self, param: EnumElement) -> namedtuple:
+        """
+        Evaluate and extract params
+        :param param: sub-element (EnumElement) of element from initial Model
+        :return: self.params
+        """
+        if hasattr(param, 'hexvalue') and param.hexvalue is not None:
+            if len(str(param.hexvalue)) > 1:
+                value = '0x{}'.format(param.hexvalue)
             else:
-                value = "'{}'".format(param.name)
-            tmp.append("'{}': {},\n".format(self.ending_cutter(param.primary_name), value))
-        return ''.join(tmp)
+                value = '0x0{}'.format(param.hexvalue)
+        elif hasattr(param, 'value') and param.value is not None:
+            value = param.value
+        else:
+            value = "'{}'".format(param.name)
+        return self.params(key=self.ending_cutter(param.primary_name), value=value)
+
+    @staticmethod
+    def extract_type(param: EnumElement) -> str:
+        """
+        Override
+        Evaluate and extract type
+        :param param: sub-element (EnumElement) of element from initial Model
+        :return: string with sub-element type
+        """
+        if hasattr(param, 'hexvalue') and param.hexvalue is not None or \
+                        hasattr(param, 'value') and param.value is not None:
+            return 'Number'
+        else:
+            return 'String'

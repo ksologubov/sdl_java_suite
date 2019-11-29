@@ -1,34 +1,33 @@
 import logging
 
-from InterfaceProducerCommon import InterfaceProducerCommon
-from rpc_spec.InterfaceParser.parsers.Model import Interface, Function
+from generator.InterfaceProducerCommon import InterfaceProducerCommon
+from InterfaceParser.parsers.Model import Function
 
 
 class FunctionsProducer(InterfaceProducerCommon):
-    def __init__(self, interface: Interface, prop):
-        super(FunctionsProducer, self).__init__(prop, tuple(interface.enums.keys()), tuple(interface.structs.keys()))
+    def __init__(self, paths, enum_names, struct_names, mapping=None):
+        super(FunctionsProducer, self).__init__(
+            container_name='params',
+            directory=paths.FUNCTIONS_DIR_NAME,
+            enums_dir_name=paths.ENUMS_DIR_NAME,
+            structs_dir_name=paths.STRUCTS_DIR_NAME,
+            enum_names=enum_names,
+            struct_names=struct_names,
+            mapping=mapping['functions'] if mapping and 'functions' in mapping else {})
         self.logger = logging.getLogger('Generator.FunctionsProducer')
-        self.functions = list(interface.functions.values())
-        self.functions_dir = prop.FUNCTIONS_DIR_NAME
-        self.request_class = prop.PATH_TO_REQUEST_CLASS
-        self.response_class = prop.PATH_TO_RESPONSE_CLASS
-        self.notification_class = prop.PATH_TO_NOTIFICATION_CLASS
-
-    @property
-    def directory(self) -> str:
-        return self.functions_dir
-
-    @property
-    def items(self) -> list:
-        return self.functions
-
-    @property
-    def container_name(self) -> str:
-        return 'params'
+        self.request_class = paths.PATH_TO_REQUEST_CLASS
+        self.response_class = paths.PATH_TO_RESPONSE_CLASS
+        self.notification_class = paths.PATH_TO_NOTIFICATION_CLASS
 
     def transform(self, item: Function) -> dict:
+        """
+        Override
+        :param item: particular element from initial Model
+        :return: dictionary to be applied to jinja2 template
+        """
         tmp = super(FunctionsProducer, self).transform(item)
         tmp.update({'func': self.ending_cutter(tmp['name'])})
+        name = None
         if item.message_type.name == 'request':
             name = self.request_class
         elif item.message_type.name == 'response':
@@ -36,8 +35,6 @@ class FunctionsProducer(InterfaceProducerCommon):
             tmp['name'] = tmp['name'] + 'Response'
         elif item.message_type.name == 'notification':
             name = self.notification_class
-        else:
-            name = None
         if name:
             what_where = self.extract_imports(name)
             tmp.update({'extend': what_where.what})

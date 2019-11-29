@@ -1,7 +1,9 @@
 {% extends "base_template.js" %}
 {% block typedef %}
 /**
+{%- if description %}
  * {{description}}
+{%- endif %}
  * @typedef {% raw %}{{% endraw %}{{extend}}{% raw %}}{% endraw %} {{name}}
  * @property {Object} _MAP
  */
@@ -19,8 +21,8 @@
      * {{d}}{%- endfor %}
      * @return {{"%s%s%s"|format("{", e.type, "}")}}
      */
-    static get {{e.name}}() {
-        return {{name}}._MAP.{{e.name}};
+    static get {{e.method_title}}() {
+        return {{name}}._MAP.{{e.method_title}};
     }
     {%- endfor %}
 
@@ -35,5 +37,8 @@
 {% endblock %}
 {% block properties %}
 {{name}}._MAP = Object.freeze({
-{{params|indent(4, True)}}});
-{%- endblock -%}
+{%- for e in params %}
+    '{{e.key}}': {{e.value}},
+{%- endfor %}
+});
+{%- endblock %}

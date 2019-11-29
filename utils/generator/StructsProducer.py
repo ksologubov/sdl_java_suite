@@ -1,29 +1,28 @@
 import logging
 
 from InterfaceProducerCommon import InterfaceProducerCommon
-from rpc_spec.InterfaceParser.parsers.Model import Interface, Struct
+from InterfaceParser.parsers.Model import Struct
 
 
 class StructsProducer(InterfaceProducerCommon):
-    def __init__(self, interface: Interface, prop):
-        super(StructsProducer, self).__init__(prop, tuple(interface.enums.keys()), tuple(interface.structs.keys()))
+    def __init__(self, paths, enum_names, struct_names, mapping=None):
+        super(StructsProducer, self).__init__(
+            container_name='members',
+            directory=paths.STRUCTS_DIR_NAME,
+            enums_dir_name=paths.ENUMS_DIR_NAME,
+            structs_dir_name=paths.STRUCTS_DIR_NAME,
+            enum_names=enum_names,
+            struct_names=struct_names,
+            mapping=mapping['structs'] if mapping and 'structs' in mapping else {})
         self.logger = logging.getLogger('Generator.StructsProducer')
-        self.structs = list(interface.structs.values())
-        self.struct_class = prop.PATH_TO_STRUCT_CLASS
-
-    @property
-    def directory(self) -> str:
-        return self.structs_dir
-
-    @property
-    def items(self) -> list:
-        return self.structs
-
-    @property
-    def container_name(self) -> str:
-        return 'members'
+        self.struct_class = paths.PATH_TO_STRUCT_CLASS
 
     def transform(self, item: Struct) -> dict:
+        """
+        Override
+        :param item: particular element from initial Model
+        :return: dictionary to be applied to jinja2 template
+        """
         tmp = super(StructsProducer, self).transform(item)
         what_where = self.extract_imports(self.struct_class)
         tmp.update({'extend': what_where.what})

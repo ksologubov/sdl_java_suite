@@ -1,2 +1,3 @@
 xmlschema
 Jinja2
+coverage
