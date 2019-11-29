@@ -8,18 +8,14 @@ from jinja2 import Environment, FileSystemLoader
 
 path = Path(__file__).absolute()
 
-sys.path.append(path.parents[1].joinpath('lib/rpc_spec/InterfaceParser').as_posix())
 root = path.parents[0]
+sys.path.append(root.joinpath('rpc_spec/InterfaceParser').as_posix())
 
 try:
-    # s = 'SDLRPCV2'
-    from utils.generator.rpc_spec.InterfaceParser.parsers.SDLRPCV2 import Parser
-    # s = 'RPCBase'
-    from utils.generator.rpc_spec.InterfaceParser.parsers.RPCBase import ParseError
-    # s = 'Model'
-    from utils.generator.rpc_spec.InterfaceParser.parsers.Model import Interface, Function
+    from parsers.SDLRPCV2 import Parser
+    from parsers.RPCBase import ParseError
+    from parsers.Model import Interface, Function
 except ModuleNotFoundError as e:
-    # print(s)
     print('{}. probably you did not initialize submodule'.format(e.msg))
     exit(1)
 
@@ -44,10 +40,10 @@ class Generator(object):
         from argparse import ArgumentParser
 
         Paths = namedtuple('Paths', 'name path')
-        xml = Paths('source_xml', root.parents[0].joinpath('generator/rpc_spec/MOBILE_API.xml'))
+        xml = Paths('source_xml', root.joinpath('rpc_spec/MOBILE_API.xml'))
         required_source = False if xml.path.exists() else True
 
-        out = Paths('output_directory', root.parents[0].joinpath('generator/java/src/rpc'))
+        out = Paths('output_directory', root.joinpath('java/src/rpc'))
         output_required = False if out.path.exists() else True
 
         parser = ArgumentParser(description='SmartSchema interface parser')
@@ -277,13 +273,13 @@ class Generator(object):
         mappings = self.get_mappings()
 
         if args.enums and interface.enums:
-            from generator.EnumsProducer import EnumsProducer
+            from EnumsProducer import EnumsProducer
             self.process(args, interface.enums.values(), EnumsProducer(paths, mappings))
         if args.structs and interface.structs:
-            from generator.StructsProducer import StructsProducer
+            from StructsProducer import StructsProducer
             self.process(args, interface.structs.values(), StructsProducer(paths, enum_names, struct_names, mappings))
         if args.functions and interface.functions:
-            from generator.FunctionsProducer import FunctionsProducer
+            from FunctionsProducer import FunctionsProducer
             self.process(args, interface.functions.values(),
                          FunctionsProducer(paths, enum_names, struct_names, mappings))
 

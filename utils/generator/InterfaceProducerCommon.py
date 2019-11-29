@@ -5,7 +5,7 @@ from abc import ABC
 from collections import namedtuple, OrderedDict
 from pathlib import Path
 
-from InterfaceParser.parsers.Model import Struct, Enum, Array, Function, Integer, Double
+from parsers.Model import Struct, Enum, Array, Function, Integer, Double
 
 
 class InterfaceProducerCommon(ABC):

@@ -1,7 +1,7 @@
 import logging
 
 from InterfaceProducerCommon import InterfaceProducerCommon
-from InterfaceParser.parsers.Model import Struct
+from parsers.Model import Struct
 
 
 class StructsProducer(InterfaceProducerCommon):

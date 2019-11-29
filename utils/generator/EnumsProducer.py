@@ -2,8 +2,8 @@ import logging
 import textwrap
 from collections import namedtuple
 
-from generator.InterfaceProducerCommon import InterfaceProducerCommon
-from InterfaceParser.parsers.Model import EnumElement, Enum
+from InterfaceProducerCommon import InterfaceProducerCommon
+from parsers.Model import EnumElement, Enum
 
 
 class EnumsProducer(InterfaceProducerCommon):

@@ -1,7 +1,7 @@
 import logging
 
-from generator.InterfaceProducerCommon import InterfaceProducerCommon
-from InterfaceParser.parsers.Model import Function
+from InterfaceProducerCommon import InterfaceProducerCommon
+from parsers.Model import Function
 
 
 class FunctionsProducer(InterfaceProducerCommon):
