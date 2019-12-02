@@ -1,8 +1,16 @@
 {% extends "base_template.java" %}
 
+/**
+{%- if description %}
+ * {{description}}
+{%- endif %}
+ */
 public enum {{enumname}} {
-    {%- for param in params %}
-        {{param}},
+    {%- for p in params %}
+    /**{% for d in p.description %}
+     * {{d}}{%- endfor %}
+     */
+    {{p.name}},
     {%- endfor %};
 
     /**

@@ -30,4 +30,4 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package {{packagename}}
+package {{packagename}};
