@@ -6,9 +6,8 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-path = Path(__file__).absolute()
+root = Path(__file__).absolute().parents[0]
 
-root = path.parents[0]
 sys.path.append(root.joinpath('rpc_spec/InterfaceParser').as_posix())
 
 try:
@@ -32,7 +31,7 @@ class Generator(object):
     def __init__(self):
         self.logger = logging.getLogger('Generator')
 
-    def get_parser(self):
+    def get_parser(self, output_dir):
         """
         Parsing command-line arguments, or evaluating required Paths interactively.
         :return: an instance of argparse.ArgumentParser
@@ -43,7 +42,7 @@ class Generator(object):
         xml = Paths('source_xml', root.joinpath('rpc_spec/MOBILE_API.xml'))
         required_source = False if xml.path.exists() else True
 
-        out = Paths('output_directory', root.joinpath('java/src/rpc'))
+        out = Paths('output_directory', root.parents[1].joinpath(output_dir))
         output_required = False if out.path.exists() else True
 
         parser = ArgumentParser(description='SmartSchema interface parser')
@@ -84,9 +83,8 @@ class Generator(object):
                         self.logger.warning('{} set to {}, you can overwrite it using argument'.format(n.name, n.path))
                         break
                     if confirm.lower() == 'n':
-                        if getattr(args, n.name) is None:
-                            self.logger.warning('provide argument {}'.format(n.name))
-                            exit(1)
+                        self.logger.warning('provide argument {}'.format(n.name))
+                        exit(1)
 
         if args.verbose:
             self.logger.setLevel(logging.DEBUG)
@@ -98,48 +96,18 @@ class Generator(object):
             args.structs = True
             args.functions = True
 
-        setattr(args, 'output_directory', Path(args.output_directory))
-        setattr(args, 'templates_directory', Environment(loader=FileSystemLoader(args.templates_directory)))
-
         if args.source_xsd is None:
             setattr(args, 'source_xsd', args.source_xml.replace('.xml', '.xsd'))
         if not Path(args.source_xsd).exists():
             self.logger.critical(FileNotFoundError('not found', args.source_xsd))
             exit(1)
 
-        self.logger.debug(args)
+        self.logger.info(vars(args))
+
+        setattr(args, 'output_directory', Path(args.output_directory))
+        setattr(args, 'templates_directory', Environment(loader=FileSystemLoader(args.templates_directory)))
+
         return args
-
-    def get_paths(self, file=root.joinpath('paths.ini')):
-        """
-        :param file: path to file with Paths
-        :return: namedtuple with Paths to key elements
-        """
-        fields = ('PATH_TO_ENUM_CLASS', 'PATH_TO_STRUCT_CLASS', 'PATH_TO_REQUEST_CLASS', 'PATH_TO_RESPONSE_CLASS',
-                  'PATH_TO_NOTIFICATION_CLASS', 'ENUMS_DIR_NAME', 'STRUCTS_DIR_NAME', 'FUNCTIONS_DIR_NAME')
-        d = {}
-        with file.open('r') as f:
-            for line in f:
-                if line.startswith('#'):
-                    self.logger.debug('commented property {}, which will be skipped'.format(line.strip()))
-                    continue
-                if re.match(r'^(\w+)\s?=\s?(.+)', line):
-                    if len(line.split('=')) > 2:
-                        self.logger.critical('can not evaluate value, too many separators {}'.format(str(line)))
-                        exit(1)
-                    name, var = line.partition('=')[::2]
-                    if name.strip() in d:
-                        self.logger.critical('duplicate key {}'.format(name))
-                        exit(1)
-                    d[name.strip()] = var.strip()
-
-        for line in fields:
-            if line not in d:
-                self.logger.critical('in {} missed fields: {} '.format(file, str(line)))
-                exit(1)
-
-        Paths = namedtuple('Paths', ' '.join(fields))
-        return Paths(**d)
 
     @staticmethod
     def get_mappings(file=root.joinpath('mapping.json')):
@@ -204,23 +172,23 @@ class Generator(object):
                 file = path.joinpath(item.name + item.message_type.name.capitalize() + '.java')
             if file.is_file():
                 if args.skip:
-                    self.logger.debug('Skipping {}'.format(file))
+                    self.logger.info('Skipping {}'.format(file))
                     continue
                 elif args.overwrite:
-                    self.logger.debug('Overriding {}'.format(file))
+                    self.logger.info('Overriding {}'.format(file))
                     write_file(item)
                 else:
                     while True:
                         confirm = input('File already exists {}. Overwrite? Y/Enter = yes, N = no\n'.format(file))
                         if confirm.lower() == 'y' or not confirm:
-                            self.logger.debug('Overriding {}'.format(file))
+                            self.logger.info('Overriding {}'.format(file))
                             write_file(item)
                             break
                         if confirm.lower() == 'n':
-                            self.logger.debug('Skipping {}'.format(file))
+                            self.logger.info('Skipping {}'.format(file))
                             break
             else:
-                self.logger.debug('Writing new {}'.format(file))
+                self.logger.info('Writing new {}'.format(file))
                 write_file(item)
 
     def parser(self, xml, xsd, pattern=None):
@@ -257,29 +225,61 @@ class Generator(object):
                     continue
                 for k1, item in v.items():
                     if re.match(pattern, item.name):
-                        self.logger.debug('{}/{} match with {}'.format(k, item.name, pattern))
+                        self.logger.info('{}/{} match with {}'.format(k, item.name, pattern))
                         if k in match:
                             match[k].update({k1: item})
                         else:
                             match.update({k: {k1: item}})
             interface = Interface(**match)
 
-        self.logger.debug(vars(interface))
+        self.logger.info(vars(interface))
         return interface
+
+    def get_paths(self, file=root.joinpath('paths.ini')):
+        """
+        :param file: path to file with Paths
+        :return: namedtuple with Paths to key elements
+        """
+        fields = ('PATH_TO_STRUCT_CLASS', 'PATH_TO_REQUEST_CLASS', 'PATH_TO_RESPONSE_CLASS',
+                  'PATH_TO_NOTIFICATION_CLASS', 'OUTPUT_DIR_NAME', 'ENUMS_DIR_NAME', 'STRUCTS_DIR_NAME',
+                  'FUNCTIONS_DIR_NAME')
+        d = {}
+        with file.open('r') as f:
+            for line in f:
+                if line.startswith('#'):
+                    self.logger.info('commented property {}, which will be skipped'.format(line.strip()))
+                    continue
+                if re.match(r'^(\w+)\s?=\s?(.+)', line):
+                    if len(line.split('=')) > 2:
+                        self.logger.critical('can not evaluate value, too many separators {}'.format(str(line)))
+                        exit(1)
+                    name, var = line.partition('=')[::2]
+                    if name.strip() in d:
+                        self.logger.critical('duplicate key {}'.format(name))
+                        exit(1)
+                    d[name.strip()] = var.strip()
+
+        for line in fields:
+            if line not in d:
+                self.logger.critical('in {} missed fields: {} '.format(file, str(line)))
+                exit(1)
+
+        Paths = namedtuple('Paths', ' '.join(fields))
+        return Paths(**d)
 
     def main(self):
         """
         Entry point for parser and generator
         :return: None
         """
-        args = self.get_parser()
+        paths = self.get_paths()
+        args = self.get_parser(paths.OUTPUT_DIR_NAME)
 
         interface = self.parser(xml=args.source_xml, xsd=args.source_xsd, pattern=args.regex_pattern)
 
         enum_names = tuple(interface.enums.keys())
         struct_names = tuple(interface.structs.keys())
 
-        paths = self.get_paths()
         mappings = self.get_mappings()
 
         if args.enums and interface.enums:

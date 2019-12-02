@@ -48,8 +48,8 @@ class InterfaceProducerCommon(ABC):
         :return: dictionary to be applied to jinja2 template
         """
         if not getattr(item, self.container_name, None):
-            self.logger.debug('{} of type {} has no attribute "{}"'.format(item.name, type(item).__name__,
-                                                                           self.container_name))
+            self.logger.info('{} of type {} has no attribute "{}"'.format(item.name, type(item).__name__,
+                                                                          self.container_name))
             return {'name': item.name, 'imports': []}
         imports = {}
         methods = []
@@ -72,8 +72,8 @@ class InterfaceProducerCommon(ABC):
         for param in getattr(item, self.container_name).values():
             if isinstance(item, Function) and item.message_type.name == 'response' and \
                             param.name in ('success', 'resultCode', 'info'):
-                self.logger.debug('{} of type {}/{} - skip parameter "{}"'
-                                  .format(item.name, type(item).__name__, item.message_type.name, param.name))
+                self.logger.warning('{} of type {}/{} - skip parameter "{}"'
+                                 .format(item.name, type(item).__name__, item.message_type.name, param.name))
                 continue
 
             (i, m, p) = self.common_flow(param, type(item))
@@ -93,7 +93,9 @@ class InterfaceProducerCommon(ABC):
                 if 'script' in mapping:
                     script = self.get_file_content(mapping['script'])
                     if script:
-                        scripts.append(self.get_file_content(mapping['script']))
+                        self.logger.warning('the getter/setter for parameter {} will be replaced by manually provided '
+                                            'from {}'.format(param.name, mapping['script']))
+                        scripts.append(script)
                         m = None
             if i:
                 imports.update(i)
