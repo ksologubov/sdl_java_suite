@@ -35,6 +35,7 @@ class EnumsProducer(InterfaceProducerCommon):
         what_where = self.extract_imports(self.enum_class)
         tmp.update({'extend': what_where.what})
         tmp['imports'].append(what_where)
+        tmp['packagename'] = 'com.smartdevicelink.proxy.rpc.enums'
         return tmp
 
     def common_flow(self, param: EnumElement, item_type=None):

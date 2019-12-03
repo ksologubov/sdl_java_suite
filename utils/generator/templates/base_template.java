@@ -31,3 +31,5 @@
  */
 
 package {{packagename}};
+{% block body %}
+{% endblock -%}

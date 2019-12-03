@@ -1,24 +1,28 @@
 {% extends "base_template.java" %}
 
-/**
+{% block body %}
 {%- if description %}
+/**
  * {{description}}
-{%- endif %}
  */
-public enum {{enumname}} {
-    {%- for p in params %}
-    /**{% for d in p.description %}
+{%- endif %}
+public enum {{name}} {
+    {%- for m in methods %}
+    {%- if m.description %}
+    /**{% for d in m.description %}
      * {{d}}{%- endfor %}
      */
-    {{p.name}},
-    {%- endfor %};
+    {%- endif %}
+    {{m.method_title}},
+    {%- endfor %}
+    ;
 
     /**
-     * Convert String to {{enumname}}
+     * Convert String to {{name}}
      * @param value String
-     * @return {{enumname}}
+     * @return {{name}}
      */
-    public static {{enumname}} valueForString(String value) {
+    public static {{name}} valueForString(String value) {
         try{
             return valueOf(value);
         }catch(Exception e){
@@ -26,3 +30,4 @@ public enum {{enumname}} {
         }
     }
 }
+{% endblock -%}

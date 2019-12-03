@@ -1,22 +1,26 @@
 {% extends "base_template.java" %}
+{% block body %}
 import java.util.EnumSet;
 
-/**
 {%- if description %}
+/**
  * {{description}}
-{%- endif %}
  */
-public enum {{enumname}} {
-    {%- for p in params %}
-    /**{% for d in p.description %}
+{%- endif %}
+public enum {{name}} {
+    {%- for m in methods %}
+    {%- if m.description %}
+    /**{% for d in m.description %}
      * {{d}}{%- endfor %}
      */
-    {{p.iname}}("{{p.name}}"),
-    {%- endfor %};
+    {%- endif %}
+    {{m.method_title}}("{{m.origin}}"),
+    {%- endfor %}
+    ;
 
     private final String INTERNAL_NAME;
 
-    private {{enumname}}(String internalName) {
+    private {{name}}(String internalName) {
     	this.INTERNAL_NAME = internalName;
     }
 
@@ -25,16 +29,16 @@ public enum {{enumname}} {
     }
 
     /**
-     * Convert String to {{enumname}}
+     * Convert String to {{name}}
      * @param value String
-     * @return {{enumname}}
+     * @return {{name}}
      */
-    public static {{enumname}} valueForString(String value) {
+    public static {{name}} valueForString(String value) {
         if(value == null){
             return null;
         }
 
-    	for ({{enumname}} anEnum : EnumSet.allOf({{enumname}}.class)) {
+    	for ({{name}} anEnum : EnumSet.allOf({{name}}.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;
             }
@@ -42,3 +46,4 @@ public enum {{enumname}} {
         return null;
     }
 }
+{% endblock -%}

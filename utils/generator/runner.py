@@ -183,15 +183,25 @@ class Generator(object):
             :return: None
             """
             data = transformer.transform(it)
+
+            template_suffix = '_template.java'
+            if name_type.lower() == 'enum':
+                if data['methods'][0].method_title == data['methods'][0].origin:
+                    template_suffix = '_template_simple.java'
+                else:
+                    template_suffix = '_template_custom.java'
+            else:
+                return  # stub till other types implemented
+
             with file.open('w', encoding='utf-8') as f:
-                f.write(args.templates_directory.get_template(name_type.lower() + '_template.js').render(data))
+                f.write(args.templates_directory.get_template(name_type.lower() + template_suffix).render(data))
 
         path = self.make_directory(args.output_directory, transformer.directory)
         for item in items:
             name_type = type(item).__name__
-            file = path.joinpath(item.name + '.js')
+            file = path.joinpath(item.name + '.java')
             if isinstance(item, Function) and item.message_type.name == 'response':
-                file = path.joinpath(item.name + item.message_type.name.capitalize() + '.js')
+                file = path.joinpath(item.name + item.message_type.name.capitalize() + '.java')
             if file.is_file():
                 if args.skip:
                     self.logger.debug('Skipping {}'.format(file))
