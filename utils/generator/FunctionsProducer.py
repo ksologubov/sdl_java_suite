@@ -8,16 +8,16 @@ class FunctionsProducer(InterfaceProducerCommon):
     def __init__(self, paths, enum_names, struct_names, mapping=None):
         super(FunctionsProducer, self).__init__(
             container_name='params',
-            directory=paths.FUNCTIONS_DIR_NAME,
-            enums_dir_name=paths.ENUMS_DIR_NAME,
-            structs_dir_name=paths.STRUCTS_DIR_NAME,
+            enums_package=paths.ENUMS_PACKAGE,
+            structs_package=paths.STRUCTS_PACKAGE,
             enum_names=enum_names,
             struct_names=struct_names,
+            package_name=paths.FUNCTIONS_PACKAGE,
             mapping=mapping['functions'] if mapping and 'functions' in mapping else {})
         self.logger = logging.getLogger('Generator.FunctionsProducer')
-        self.request_class = paths.PATH_TO_REQUEST_CLASS
-        self.response_class = paths.PATH_TO_RESPONSE_CLASS
-        self.notification_class = paths.PATH_TO_NOTIFICATION_CLASS
+        self.request_class = paths.REQUEST_CLASS
+        self.response_class = paths.RESPONSE_CLASS
+        self.notification_class = paths.NOTIFICATION_CLASS
 
     def transform(self, item: Function) -> dict:
         """

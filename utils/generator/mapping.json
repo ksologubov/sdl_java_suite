@@ -1,159 +1,208 @@
 {
   "enums": {
+    "AmbientLightStatus": {
+      "kind": "simple"
+    },
+    "AppHMIType": {
+      "params": {
+        "DEFAULT": {
+          "description": "The App will have default rights."
+        },
+        "COMMUNICATION": {
+          "description": "Communication type of App"
+        },
+        "MEDIA": {
+          "description": "App dealing with Media"
+        },
+        "MESSAGING": {
+          "description": "Messaging App"
+        },
+        "NAVIGATION": {
+          "description": "Navigation App"
+        },
+        "INFORMATION": {
+          "description": "Information App"
+        },
+        "SOCIAL": {
+          "description": "App dealing with social media"
+        },
+        "TESTING": {
+          "description": "App only for Testing purposes"
+        },
+        "SYSTEM": {
+          "description": "System App"
+        },
+        "PROJECTION": {
+          "description": "Custom App Interfaces"
+        }
+      }
+    },
+    "AppInterfaceUnregisteredReason": {
+      "description": "Indicates reason why app interface was unregistered. The application is being disconnected by SDL.",
+      "params": {
+        "IGNITION_OFF": {
+          "since": "1.0"
+        }
+      }
+    },
+    "AudioStreamingState": {
+      "description": "Describes whether or not streaming audio is currently audible to the user. Though provided in every OnHMIStatus notification, this information is only relevant for applications that declare themselves as media apps in RegisterAppInterface"
+    },
+    "ButtonName": {
+      "script": "templates/scripts/ButtonName_indexForPresetButton.groovy",
+      "description_file": "templates/description/ButtonName_head.html",
+      "params": {
+        "OK": {
+          "description_file": "templates/description/ButtonName_OK.html",
+          "since": "1.0",
+          "see": "#PLAY_PAUSE"
+        }
+      }
+    },
+    "CarModeStatus": {
+      "kind": "simple"
+    },
+    "ComponentVolumeStatus": {
+      "kind": "simple"
+    },
+    "Dimension": {
+      "params": {
+        "NO_FIX": {
+          "internal": "\"NO_FIX\"",
+          "description": "No GPS at all"
+        }
+      },
+      "-params": [
+        "_NO_FIX"
+      ]
+    },
     "DisplayType": {
-      "params_additional": {
-        "key": "TESTING",
-        "value": "'TESTING'"
-      }
-    }
-  },
-  "structs": {
-    "DisplayCapabilities": {
-      "graphicSupported": {
-        "methods": {
-          "method_title": "GraphicsSupported",
-          "key": "KEY_GRAPHICS_SUPPORTED"
-        },
-        "params": {
-          "key": "KEY_GRAPHICS_SUPPORTED"
+      "kind": "custom"
+    },
+    "ECallConfirmationStatus": {
+      "kind": "simple"
+    },
+    "EmergencyEventType": {
+      "kind": "simple",
+      "params": {
+        "NO_EVENT": {
+          "description": "No emergency event has happened."
         }
       }
     },
-    "Grid": {
-      "col": {
-        "methods": {
-          "method_title": "Column",
-          "key": "KEY_COLUMN"
+    "FuelCutoffStatus": {
+      "kind": "simple"
+    },
+    "FunctionID": {
+      "package_name": "com.smartdevicelink.protocol.enums",
+      "params_rename": {
+        "ON_HMISTATUS": "ON_HMI_STATUS",
+        "ON_RCSTATUS": "ON_RC_STATUS",
+        "SYNC_PDATA": "SYNC_P_DATA"
+      }
+    },
+    "IgnitionStatus": {
+      "kind": "simple"
+    },
+    "LightName": {
+      "kind": "simple"
+    },
+    "MessageType": {
+      "package_name": "com.smartdevicelink.protocol.enums",
+      "kind": "simple",
+      "-params": [
+        "NOTIFICATION",
+        "REQUEST",
+        "RESPONSE"
+      ],
+      "params": {
+        "UNDEFINED": {},
+        "BULK": {},
+        "RPC": {}
+      }
+    },
+    "MetadataType": {
+      "kind": "custom"
+    },
+    "PredefinedLayout": {
+      "kind": "custom"
+    },
+    "PredefinedWindows": {
+      "kind": "custom"
+    },
+    "SpeechCapabilities": {
+      "kind": "simple"
+    },
+    "SystemCapabilityType": {
+      "kind": "custom",
+      "description_file": "templates/description/SystemCapabilityType_head.html",
+      "params": {
+        "NAVIGATION": {
+          "internal": true
         },
-        "params": {
-          "key": "KEY_COLUMN"
-        }
-      },
-      "colspan": {
-        "methods": {
-          "method_title": "ColumnSpan",
-          "key": "KEY_COLUMN_SPAN"
+        "PHONE_CALL": {
+          "internal": true
         },
-        "params": {
-          "key": "KEY_COLUMN_SPAN"
-        }
-      },
-      "rowspan": {
-        "methods": {
-          "method_title": "RowSpan",
-          "key": "KEY_ROW_SPAN"
+        "VIDEO_STREAMING": {
+          "internal": true
         },
-        "params": {
-          "key": "KEY_ROW_SPAN"
-        }
-      },
-      "levelspan": {
-        "methods": {
-          "method_title": "LevelSpan",
-          "key": "KEY_LEVEL_SPAN"
+        "REMOTE_CONTROL": {
+          "internal": true
         },
-        "params": {
-          "key": "KEY_LEVEL_SPAN"
+        "APP_SERVICES": {
+          "internal": true
+        },
+        "SEAT_LOCATION": {
+          "internal": true
+        },
+        "DISPLAYS": {
+          "internal": true
         }
       }
     },
-    "TextField": {
-      "name": {
-        "methods": {
-          "method_title": "TextFieldName"
+    "VehicleDataEventStatus": {
+      "kind": "simple",
+      "params": {
+        "NO_EVENT": {
+          "description": "No event available"
         }
       }
     },
-    "RGBColor": {
-      "red": {
-        "methods": {
-          "method_title": "RedValue"
-        }
-      },
-      "green": {
-        "methods": {
-          "method_title": "GreenValue"
-        }
-      },
-      "blue": {
-        "methods": {
-          "method_title": "BlueValue"
-        }
-      }
-    }
-  },
-  "functions": {
-    "SetAppIconRequest": {
-      "syncFileName": {
-        "methods": {
-          "method_title": "FileName",
-          "key": "KEY_FILE_NAME"
-        },
-        "params": {
-          "key": "KEY_FILE_NAME"
+    "VehicleDataNotificationStatus": {
+      "kind": "simple"
+    },
+    "VehicleDataResultCode": {
+      "kind": "simple",
+      "see": "com.smartdevicelink.proxy.rpc.DIDResult and com.smartdevicelink.proxy.rpc.ReadDID"
+    },
+    "VehicleDataStatus": {
+      "kind": "simple"
+    },
+    "VrCapabilities": {
+      "kind": "simple",
+      "params": {
+        "Text": {
+          "deprecated": "any",
+          "since": "1.0"
         }
       }
     },
-    "RegisterAppInterfaceResponse": {
-      "syncMsgVersion": {
-        "imports": {
-          "what": "SdlMsgVersion",
-          "wherefrom": "../structs/SdlMsgVersion.js"
-        },
-        "methods": {
-          "method_title": "SdlMsgVersion",
-          "external": "SdlMsgVersion",
-          "key": "KEY_SDL_MSG_VERSION",
-          "type": "SdlMsgVersion"
-        },
-        "params": {
-          "key": "KEY_SDL_MSG_VERSION"
-        }
-      },
-      "supportedDiagModes": {
-        "methods": {
-          "key": "KEY_SUPPORTED_DIAG_MODE"
-        },
-        "params": {
-          "key": "KEY_SUPPORTED_DIAG_MODE"
+    "WarningLightStatus": {
+      "kind": "simple"
+    },
+    "CharacterSet": {
+      "params": {
+        "TYPE2SET": {
+          "-description": "any"
         }
       }
     },
-    "RegisterAppInterfaceRequest": {
-      "syncMsgVersion": {
-        "imports": {
-          "what": "SdlMsgVersion",
-          "wherefrom": "../structs/SdlMsgVersion.js"
-        },
-        "methods": {
-          "method_title": "SdlMsgVersion",
-          "external": "SdlMsgVersion",
-          "key": "KEY_SDL_MSG_VERSION",
-          "type": "SdlMsgVersion"
-        },
-        "params": {
-          "key": "KEY_SDL_MSG_VERSION"
+    "HMILevel": {
+      "params": {
+        "HMI_BACKGROUND": {
+          "description_file": "templates/description/HMILevel_HMI_BACKGROUND.html"
         }
-      },
-      "fullAppID": {
-        "script": "templates/scripts/fullAppID.js"
-      },
-      "params_additional": {
-        "key": "APP_ID_MAX_LENGTH",
-        "value": 10
       }
-    },
-    "PutFileRequest": {
-      "syncFileName": {
-        "methods": {
-          "method_title": "FileName",
-          "key": "KEY_FILE_NAME"
-        },
-        "params": {
-          "key": "KEY_FILE_NAME"
-        }
-      },
-      "script_additional": "templates/scripts/PutFileRequest.js"
     }
   }
 }

@@ -30,19 +30,32 @@ class Generator(object):
 
     def __init__(self):
         self.logger = logging.getLogger('Generator')
+        self._env = None
 
-    def get_parser(self, output_dir):
+    @property
+    def env(self):
+        return self._env
+
+    @env.setter
+    def env(self, value):
+        self._env = Environment(loader=FileSystemLoader(value))
+
+    def get_parser(self):
         """
         Parsing command-line arguments, or evaluating required Paths interactively.
         :return: an instance of argparse.ArgumentParser
         """
+        if len(sys.argv) == 2 and sys.argv[1] in ('-v', '--version'):
+            print('1.0')
+            exit(0)
+
         from argparse import ArgumentParser
 
         Paths = namedtuple('Paths', 'name path')
         xml = Paths('source_xml', root.joinpath('rpc_spec/MOBILE_API.xml'))
         required_source = False if xml.path.exists() else True
 
-        out = Paths('output_directory', root.parents[1].joinpath(output_dir))
+        out = Paths('output_directory', root.parents[1].joinpath('base/src/main/java/'))
         output_required = False if out.path.exists() else True
 
         parser = ArgumentParser(description='SmartSchema interface parser')
@@ -56,7 +69,6 @@ class Generator(object):
         parser.add_argument('-r', '--regex-pattern', required=False, type=str,
                             help='only elements matched with defined regex pattern will be parsed and generated, '
                                  'if present')
-        parser.add_argument('-v', '--version', required=False, default='1.0')
         parser.add_argument('--verbose', action='store_true', help='display additional details like logs etc')
         parser.add_argument('-e', '--enums', required=False, action='store_true',
                             help='only specified elements will be generated, if present')
@@ -105,34 +117,38 @@ class Generator(object):
         self.logger.info(vars(args))
 
         setattr(args, 'output_directory', Path(args.output_directory))
-        setattr(args, 'templates_directory', Environment(loader=FileSystemLoader(args.templates_directory)))
+        self.env = args.templates_directory
 
         return args
 
-    @staticmethod
-    def get_mappings(file=root.joinpath('mapping.json')):
+    def get_mappings(self, file=root.joinpath('mapping.json')):
         """
         The key name in *.json is equal to property named in jinja2 templates
         :param file: path to file with manual mappings
         :return: dictionary with custom manual mappings
         """
         import json
-        with file.open('r') as f:
-            s = f.readlines()
-        return json.loads(''.join(s))
+        from json import JSONDecodeError
+        try:
+            with file.open('r') as f:
+                s = f.readlines()
+            return json.loads(''.join(s))
+        except (FileNotFoundError, JSONDecodeError) as e1:
+            self.logger.error(e1)
+            return {}
 
-    @staticmethod
-    def make_directory(output_directory: Path, directory) -> Path:
+    def write_file(self, t, f, d):
         """
-        :param output_directory: target Path output_directory in which should be create directory
-        :param directory: property from producer/transformer (ENUMS|STRUCTS|FUNCTIONS)_DIR_NAME
-        :return: Path to output_directory + directory
+        Calling producer/transformer instance to transform initial Model to dict used in jinja2 templates.
+        Applying transformed dict to jinja2 templates and writing to appropriate file
+        :param t:
+        :param f:
+        :param d:
+        :return: None
         """
-        p = re.search(r'^([../]*)(.+)', directory)
-        if p:
-            p = output_directory.joinpath(p.group(2))
-        p.mkdir(parents=True, exist_ok=True)
-        return p
+        f.parents[0].mkdir(parents=True, exist_ok=True)
+        with f.open('w', encoding='utf-8') as f:
+            f.write(self.env.get_template(t + '_template.java').render(d))
 
     def process(self, args, items, transformer):
         """
@@ -142,54 +158,33 @@ class Generator(object):
         :param transformer: producer/transformer instance
         :return: None
         """
-
-        def write_file(it):
-            """
-            Calling producer/transformer instance to transform initial Model to dict used in jinja2 templates.
-            Applying transformed dict to jinja2 templates and writing to appropriate file
-            :param it: one particular element from initial Model
-            :return: None
-            """
-            data = transformer.transform(it)
-
-            template_suffix = '_template.java'
-            if name_type.lower() == 'enum':
-                if data['methods'][0].method_title == data['methods'][0].origin:
-                    template_suffix = '_template_simple.java'
-                else:
-                    template_suffix = '_template_custom.java'
-            else:
-                return  # stub till other types implemented
-
-            with file.open('w', encoding='utf-8') as f:
-                f.write(args.templates_directory.get_template(name_type.lower() + template_suffix).render(data))
-
-        path = self.make_directory(args.output_directory, transformer.directory)
         for item in items:
-            name_type = type(item).__name__
-            file = path.joinpath(item.name + '.java')
+            name_type = type(item).__name__.lower()
+            file = item.name + '.java'
             if isinstance(item, Function) and item.message_type.name == 'response':
-                file = path.joinpath(item.name + item.message_type.name.capitalize() + '.java')
+                file = item.name + item.message_type.name.capitalize() + '.java'
+            data = transformer.transform(item)
+            file = args.output_directory.joinpath(data['package_name'].replace('.', '/')).joinpath(file)
             if file.is_file():
                 if args.skip:
                     self.logger.info('Skipping {}'.format(file))
                     continue
                 elif args.overwrite:
                     self.logger.info('Overriding {}'.format(file))
-                    write_file(item)
+                    self.write_file(name_type, file, data)
                 else:
                     while True:
                         confirm = input('File already exists {}. Overwrite? Y/Enter = yes, N = no\n'.format(file))
                         if confirm.lower() == 'y' or not confirm:
                             self.logger.info('Overriding {}'.format(file))
-                            write_file(item)
+                            self.write_file(name_type, file, data)
                             break
                         if confirm.lower() == 'n':
                             self.logger.info('Skipping {}'.format(file))
                             break
             else:
                 self.logger.info('Writing new {}'.format(file))
-                write_file(item)
+                self.write_file(name_type, file, data)
 
     def parser(self, xml, xsd, pattern=None):
         """
@@ -240,24 +235,27 @@ class Generator(object):
         :param file: path to file with Paths
         :return: namedtuple with Paths to key elements
         """
-        fields = ('PATH_TO_STRUCT_CLASS', 'PATH_TO_REQUEST_CLASS', 'PATH_TO_RESPONSE_CLASS',
-                  'PATH_TO_NOTIFICATION_CLASS', 'OUTPUT_DIR_NAME', 'ENUMS_DIR_NAME', 'STRUCTS_DIR_NAME',
-                  'FUNCTIONS_DIR_NAME')
+        fields = ('STRUCT_CLASS', 'REQUEST_CLASS', 'RESPONSE_CLASS',
+                  'NOTIFICATION_CLASS', 'ENUMS_PACKAGE', 'STRUCTS_PACKAGE', 'FUNCTIONS_PACKAGE')
         d = {}
-        with file.open('r') as f:
-            for line in f:
-                if line.startswith('#'):
-                    self.logger.info('commented property {}, which will be skipped'.format(line.strip()))
-                    continue
-                if re.match(r'^(\w+)\s?=\s?(.+)', line):
-                    if len(line.split('=')) > 2:
-                        self.logger.critical('can not evaluate value, too many separators {}'.format(str(line)))
-                        exit(1)
-                    name, var = line.partition('=')[::2]
-                    if name.strip() in d:
-                        self.logger.critical('duplicate key {}'.format(name))
-                        exit(1)
-                    d[name.strip()] = var.strip()
+        try:
+            with file.open('r') as f:
+                for line in f:
+                    if line.startswith('#'):
+                        self.logger.info('commented property {}, which will be skipped'.format(line.strip()))
+                        continue
+                    if re.match(r'^(\w+)\s?=\s?(.+)', line):
+                        if len(line.split('=')) > 2:
+                            self.logger.critical('can not evaluate value, too many separators {}'.format(str(line)))
+                            exit(1)
+                        name, var = line.partition('=')[::2]
+                        if name.strip() in d:
+                            self.logger.critical('duplicate key {}'.format(name))
+                            exit(1)
+                        d[name.strip()] = var.strip()
+        except FileNotFoundError as e1:
+            self.logger.critical(e1)
+            exit(1)
 
         for line in fields:
             if line not in d:
@@ -272,8 +270,8 @@ class Generator(object):
         Entry point for parser and generator
         :return: None
         """
+        args = self.get_parser()
         paths = self.get_paths()
-        args = self.get_parser(paths.OUTPUT_DIR_NAME)
 
         interface = self.parser(xml=args.source_xml, xsd=args.source_xsd, pattern=args.regex_pattern)
 
@@ -284,10 +282,12 @@ class Generator(object):
 
         if args.enums and interface.enums:
             from EnumsProducer import EnumsProducer
-            self.process(args, interface.enums.values(), EnumsProducer(paths, mappings))
+            self.process(args, interface.enums.values(),
+                         EnumsProducer(paths.ENUMS_PACKAGE, mappings))
         if args.structs and interface.structs:
             from StructsProducer import StructsProducer
-            self.process(args, interface.structs.values(), StructsProducer(paths, enum_names, struct_names, mappings))
+            self.process(args, interface.structs.values(),
+                         StructsProducer(paths, enum_names, struct_names, mappings))
         if args.functions and interface.functions:
             from FunctionsProducer import FunctionsProducer
             self.process(args, interface.functions.values(),

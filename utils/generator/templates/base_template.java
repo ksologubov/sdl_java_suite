@@ -29,7 +29,26 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-package {{packagename}};
-{% block body %}
-{% endblock -%}
+package {{package_name}};
+    {% for i in imports %}
+    import {{i}};{{ "\n" if loop.last }}
+    {%- endfor %}
+    {%- if description is defined or since is defined or see is defined %}
+/**
+ {%- if description is defined %}
+ {%- for d in description %}
+ * {{d}}
+ {%- endfor %}{%- endif %}
+ {%- if description is defined and (see is defined or since is defined) %}
+ *
+ {%- endif %}
+ {%- if see is defined %}
+ * @see {{see}}
+{%- endif %}
+{%- if since is defined %}
+ * @since SmartDeviceLink {{since}}
+{%- endif %}
+ */
+    {%- endif %}
+    {%- block body %}
+    {% endblock -%}

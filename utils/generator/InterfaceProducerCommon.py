@@ -9,16 +9,16 @@ from parsers.Model import Struct, Enum, Array, Function, Integer, Double
 
 
 class InterfaceProducerCommon(ABC):
-    def __init__(self, container_name, directory, enums_dir_name, structs_dir_name,
+    def __init__(self, container_name, enums_package, structs_package, package_name,
                  enum_names=(), struct_names=(), mapping=OrderedDict()):
         self.logger = logging.getLogger('Generator.InterfaceProducerCommon')
         self.container_name = container_name
-        self.directory = directory
         self.enum_names = enum_names
         self.struct_names = struct_names
-        self.enums_dir = enums_dir_name
-        self.structs_dir = structs_dir_name
+        self.enums_dir = enums_package
+        self.structs_dir = structs_package
         self.mapping = mapping
+        self.package_name = package_name
 
     @property
     def imports(self):
@@ -73,7 +73,7 @@ class InterfaceProducerCommon(ABC):
             if isinstance(item, Function) and item.message_type.name == 'response' and \
                             param.name in ('success', 'resultCode', 'info'):
                 self.logger.warning('{} of type {}/{} - skip parameter "{}"'
-                                 .format(item.name, type(item).__name__, item.message_type.name, param.name))
+                                    .format(item.name, type(item).__name__, item.message_type.name, param.name))
                 continue
 
             (i, m, p) = self.common_flow(param, type(item))
@@ -161,9 +161,9 @@ class InterfaceProducerCommon(ABC):
         :return: string in uppercase with underscores
         """
         if re.match(r'^[A-Z_]+$', param):
-            return 'KEY_' + param
+            return param
         else:
-            return 'KEY_' + re.sub(r'([a-z]|[A-Z]{2,})([A-Z]|\d$)', r'\1_\2', param).upper()
+            return re.sub(r'([a-z]|[A-Z]{2,})([A-Z]|\d$)', r'\1_\2', param).upper()
 
     @staticmethod
     def ending_cutter(n: str):
@@ -172,7 +172,7 @@ class InterfaceProducerCommon(ABC):
         :param n: string to evaluate and deleting 'ID' from end of string
         :return: if match cut string else original string
         """
-        if re.match('^\w+[a-z]ID$', n):
+        if re.match('^\w+[a-z]+([A-Z]{2,})?ID$', n):
             return n[:-2]
         else:
             return n

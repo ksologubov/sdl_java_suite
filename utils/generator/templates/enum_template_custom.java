@@ -1,3 +1,4 @@
+{# not used #}
 {% extends "base_template.java" %}
 {% block body %}
 import java.util.EnumSet;

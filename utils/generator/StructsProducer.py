@@ -8,14 +8,14 @@ class StructsProducer(InterfaceProducerCommon):
     def __init__(self, paths, enum_names, struct_names, mapping=None):
         super(StructsProducer, self).__init__(
             container_name='members',
-            directory=paths.STRUCTS_DIR_NAME,
-            enums_dir_name=paths.ENUMS_DIR_NAME,
-            structs_dir_name=paths.STRUCTS_DIR_NAME,
+            enums_package=paths.ENUMS_PACKAGE,
+            # structs_package=paths.STRUCTS_PACKAGE,
             enum_names=enum_names,
             struct_names=struct_names,
+            package_name=paths.STRUCTS_PACKAGE,
             mapping=mapping['structs'] if mapping and 'structs' in mapping else {})
         self.logger = logging.getLogger('Generator.StructsProducer')
-        self.struct_class = paths.PATH_TO_STRUCT_CLASS
+        self.struct_class = paths.STRUCT_CLASS
 
     def transform(self, item: Struct) -> dict:
         """
