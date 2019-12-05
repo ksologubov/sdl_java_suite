@@ -179,6 +179,7 @@
       "kind": "simple"
     },
     "VrCapabilities": {
+      "script": "templates/scripts/VrCapabilities_valueForString.groovy",
       "kind": "simple",
       "params": {
         "Text": {
