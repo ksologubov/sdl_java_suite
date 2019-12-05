@@ -77,7 +77,11 @@
       ]
     },
     "DisplayType": {
-      "kind": "custom"
+      "kind": "custom",
+      "valueForString": "templates/scripts/DisplayType_valueForString.groovy",
+      "-imports": [
+        "java.util.EnumSet"
+      ]
     },
     "ECallConfirmationStatus": {
       "kind": "simple"
@@ -111,9 +115,9 @@
       "package_name": "com.smartdevicelink.protocol.enums",
       "kind": "simple",
       "-params": [
-        "NOTIFICATION",
-        "REQUEST",
-        "RESPONSE"
+        "notification",
+        "request",
+        "response"
       ],
       "params": {
         "UNDEFINED": {},
@@ -200,7 +204,7 @@
       "kind": "simple"
     },
     "VrCapabilities": {
-      "script": "templates/scripts/VrCapabilities_valueForString.groovy",
+      "valueForString": "templates/scripts/VrCapabilities_valueForString.groovy",
       "kind": "simple",
       "params": {
         "Text": {
@@ -211,13 +215,6 @@
     },
     "WarningLightStatus": {
       "kind": "simple"
-    },
-    "CharacterSet": {
-      "params": {
-        "TYPE2SET": {
-          "-description": "any"
-        }
-      }
     },
     "HMILevel": {
       "params": {

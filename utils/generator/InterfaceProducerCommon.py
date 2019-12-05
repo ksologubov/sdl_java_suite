@@ -160,7 +160,7 @@ class InterfaceProducerCommon(ABC):
         :param param: camel case string
         :return: string in uppercase with underscores
         """
-        if re.match(r'^[A-Z_]+$', param):
+        if re.match(r'^[A-Z_\d]+$', param):
             return param
         else:
             return re.sub(r'([a-z]|[A-Z]{2,})([A-Z]|\d$)', r'\1_\2', param).upper()

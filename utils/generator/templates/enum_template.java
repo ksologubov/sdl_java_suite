@@ -39,6 +39,9 @@ public enum {{class_name}} {
      * @param value String
      * @return {{class_name}}
      */
+    {%- if valueForString is defined %}
+{{valueForString}}
+    {%- else %}
     public static {{class_name}} valueForString(String value) {
         try {
             return valueOf(value);
@@ -46,6 +49,7 @@ public enum {{class_name}} {
             return null;
         }
     }
+    {%- endif %}
     {%- elif kind == "custom" %}
     {%- if return_type == "String" %}
 
@@ -54,13 +58,12 @@ public enum {{class_name}} {
     private {{class_name}}(String internalName) {
         this.INTERNAL_NAME = internalName;
     }
-
-    public String toString() {
-        return this.INTERNAL_NAME;
-    }
+    {%- if valueForString is defined %}
+{{valueForString}}
+    {%- else %}
 
     public static {{class_name}} valueForString(String value) {
-        if(value == null) {
+        if (value == null) {
             return null;
         }
 
@@ -70,6 +73,12 @@ public enum {{class_name}} {
             }
         }
         return null;
+    }
+    {%- endif %}
+
+    @Override
+    public String toString() {
+        return INTERNAL_NAME;
     }
     {%- elif return_type == "int" %}
 

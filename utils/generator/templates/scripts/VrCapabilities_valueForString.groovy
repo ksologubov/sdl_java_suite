@@ -1,22 +1,15 @@
-    /**
-     * Convert String to VrCapabilities
-     *
-     * @param value String
-     * @return VrCapabilities
-     */
     public static VrCapabilities valueForString(String value) {
-        if(value == null){
+        if (value == null) {
             return null;
         }
 
-        if (value.equalsIgnoreCase(TEXT.toString()))
-        {
-        	return TEXT;
+        if (value.equalsIgnoreCase(TEXT.toString())) {
+            return TEXT;
         }
 
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
