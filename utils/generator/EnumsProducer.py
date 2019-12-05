@@ -153,7 +153,9 @@ class EnumsProducer(InterfaceProducerCommon):
                         params.update({d.name: d})
                     render['kind'] = custom['kind']
                     render['params'] = params
-                    render['imports'] = set(['java.util.EnumSet'])
+                    render['imports'] = set()
+                    if render['return_type'] != 'bool':
+                        render['imports'].add('java.util.EnumSet')
 
         if scripts:
             render.update({'scripts': scripts})

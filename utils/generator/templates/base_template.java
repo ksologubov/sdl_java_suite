@@ -31,7 +31,7 @@
  */
 package {{package_name}};
     {% for i in imports %}
-    import {{i}};{{ "\n" if loop.last }}
+import {{i}};{{ "\n" if loop.last }}
     {%- endfor %}
     {%- if description is defined or since is defined or see is defined %}
 /**

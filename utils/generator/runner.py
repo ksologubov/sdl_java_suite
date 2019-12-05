@@ -84,7 +84,9 @@ class Generator(object):
         args, unknown = parser.parse_known_args()
 
         if unknown:
-            self.logger.warning('found unknown arguments' + ''.join(unknown))
+            self.logger.warning('found unknown arguments: ' + ' '.join(unknown))
+            parser.print_help(sys.stderr)
+            exit(1)
 
         for n in (xml, out):
             if not getattr(args, n.name) and n.path.exists():
