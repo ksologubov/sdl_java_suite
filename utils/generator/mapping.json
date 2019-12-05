@@ -149,6 +149,27 @@
         "REMOTE_CONTROL": {
           "internal": true
         },
+        "HMI": {
+          "internal": false
+        },
+        "PRERECORDED_SPEECH": {
+          "internal": false
+        },
+        "AUDIO_PASSTHROUGH": {
+          "internal": false
+        },
+        "PCM_STREAMING": {
+          "internal": false
+        },
+        "HMI_ZONE": {
+          "internal": false
+        },
+        "SPEECH": {
+          "internal": false
+        },
+        "VOICE_RECOGNITION": {
+          "internal": false
+        },
         "APP_SERVICES": {
           "internal": true
         },

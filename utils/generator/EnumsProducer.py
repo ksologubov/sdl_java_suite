@@ -110,6 +110,9 @@ class EnumsProducer(InterfaceProducerCommon):
                         Params = namedtuple('Params', sorted(d))
                         render['params'].update({name: Params(**d)})
                     else:
+                        for k, v in value.items():
+                            if isinstance(v, bool):
+                                value.update({k: str(v).lower()})
                         value.update({'name': name})
                         if 'description' in value:
                             value.update({'description': textwrap.wrap(value['description'], 113)})
