@@ -168,7 +168,7 @@ public enum {{class_name}} {
     return null;
     }
 
-    public static int get{{class_name}}(String functionName) {
+    public static int getFunctionId(String functionName) {
         if(functionMap == null) {
             initFunctionMap();
         }
