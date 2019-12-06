@@ -102,7 +102,30 @@
       "params_rename": {
         "ON_HMISTATUS": "ON_HMI_STATUS",
         "ON_RCSTATUS": "ON_RC_STATUS",
-        "SYNC_PDATA": "SYNC_P_DATA"
+        "SYNC_PDATA": "SYNC_P_DATA",
+        "ON_SYNC_PDATA": "ON_SYNC_P_DATA",
+        "ENCODED_SYNC_PDATA": "ENCODED_SYNC_P_DATA",
+        "ON_ENCODED_SYNC_PDATA": "ON_ENCODED_SYNC_P_DATA",
+        "PERFORM_APP_SERVICE_INTERACTION": "PERFORM_APP_SERVICES_INTERACTION",
+        "RELEASE_INTERIOR_VEHICLE_DATA_MODULE": "RELEASE_INTERIOR_VEHICLE_MODULE"
+      },
+      "params": {
+        "ON_LOCK_SCREEN_STATUS": {
+          "value": "-1",
+          "internal": "\"OnLockScreenStatus\""
+        },
+        "ON_SDL_CHOICE_CHOSEN": {
+          "value": "-1",
+          "internal": "\"OnSdlChoiceChosen\""
+        },
+        "ON_STREAM_RPC": {
+          "value": "-1",
+          "internal": "\"OnStreamRPC\""
+        },
+        "STREAM_RPC": {
+          "value": "-1",
+          "internal": "\"StreamRPC\""
+        }
       }
     },
     "IgnitionStatus": {
@@ -140,6 +163,9 @@
     "SystemCapabilityType": {
       "kind": "custom",
       "description_file": "templates/description/SystemCapabilityType_head.html",
+      "-imports": [
+        "java.util.EnumSet"
+      ],
       "params": {
         "NAVIGATION": {
           "internal": true
@@ -156,6 +182,10 @@
         "HMI": {
           "internal": false
         },
+        "DISPLAY": {
+          "deprecated": "any",
+          "internal": false
+        },
         "PRERECORDED_SPEECH": {
           "internal": false
         },
@@ -165,7 +195,19 @@
         "PCM_STREAMING": {
           "internal": false
         },
+        "BUTTON": {
+          "deprecated": "any",
+          "internal": false
+        },
         "HMI_ZONE": {
+          "internal": false
+        },
+        "PRESET_BANK": {
+          "deprecated": "any",
+          "internal": false
+        },
+        "SOFTBUTTON": {
+          "deprecated": "any",
           "internal": false
         },
         "SPEECH": {
