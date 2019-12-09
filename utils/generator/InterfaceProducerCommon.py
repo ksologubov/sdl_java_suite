@@ -271,7 +271,8 @@ class InterfaceProducerCommon(ABC):
                 render['imports'] = {custom['imports']}
         if '-imports' in custom:
             for i in custom['-imports']:
-                render['imports'].remove(i)
+                if 'imports' in render:
+                    render['imports'].remove(i)
         if '-params' in custom:
             for name in custom['-params']:
                 if name in render['params']:

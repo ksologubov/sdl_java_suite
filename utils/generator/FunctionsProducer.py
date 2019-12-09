@@ -115,7 +115,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         p = {'title': param.name[:1].upper() + param.name[1:], 'origin': param.name}
         p.update({'key': 'KEY_' + self.key(param.name)})
         p.update({'mandatory': param.is_mandatory})
-        p.update({'last': self.last(param.name)})
+        p.update({'last': param.name})
         d = self.extract_description(param.description)
         if d:
             p.update({'description': textwrap.wrap(d, 113)})
