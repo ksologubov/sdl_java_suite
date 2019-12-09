@@ -265,5 +265,97 @@
         }
       }
     }
+  },
+  "functions": {
+    "OnHMIStatus": {
+      "params": {
+        "firstRun": {
+          "return_type": "Boolean"
+        }
+      },
+      "script": "templates/scripts/OnHMIStatus_format.groovy"
+    },
+    "AddCommand": {
+      "params": {
+        "menuParams": {
+          "SuppressWarnings": "unchecked"
+        }
+      }
+    },
+    "Alert": {
+      "description_file": "templates/description/Alert_head.html",
+      "params": {
+        "alertText1": {
+          "param_doc": "String Value "
+        },
+        "alertText2": {
+          "param_doc_file": "templates/description/Alert_alertText2.html"
+        }
+      }
+    },
+    "AlertManeuver": {
+      "params": {
+        "ttsChunks": {
+          "SuppressWarnings": "unchecked"
+        },
+        "softButtons": {
+          "SuppressWarnings": "unchecked"
+        }
+      }
+    },
+    "ButtonPress": {
+      "params": {
+        "moduleType": {
+          "param_doc": "Represents module where the button should be pressed"
+        },
+        "buttonName": {
+          "param_doc": "Represents name of supported RC climate or radio button"
+        },
+        "buttonPressMode": {
+          "param_doc": "Indicates whether this is a LONG or SHORT button press event."
+        }
+      }
+    },
+    "CancelInteraction": {
+      "params": {
+        "functionID": {
+          "title": "InteractionFunctionID"
+        }
+      }
+    },
+    "ChangeRegistration": {
+      "params": {
+        "ngnMediaScreenAppName": {
+          "key": "KEY_NGN_MEDIA_SCREEN_NAME"
+        }
+      }
+    },
+    "CreateWindow": {
+      "params": {
+        "duplicateUpdatesFromWindowID": {
+          "key": "KEY_NGN_MEDIA_SCREEN_NAME"
+        }
+      }
+    },
+    "DeleteCommand": {
+      "params": {
+        "cmdID": {
+          "param_doc": "Integer value representing Command ID that identifies the Command to be deleted from Command Menu\n<p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>"
+        }
+      }
+    },
+    "DeleteFileResponse": {
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ],
+      "params": {
+        "MAX_VALUE": {
+          "return_type": "Integer",
+          "modifier": "static final",
+          "value": 2000000000
+        }
+      },
+      "script": "templates/scripts/DeleteFileResponse.groovy"
+    }
   }
 }

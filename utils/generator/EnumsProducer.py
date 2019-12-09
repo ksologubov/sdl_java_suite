@@ -58,117 +58,6 @@ class EnumsProducer(InterfaceProducerCommon):
 
         return render
 
-    def custom_mapping(self, render):
-        """
-        To be moved into parent class
-        :param render: dictionary with moder ready for jinja template
-        :return: None
-        """
-        scripts = []
-        if render['class_name'] in self.mapping:
-            custom = self.mapping[render['class_name']]
-
-            if 'kind' in custom:
-                if custom['kind'] == 'simple':
-                    self.logger.warning('for {} changing kind to {}'.format(render['class_name'], custom['kind']))
-                    params = {}
-                    for name, value in render['params'].items():
-                        d = value._asdict()
-                        if 'origin' in d:
-                            d['name'] = d['origin']
-                        else:
-                            d['name'] = name
-                        if 'internal' in d:
-                            del d['internal']
-                        if 'value' in d:
-                            del d['value']
-                        Params = namedtuple('Params', sorted(d))
-                        d = Params(**d)
-                        params.update({d.name: d})
-                    render['kind'] = custom['kind']
-                    render['params'] = params
-                    render['imports'].clear()
-                if custom['kind'] == 'custom':
-                    self.logger.warning('for {} changing kind to {}'.format(render['class_name'], custom['kind']))
-                    params = {}
-                    for name, value in render['params'].items():
-                        d = value._asdict()
-                        if 'value' in d:
-                            d['internal'] = d['value']
-                        elif 'internal' not in d:
-                            d['internal'] = '"{}"'.format(d['name'])
-                        d['name'] = self.key(d['name'])
-                        Params = namedtuple('Params', sorted(d))
-                        d = Params(**d)
-                        params.update({d.name: d})
-                    render['kind'] = custom['kind']
-                    render['params'] = params
-                    render['imports'] = set()
-                    if render['return_type'] != 'bool':
-                        render['imports'].add('java.util.EnumSet')
-
-            for name in ('description', 'see', 'since', 'package_name'):
-                if name in custom:
-                    render[name] = custom[name]
-            # if 'imports' in custom:
-            #     render['imports'].update(custom['imports'])
-            if '-imports' in custom:
-                for i in custom['-imports']:
-                    render['imports'].remove(i)
-            if '-params' in custom:
-                for name in custom['-params']:
-                    if name in render['params']:
-                        self.logger.warning('deleting parameter {}'.format(render['params'][name]))
-                        del render['params'][name]
-            if 'params_rename' in custom:
-                for name, new_name in custom['params_rename'].items():
-                    if name in render['params']:
-                        render['params'][new_name] = render['params'][name]._replace(name=new_name)
-                        del render['params'][name]
-            if 'script' in custom:
-                script = self.get_file_content(custom['script'])
-                if script:
-                    scripts.append(script)
-            if 'valueForString' in custom:
-                script = self.get_file_content(custom['valueForString'])
-                if script:
-                    render['valueForString'] = script
-            if 'description_file' in custom:
-                render['description'] = self.get_file_content(custom['description_file']).split('\n')
-
-            if 'params' in custom:
-                for name, value in custom['params'].items():
-                    if name in render['params']:
-                        for k, v in value.items():
-                            if isinstance(v, bool):
-                                render['return_type'] = 'bool'
-                                value.update({k: str(v).lower()})
-                        d = render['params'][name]._asdict()
-                        if 'description' in value:
-                            d.update({'description': textwrap.wrap(value['description'], 113)})
-                            del value['description']
-                        if 'description_file' in value:
-                            d.update({'description': self.get_file_content(value['description_file']).split('\n')})
-                            del value['description_file']
-                        d.update(value)
-                        Params = namedtuple('Params', sorted(d))
-                        render['params'].update({name: Params(**d)})
-                    else:
-                        for k, v in value.items():
-                            if isinstance(v, bool):
-                                value.update({k: str(v).lower()})
-                        value.update({'name': name})
-                        if 'description' in value:
-                            value.update({'description': textwrap.wrap(value['description'], 113)})
-                        if 'description_file' in value:
-                            value.update({'description': self.get_file_content(custom['description_file']).split('\n')})
-                            del value['description_file']
-                        Params = namedtuple('Params', sorted(value))
-                        render['params'].update({name: Params(**value)})
-
-        if scripts:
-            render.update({'scripts': scripts})
-
     def extract_param(self, param: EnumElement, item_name):
         d = {'origin': param.name}
         kind = 'simple'
@@ -217,3 +106,52 @@ class EnumsProducer(InterfaceProducerCommon):
             return 'int'
         else:
             return 'String'
+
+    def custom_mapping(self, render):
+        if not render['class_name'] in self.mapping:
+            return
+        super(EnumsProducer, self).custom_mapping(render)
+        custom = self.mapping[render['class_name']]
+        if 'kind' in custom:
+            if custom['kind'] == 'simple':
+                self.logger.warning('for {} changing kind to {}'.format(render['class_name'], custom['kind']))
+                params = {}
+                for name, value in render['params'].items():
+                    d = value._asdict()
+                    if 'origin' in d:
+                        d['name'] = d['origin']
+                    else:
+                        d['name'] = name
+                    if 'internal' in d:
+                        del d['internal']
+                    if 'value' in d:
+                        del d['value']
+                    Params = namedtuple('Params', sorted(d))
+                    d = Params(**d)
+                    params.update({d.name: d})
+                render['kind'] = custom['kind']
+                render['params'] = params
+                render['imports'].clear()
+            if custom['kind'] == 'custom':
+                self.logger.warning('for {} changing kind to {}'.format(render['class_name'], custom['kind']))
+                params = {}
+                for name, value in render['params'].items():
+                    d = value._asdict()
+                    if 'value' in d:
+                        d['internal'] = d['value']
+                    elif 'internal' not in d:
+                        d['internal'] = '"{}"'.format(d['name'])
+                    d['name'] = self.key(d['name'])
+                    Params = namedtuple('Params', sorted(d))
+                    d = Params(**d)
+                    params.update({d.name: d})
+                render['kind'] = custom['kind']
+                render['params'] = params
+                render['imports'] = set()
+                if render['return_type'] != 'bool':
+                    render['imports'].add('java.util.EnumSet')
+
+        if 'valueForString' in custom:
+            script = self.get_file_content(custom['valueForString'])
+            if script:
+                render['valueForString'] = script

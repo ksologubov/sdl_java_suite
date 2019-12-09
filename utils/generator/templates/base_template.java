@@ -30,8 +30,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package {{package_name}};
-    {% for i in imports %}
-import {{i}};{{ "\n" if loop.last }}
+{% for i in imports %}
+{%- if i != '' %}
+import {{i}};{{ '\n' if loop.last }}
+    {%- else %}
+{{''}}
+    {%- endif %}
     {%- endfor %}
     {%- if description is defined or since is defined or see is defined %}
 /**

@@ -5,7 +5,7 @@ from abc import ABC
 from collections import namedtuple, OrderedDict
 from pathlib import Path
 
-from parsers.Model import Struct, Enum, Array, Function, Integer, Double
+from parsers.Model import Struct, Enum, Array, Function
 
 
 class InterfaceProducerCommon(ABC):
@@ -15,8 +15,8 @@ class InterfaceProducerCommon(ABC):
         self.container_name = container_name
         self.enum_names = enum_names
         self.struct_names = struct_names
-        self.enums_dir = enums_package
-        self.structs_dir = structs_package
+        self.enums_package = enums_package
+        self.structs_package = structs_package
         self.mapping = mapping
         self.package_name = package_name
 
@@ -154,6 +154,10 @@ class InterfaceProducerCommon(ABC):
             return self.imports(what=tmp.group(1), wherefrom=extend)
 
     @staticmethod
+    def last(name):
+        return re.sub(r'^\w*([A-Z][a-z]\w*|[A-Z]{2,})$', r'\1', name).lower()
+
+    @staticmethod
     def key(param: str):
         """
         Convert param string to uppercase and inserting underscores
@@ -224,13 +228,13 @@ class InterfaceProducerCommon(ABC):
         def evaluate(t1):
             if isinstance(t1, Struct) or isinstance(t1, Enum):
                 return t1.name
-            elif isinstance(t1, Integer) or isinstance(t1, Double):
-                return 'Number'
+            # elif isinstance(t1, Integer) or isinstance(t1, Double):
+            #     return 'Number'
             else:
                 return type(t1).__name__
 
         if isinstance(param.param_type, Array):
-            return 'Array<{}>'.format(evaluate(param.param_type.element_type))
+            return 'List<{}>'.format(evaluate(param.param_type.element_type))
         else:
             return evaluate(param.param_type)
 
@@ -248,3 +252,80 @@ class InterfaceProducerCommon(ABC):
         except FileNotFoundError as e:
             self.logger.error(e)
             return ''
+
+    def custom_mapping(self, render):
+        """
+        To be moved into parent class
+        :param render: dictionary with moder ready for jinja template
+        :return: None
+        """
+        custom = self.mapping[render['class_name']]
+
+        for name in ('description', 'see', 'since', 'package_name'):
+            if name in custom:
+                render[name] = custom[name]
+        if 'imports' in custom:
+            if 'imports' in render:
+                render['imports'].update(custom['imports'])
+            else:
+                render['imports'] = {custom['imports']}
+        if '-imports' in custom:
+            for i in custom['-imports']:
+                render['imports'].remove(i)
+        if '-params' in custom:
+            for name in custom['-params']:
+                if name in render['params']:
+                    self.logger.warning('deleting parameter {}'.format(render['params'][name]))
+                    del render['params'][name]
+        if 'params_rename' in custom:
+            for name, new_name in custom['params_rename'].items():
+                if name in render['params']:
+                    render['params'][new_name] = render['params'][name]._replace(name=new_name)
+                    del render['params'][name]
+        if 'script' in custom:
+            script = self.get_file_content(custom['script'])
+            if script:
+                render.update({'scripts': [script]})
+        if 'description_file' in custom:
+            render['description'] = self.get_file_content(custom['description_file']).split('\n')
+
+        if 'params' in custom:
+            for name, value in custom['params'].items():
+                if name in render['params']:
+                    for k, v in value.items():
+                        if isinstance(v, bool):
+                            render['return_type'] = 'bool'
+                            value.update({k: str(v).lower()})
+                    d = render['params'][name]._asdict()
+                    if 'description' in value:
+                        d.update({'description': textwrap.wrap(value['description'], 113)})
+                        del value['description']
+                    if 'description_file' in value:
+                        d.update({'description': self.get_file_content(value['description_file']).split('\n')})
+                        del value['description_file']
+                    if 'param_doc_file' in value:
+                        d.update({'param_doc': self.get_file_content(value['param_doc_file']).split('\n')})
+                        del value['param_doc_file']
+                    if 'param_doc' in value:
+                        d.update({'param_doc': textwrap.wrap(value['param_doc'], 100)})  # len(d['last'])
+                        del value['param_doc']
+                    if '-SuppressWarnings' in value:
+                        del d['SuppressWarnings']
+                        del value['-SuppressWarnings']
+                    d.update(value)
+                    Params = namedtuple('Params', sorted(d))
+                    render['params'].update({name: Params(**d)})
+                else:
+                    for k, v in value.items():
+                        if isinstance(v, bool):
+                            value.update({k: str(v).lower()})
+                    value.update({'name': name})
+                    # if 'title' not in value:
+                    #     value.update({'title': name[:1].upper() + name[1:]})
+                    if 'description' in value:
+                        value.update({'description': textwrap.wrap(value['description'], 113)})
+                    if 'description_file' in value:
+                        value.update({'description': self.get_file_content(custom['description_file']).split('\n')})
+                        del value['description_file']
+                    Params = namedtuple('Params', sorted(value))
+                    render['params'].update({name: Params(**value)})
