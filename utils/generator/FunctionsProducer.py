@@ -121,15 +121,17 @@ class FunctionsProducer(InterfaceProducerCommon):
         if d:
             p.update({'description': textwrap.wrap(d, 113)})
         t = self.extract_type(param)
+        tr = t
         if t.startswith('List'):
             imports.add('java.util.List')
             p.update({'SuppressWarnings': 'unchecked'})
+            tr = t.replace('List<', '').rstrip('>')
         p.update({'return_type': t})
 
-        if t in self.enum_names:
-            imports.add('{}.{}'.format(self.enums_package, t))
-        if t in self.struct_names:
-            imports.add('{}.{}'.format(self.structs_package, t))
+        if tr in self.enum_names:
+            imports.add('{}.{}'.format(self.enums_package, tr))
+        if tr in self.struct_names:
+            imports.add('{}.{}'.format(self.structs_package, tr))
         if param.is_mandatory:
             imports.add('android.support.annotation.NonNull')
 

@@ -330,13 +330,6 @@
         }
       }
     },
-    "CreateWindow": {
-      "params": {
-        "duplicateUpdatesFromWindowID": {
-          "key": "KEY_NGN_MEDIA_SCREEN_NAME"
-        }
-      }
-    },
     "DeleteCommand": {
       "params": {
         "cmdID": {
