@@ -3,7 +3,8 @@ import textwrap
 from collections import namedtuple
 
 from InterfaceProducerCommon import InterfaceProducerCommon
-from parsers.Model import Function, FunctionParam
+from model.Function import Function
+from model.FunctionParam import FunctionParam
 
 
 class FunctionsProducer(InterfaceProducerCommon):

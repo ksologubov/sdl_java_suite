@@ -13,7 +13,8 @@ sys.path.append(root.joinpath('rpc_spec/InterfaceParser').as_posix())
 try:
     from parsers.SDLRPCV2 import Parser
     from parsers.RPCBase import ParseError
-    from parsers.Model import Interface, Function
+    from model.Interface import Interface
+    from model.Function import Function
 except ModuleNotFoundError as e:
     print('{}. probably you did not initialize submodule'.format(e.msg))
     exit(1)

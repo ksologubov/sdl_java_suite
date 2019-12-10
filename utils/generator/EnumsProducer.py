@@ -3,7 +3,8 @@ import textwrap
 from collections import namedtuple
 
 from InterfaceProducerCommon import InterfaceProducerCommon
-from parsers.Model import EnumElement, Enum
+from model.Enum import Enum
+from model.EnumElement import EnumElement
 
 
 class EnumsProducer(InterfaceProducerCommon):
