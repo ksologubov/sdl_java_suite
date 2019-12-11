@@ -34,7 +34,8 @@ class FunctionsProducer(InterfaceProducerCommon):
         extends_class = None
         if item.message_type.name == 'response':
             extends_class = self.response_class
-            class_name += 'Response'
+            if class_name != "GenericResponse":
+                class_name += 'Response'
             imports.add('com.smartdevicelink.proxy.rpc.enums.Result')
             imports.add('android.support.annotation.NonNull')
         elif item.message_type.name == 'request':
@@ -48,6 +49,10 @@ class FunctionsProducer(InterfaceProducerCommon):
         params = {}
 
         for param in getattr(item, self.container_name).values():
+            if param.name == 'syncFileName':
+                param.name = 'sdlFileName'
+            if param.name == 'syncMsgVersion':
+                param.name = 'sdlMsgVersion'
             if isinstance(item, Function) and item.message_type.name == 'response' and \
                             param.name in ('success', 'resultCode', 'info'):
                 self.logger.warning('{} of return_type {}/{} - skip parameter "{}"'
@@ -113,10 +118,15 @@ class FunctionsProducer(InterfaceProducerCommon):
 
     def extract_param(self, param: FunctionParam):
         imports = set()
-        p = {'title': param.name[:1].upper() + param.name[1:], 'origin': param.name}
+        p = {'title': param.name[:1].upper() + param.name[1:]}
         p.update({'key': 'KEY_' + self.key(param.name)})
         p.update({'mandatory': param.is_mandatory})
         p.update({'last': param.name})
+        if param.name == 'sdlFileName':
+            param.name = 'syncFileName'
+        if param.name == 'sdlMsgVersion':
+            param.name = 'syncMsgVersion'
+        p.update({'origin': param.name})
         d = self.extract_description(param.description)
         if d:
             p.update({'description': textwrap.wrap(d, 113)})

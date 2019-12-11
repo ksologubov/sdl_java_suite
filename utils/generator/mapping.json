@@ -349,6 +349,51 @@
         }
       },
       "script": "templates/scripts/DeleteFileResponse.groovy"
+    },
+    "GetVehicleData": {
+      "script": "templates/scripts/GetVehicleData_OEM.groovy"
+    },
+    "GetVehicleDataResponse": {
+      "script": "templates/scripts/GetVehicleDataResponse_OEM.groovy"
+    },
+    "ListFilesResponse": {
+      "params": {
+        "MAX_VALUE": {
+          "return_type": "Integer",
+          "modifier": "static final",
+          "value": 2000000000
+        }
+      },
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ],
+      "script": "templates/scripts/ListFilesResponse_format.groovy"
+    },
+    "PerformInteraction": {
+      "params": {
+        "interactionChoiceSetIDList": {
+          "key": "KEY_INTERACTION_CHOICE_SET_ID_LIST"
+        }
+      }
+    },
+    "PutFileResponse": {
+      "params": {
+        "MAX_VALUE": {
+          "return_type": "Integer",
+          "modifier": "static final",
+          "value": 2000000000
+        }
+      },
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ],
+      "script": "templates/scripts/PutFileResponse_format.groovy"
+    },
+    "SetMediaClockTimer": {
+      "imports": [
+        "android.support.annotation.Nullable"
+      ],
+      "script": "templates/scripts/SetMediaClockTimer_time.groovy"
     }
   }
 }
