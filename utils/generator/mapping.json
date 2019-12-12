@@ -350,6 +350,13 @@
       },
       "script": "templates/scripts/DeleteFileResponse.groovy"
     },
+    "GetInteriorVehicleDataConsent": {
+      "params": {
+        "moduleIds": {
+          "key": "KEY_MODULE_ID"
+        }
+      }
+    },
     "GetVehicleData": {
       "script": "templates/scripts/GetVehicleData_OEM.groovy"
     },
@@ -389,11 +396,30 @@
       ],
       "script": "templates/scripts/PutFileResponse_format.groovy"
     },
+    "ReleaseInteriorVehicleDataModule": {
+      "function_id": "RELEASE_INTERIOR_VEHICLE_MODULE"
+    },
     "SetMediaClockTimer": {
       "imports": [
         "android.support.annotation.Nullable"
       ],
       "script": "templates/scripts/SetMediaClockTimer_time.groovy"
+    },
+    "SystemRequest": {
+      "imports": [
+        "java.util.List"
+      ],
+      "script": "templates/scripts/SystemRequest_data.groovy"
+    },
+    "SendLocation": {
+      "params": {
+        "latitudeDegrees": {
+          "key": "KEY_LAT_DEGREES"
+        },
+        "longitudeDegrees": {
+          "key": "KEY_LON_DEGREES"
+        }
+      }
     }
   }
 }

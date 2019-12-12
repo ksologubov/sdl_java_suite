@@ -292,7 +292,8 @@ class InterfaceProducerCommon(ABC):
                 render.update({'scripts': [script]})
         if 'description_file' in custom:
             render['description'] = self.get_file_content(custom['description_file']).split('\n')
-
+        if 'function_id' in custom:
+            render['function_id'] = custom['function_id']
         if 'params' in custom:
             for name, value in custom['params'].items():
                 if name in render['params']:
