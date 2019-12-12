@@ -74,6 +74,24 @@ public class {{class_name}} extends {{extends_class}} {
         {%- endfor %}
     }
     {%- endif %}
+    {%- endif %}
+
+    {%- if kind is defined and kind == "response" %}
+
+    /**
+     * Constructs a new {{class_name}} object
+     *
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public {{class_name}}(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
+    {%- endif %}
+
+    {%- if params is defined %}
     {%- for p in params|rejectattr('name') %}
 
      /**
@@ -130,20 +148,6 @@ public class {{class_name}} extends {{extends_class}} {
     {%- endfor %}
     {%- endif %}
 
-    {%- if kind is defined and kind == "response" %}
-
-    /**
-     * Constructs a new {{class_name}} object
-     *
-     * @param success    whether the request is successfully processed
-     * @param resultCode whether the request is successfully processed
-     */
-    public {{class_name}}(@NonNull Boolean success, @NonNull Result resultCode) {
-        this();
-        setSuccess(success);
-        setResultCode(resultCode);
-    }
-    {%- endif %}
     {%- if scripts is defined %}
 
     {%- for s in scripts %}
