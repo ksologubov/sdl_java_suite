@@ -376,6 +376,22 @@
       ],
       "script": "templates/scripts/ListFilesResponse_format.groovy"
     },
+    "OnAudioPassThru": {
+      "script": "templates/scripts/OnAudioPassThru_aptdata.groovy"
+    },
+    "OnKeyboardInput": {
+      "script": "templates/scripts/OnKeyboardInput_tostring.groovy"
+    },
+    "OnDriverDistraction": {
+      "params": {
+        "lockScreenDismissalEnabled": {
+          "key": "KEY_LOCKSCREEN_DISMISSIBLE"
+        },
+        "lockScreenDismissalWarning": {
+          "key": "KEY_LOCKSCREEN_DISMISSIBLE_MSG"
+        }
+      }
+    },
     "PerformInteraction": {
       "params": {
         "interactionChoiceSetIDList": {
