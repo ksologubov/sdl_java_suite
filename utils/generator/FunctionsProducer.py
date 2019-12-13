@@ -122,6 +122,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         p.update({'key': 'KEY_' + self.key(param.name)})
         p.update({'mandatory': param.is_mandatory})
         p.update({'last': param.name})
+        p.update({'since': param.since})
         if param.name == 'sdlFileName':
             param.name = 'syncFileName'
         if param.name == 'sdlMsgVersion':

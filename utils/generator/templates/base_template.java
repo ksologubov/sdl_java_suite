@@ -63,7 +63,7 @@ import {{i}};{{ '\n' if loop.last }}
  *      <td>{%- for d in param.description %}{{d}}{%- endfor %}</td>
  *      <td>{{param.mandatory}}</td>
  *      <td></td>
- *      <td></td>
+ *      <td>SmartDeviceLink {{param.since}}</td>
  *  </tr>
  {%- endfor %}
  *
