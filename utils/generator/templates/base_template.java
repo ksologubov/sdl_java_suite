@@ -43,6 +43,32 @@ import {{i}};{{ '\n' if loop.last }}
  {%- for d in description %}
  * {{d}}
  {%- endfor %}{%- endif %}
+ *
+ {%- if params is defined %}
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Req.</th>
+ *      <th>Notes</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ {%- for param in params %}
+ *  <tr>
+ *      <td>{{param.origin}}</td>
+ *      <td>{{param.return_type}}</td>
+ *      <td>{%- for d in param.description %}{{d}}{%- endfor %}</td>
+ *      <td>{{param.mandatory}}</td>
+ *      <td></td>
+ *      <td></td>
+ *  </tr>
+ {%- endfor %}
+ *
+ * </table>
+ {%- endif %}
  {%- if description is defined and (see is defined or since is defined) %}
  *
  {%- endif %}
