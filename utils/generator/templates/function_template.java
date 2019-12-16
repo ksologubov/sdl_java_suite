@@ -5,6 +5,9 @@ public class {{class_name}} extends {{extends_class}} {
     {%- for p in params %}
     {%- if p.description is defined and p.description|length or p.since is defined or p.see is defined %}
     /**
+     {%- if p.deprecated is not none %}
+     * @deprecated
+     {%- endif %}
      {%- if p.description is defined %}
      {%- for d in p.description %}
      * {{d}}
@@ -14,10 +17,10 @@ public class {{class_name}} extends {{extends_class}} {
      {%- endif %}
      {%- if p.since is defined %}
      * @since SmartDeviceLink {{p.since}}
-    {%- endif %}
-    {%- if p.see is defined %}
+     {%- endif %}
+     {%- if p.see is defined %}
      * @see {{p.see}}
-    {%- endif %}
+     {%- endif %}
      */
     {%- endif %}
     {%- if p.name is defined %}

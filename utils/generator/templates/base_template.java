@@ -72,12 +72,15 @@ import {{i}};{{ '\n' if loop.last }}
  {%- if description is defined and (see is defined or since is defined) %}
  *
  {%- endif %}
+ {%- if deprecated is not none %}
+ * @deprecated
+ {%- endif %}
  {%- if see is defined %}
  * @see {{see}}
-{%- endif %}
-{%- if since is defined %}
+ {%- endif %}
+ {%- if since is defined %}
  * @since SmartDeviceLink {{since}}
-{%- endif %}
+ {%- endif %}
  */
     {%- endif %}
     {%- block body %}

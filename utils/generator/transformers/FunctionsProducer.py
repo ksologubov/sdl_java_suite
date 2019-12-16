@@ -74,7 +74,8 @@ class FunctionsProducer(InterfaceProducerCommon):
                   'function_id': self.key(item.name),
                   'class_name': class_name,
                   'extends_class': extends_class,
-                  'since': item.since}
+                  'since': item.since,
+                  'deprecated': item.deprecated}
 
         description = self.extract_description(item.description)
         if description:
@@ -123,6 +124,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         p.update({'mandatory': param.is_mandatory})
         p.update({'last': param.name})
         p.update({'since': param.since})
+        p.update({'deprecated': param.deprecated})
         if param.name == 'sdlFileName':
             param.name = 'syncFileName'
         if param.name == 'sdlMsgVersion':
