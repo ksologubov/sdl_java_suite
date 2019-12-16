@@ -338,7 +338,11 @@ class Generator(object):
                             match.update({k: {k1: item}})
             interface = Interface(**match)
 
-        self.logger.debug(pformat(vars(interface)))
+        match = {'enums': tuple(interface.enums.keys()),
+                 'structs': tuple(interface.structs.keys()),
+                 'functions': tuple(map(lambda i: i.function_id.name, interface.functions.values())),
+                 'params': interface.params}
+        self.logger.debug(pformat(match))
         return enum_names, struct_names, interface
 
     def main(self):
