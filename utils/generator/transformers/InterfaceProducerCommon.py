@@ -253,7 +253,7 @@ class InterfaceProducerCommon(ABC):
         :param file: relational path custom scripts
         :return: string with content of custom scripts
         """
-        file = Path(__file__).absolute().parents[0].joinpath(file)
+        file = Path(__file__).absolute().parents[1].joinpath(file)
         try:
             with file.open('r') as f:
                 s = f.readlines()

@@ -37,7 +37,7 @@ class Generator(object):
 
     def __init__(self):
         self.logger = logging.getLogger('Generator')
-        logging.basicConfig(level=logging.DEBUG,
+        logging.basicConfig(level=logging.ERROR,
                             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                             datefmt='%m-%d %H:%M')
         self._env = None
