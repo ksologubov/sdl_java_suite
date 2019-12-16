@@ -2,25 +2,25 @@ import logging
 import textwrap
 from collections import namedtuple
 
-from InterfaceProducerCommon import InterfaceProducerCommon
 from model.Function import Function
 from model.FunctionParam import FunctionParam
+from transformers.InterfaceProducerCommon import InterfaceProducerCommon
 
 
 class FunctionsProducer(InterfaceProducerCommon):
     def __init__(self, paths, enum_names, struct_names, mapping=None):
         super(FunctionsProducer, self).__init__(
             container_name='params',
-            enums_package=paths.ENUMS_PACKAGE,
-            structs_package=paths.STRUCTS_PACKAGE,
+            enums_package=paths.enums_package,
+            structs_package=paths.structs_package,
             enum_names=enum_names,
             struct_names=struct_names,
-            package_name=paths.FUNCTIONS_PACKAGE,
+            package_name=paths.functions_package,
             mapping=mapping['functions'] if mapping and 'functions' in mapping else {})
-        self.logger = logging.getLogger('Generator.FunctionsProducer')
-        self.request_class = paths.REQUEST_CLASS
-        self.response_class = paths.RESPONSE_CLASS
-        self.notification_class = paths.NOTIFICATION_CLASS
+        self.logger = logging.getLogger('FunctionsProducer')
+        self.request_class = paths.request_class
+        self.response_class = paths.response_class
+        self.notification_class = paths.notification_class
 
     def transform(self, item: Function) -> dict:
         """

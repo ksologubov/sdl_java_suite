@@ -12,6 +12,8 @@ from model.Struct import Struct
 
 
 class InterfaceProducerCommon(ABC):
+    version = '1.0.0'
+
     def __init__(self, container_name, enums_package, structs_package, package_name,
                  enum_names=(), struct_names=(), mapping=OrderedDict()):
         self.logger = logging.getLogger('Generator.InterfaceProducerCommon')
@@ -22,6 +24,10 @@ class InterfaceProducerCommon(ABC):
         self.structs_package = structs_package
         self.mapping = mapping
         self.package_name = package_name
+
+    @property
+    def get_version(self):
+        return self.version
 
     @property
     def imports(self):
@@ -128,12 +134,12 @@ class InterfaceProducerCommon(ABC):
         imports = None
         if n:
             if n in self.enum_names:
-                imports = {n: '{}/{}.js'.format(self.enums_dir, n)}
+                imports = {n: '{}/{}.js'.format(self.enums_package, n)}
             elif n in self.struct_names:
                 if item_type is Struct:
                     import_path = '.'
                 else:
-                    import_path = self.structs_dir
+                    import_path = self.structs_package
                 imports = {n: '{}/{}.js'.format(import_path, n)}
 
         key = self.key(param.name)

@@ -2,9 +2,9 @@ import logging
 import textwrap
 from collections import namedtuple
 
-from InterfaceProducerCommon import InterfaceProducerCommon
 from model.Enum import Enum
 from model.EnumElement import EnumElement
+from transformers.InterfaceProducerCommon import InterfaceProducerCommon
 
 
 class EnumsProducer(InterfaceProducerCommon):
@@ -15,7 +15,7 @@ class EnumsProducer(InterfaceProducerCommon):
             structs_package=None,
             package_name=enums_package,
             mapping=mapping['enums'] if mapping and 'enums' in mapping else {})
-        self.logger = logging.getLogger('Generator.EnumsProducer')
+        self.logger = logging.getLogger('EnumsProducer')
 
     def transform(self, item: Enum) -> dict:
         """
