@@ -34,7 +34,7 @@ public class {{class_name}} extends {{extends_class}} {
     /**
      * Constructs a newly allocated {{class_name}} object
      */
-    public {{class_name}}() {}
+    public {{class_name}}() { }
 
     /**
      * Constructs a newly allocated {{class_name}} object indicated by the Hashtable parameter
@@ -126,7 +126,7 @@ public class {{class_name}} extends {{extends_class}} {
      {% endif -%}
      */
     public void set{{p.title}}({% if p.mandatory %}@NonNull {% endif %}{{p.return_type}} {{p.last}}) {
-        setParameters({{p.key}}, {{p.last}});
+        setValue({{p.key}}, {{p.last}});
     }
 
     {%- endfor %}
