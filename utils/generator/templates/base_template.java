@@ -44,7 +44,7 @@ import {{i}};{{ '\n' if loop.last }}
  * {{d}}
  {%- endfor %}{%- endif %}
  *
- {%- if params is defined %}
+ {%- if params is defined and return_type is not defined %}
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -72,7 +72,7 @@ import {{i}};{{ '\n' if loop.last }}
  {%- if description is defined and (see is defined or since is defined) %}
  *
  {%- endif %}
- {%- if deprecated is not none %}
+ {%- if deprecated is not none and return_type is not defined %}
  * @deprecated
  {%- endif %}
  {%- if see is defined %}

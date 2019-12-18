@@ -270,7 +270,9 @@ class Generator(object):
         for item in items:
             file = item.name + '.java'
             if isinstance(item, Function) and item.message_type.name == 'response':
-                file = item.name + item.message_type.name.capitalize() + '.java'
+                suffix = item.message_type.name.capitalize()
+                if item.name != "GenericResponse":
+                    file = item.name + suffix + '.java'
             data = transformer.transform(item)
             file = directory.joinpath(data['package_name'].replace('.', '/')).joinpath(file)
             if file.is_file():
