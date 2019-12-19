@@ -412,6 +412,13 @@
       ],
       "script": "templates/scripts/PutFileResponse_format.groovy"
     },
+    "RegisterAppInterfaceResponse": {
+      "imports": [
+        "java.util.ArrayList",
+        "com.smartdevicelink.proxy.rpc.enums.ButtonName"
+      ],
+      "script": "templates/scripts/RegisterAppInterfaceResponse_format.groovy"
+    },
     "ReleaseInteriorVehicleDataModule": {
       "function_id": "RELEASE_INTERIOR_VEHICLE_MODULE"
     },
@@ -436,6 +443,21 @@
           "key": "KEY_LON_DEGREES"
         }
       }
+    }
+  },
+  "structs": {
+    "Choice": {
+      "script": "templates/scripts/Choice_vritems.groovy",
+      "imports": [
+        "java.util.ArrayList",
+        "com.smartdevicelink.util.Version"
+      ]
+    },
+    "StartTime": {
+      "script": "templates/scripts/StartTime_timeinterval.groovy"
+    },
+    "ImageResolution": {
+      "script": "templates/scripts/ImageResolution_tostring.groovy"
     }
   }
 }

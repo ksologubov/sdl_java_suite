@@ -112,7 +112,7 @@ class FunctionsProducer(InterfaceProducerCommon):
             sorted_imports.extend(tmp)
         if 'java.util.Hashtable' in imports or 'java.util.List' in imports:
             sorted_imports.append('')
-        for i in ('java.util.Hashtable', 'java.util.List'):
+        for i in ('java.util.Hashtable', 'java.util.List', 'java.util.ArrayList'):
             if i in imports:
                 sorted_imports.append(i)
         return sorted_imports

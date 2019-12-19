@@ -52,22 +52,22 @@ import {{i}};{{ '\n' if loop.last }}
  *      <th>Param Name</th>
  *      <th>Type</th>
  *      <th>Description</th>
- *      <th>Req.</th>
  {%- if kind is defined %}
+ *      <th>Req.</th>
  *      <th>Notes</th>
- *      <th>Version Available</th>
  {%- endif %}
+ *      <th>Version Available</th>
  *  </tr>
  {%- for param in params %}
  *  <tr>
  *      <td>{{param.origin}}</td>
  *      <td>{{param.return_type}}</td>
  *      <td>{%- for d in param.description %}{{d}}{%- endfor %}</td>
- *      <td>{{param.mandatory}}</td>
  {%- if kind is defined %}
+ *      <td>{%- if param.mandatory is eq true %}Y{%- else %}N{%- endif %}</td>
  *      <td></td>
- *      <td>SmartDeviceLink {{param.since}}</td>
  {%- endif %}
+ *      <td>{%- if param.since is not none %}SmartDeviceLink {{param.since}}{%- endif %}</td>
  *  </tr>
  {%- endfor %}
  *
