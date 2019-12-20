@@ -453,11 +453,37 @@
         "com.smartdevicelink.util.Version"
       ]
     },
-    "StartTime": {
-      "script": "templates/scripts/StartTime_timeinterval.groovy"
+    "Grid": {
+      "params": {
+        "colspan": {
+          "key": "KEY_COL_SPAN"
+        },
+        "rowspan": {
+          "key":"KEY_ROW_SPAN"
+        },
+        "levelspan": {
+          "key": "KEY_LEVEL_SPAN"
+        }
+      }
     },
     "ImageResolution": {
       "script": "templates/scripts/ImageResolution_tostring.groovy"
+    },
+    "ModuleInfo": {
+      "params": {
+        "location": {
+          "key": "KEY_MODULE_LOCATION"
+        },
+        "serviceArea": {
+          "key": "KEY_MODULE_SERVICE_AREA"
+        },
+        "allowMultipleAccess": {
+          "key": "KEY_MULTIPLE_ACCESS_ALLOWED"
+        }
+      }
+    },
+    "StartTime": {
+      "script": "templates/scripts/StartTime_timeinterval.groovy"
     }
   }
 }
