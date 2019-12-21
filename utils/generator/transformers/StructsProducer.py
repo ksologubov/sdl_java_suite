@@ -76,7 +76,7 @@ class StructsProducer(InterfaceProducerCommon):
         if 'android.support.annotation.NonNull' in imports:
             sorted_imports.append('android.support.annotation.NonNull')
             imports.remove('android.support.annotation.NonNull')
-            # sorted_imports.append('')
+            sorted_imports.append('')
         tmp = []
         for i in imports:
             if i.rpartition('.')[0] != self.package_name and not i.startswith('java'):

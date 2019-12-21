@@ -100,7 +100,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         if 'android.support.annotation.NonNull' in imports:
             sorted_imports.append('android.support.annotation.NonNull')
             imports.remove('android.support.annotation.NonNull')
-            # sorted_imports.append('')
+            sorted_imports.append('')
         sorted_imports.append('com.smartdevicelink.protocol.enums.FunctionID')
         imports.remove('com.smartdevicelink.protocol.enums.FunctionID')
         tmp = []

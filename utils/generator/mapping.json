@@ -446,6 +446,39 @@
     }
   },
   "structs": {
+    "AppServicesCapabilities": {
+      "script": "templates/scripts/AppServicesCapabilities_update.groovy",
+      "imports": [
+        "android.support.annotation.NonNull",
+        "com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason",
+        "java.util.ArrayList"
+      ]
+    },
+    "AppServiceCapability": {
+      "script": "templates/scripts/AppServiceCapability_matches.groovy"
+    },
+    "AppServiceManifest": {
+      "imports": [
+        "com.smartdevicelink.protocol.enums.FunctionID",
+        "com.smartdevicelink.proxy.rpc.enums.AppServiceType",
+        "java.util.ArrayList"
+      ],
+      "script": "templates/scripts/AppServiceManifest_rpcs.groovy"
+    },
+    "ClimateControlData": {
+      "params": {
+        "heatedWindshieldEnable": {
+          "key": "KEY_HEATED_WIND_SHIELD_ENABLE"
+        }
+      }
+    },
+    "ClimateControlCapabilities": {
+      "params": {
+        "heatedWindshieldAvailable": {
+          "key": "KEY_HEATED_WIND_SHIELD_AVAILABLE"
+        }
+      }
+    },
     "Choice": {
       "script": "templates/scripts/Choice_vritems.groovy",
       "imports": [
@@ -469,6 +502,22 @@
     "ImageResolution": {
       "script": "templates/scripts/ImageResolution_tostring.groovy"
     },
+    "MetadataTags": {
+      "params": {
+        "mainField1": {
+          "key": "KEY_MAIN_FIELD_1_TYPE"
+        },
+        "mainField2": {
+          "key": "KEY_MAIN_FIELD_2_TYPE"
+        },
+        "mainField3": {
+          "key": "KEY_MAIN_FIELD_3_TYPE"
+        },
+        "mainField4": {
+          "key": "KEY_MAIN_FIELD_4_TYPE"
+        }
+      }
+    },
     "ModuleInfo": {
       "params": {
         "location": {
@@ -482,8 +531,66 @@
         }
       }
     },
+    "NavigationCapability": {
+      "params": {
+        "sendLocationEnabled": {
+          "key": "KEY_LOCATION_ENABLED"
+        },
+        "getWayPointsEnabled": {
+          "key": "KEY_GETWAYPOINTS_ENABLED"
+        }
+      }
+    },
+    "NavigationServiceData": {
+      "params": {
+        "timeStamp": {
+          "key": "KEY_TIMESTAMP"
+        }
+      }
+    },
+    "PhoneCapability": {
+      "params": {
+        "dialNumberEnabled": {
+          "key": "KEY_DIALNUMBER_ENABLED"
+        }
+      }
+    },
+    "RadioControlCapabilities": {
+      "params": {
+        "siriusxmRadioAvailable": {
+          "key": "KEY_SIRIUS_XM_RADIO_AVAILABLE"
+        }
+      }
+    },
     "StartTime": {
       "script": "templates/scripts/StartTime_timeinterval.groovy"
+    },
+    "SeatLocationCapability": {
+      "params": {
+        "columns": {
+          "key": "KEY_COLS"
+        }
+      }
+    },
+    "SisData": {
+      "params": {
+        "stationIDNumber": {
+          "key": "KEY_STATION_ID_NUMBER"
+        }
+      }
+    },
+    "SystemCapability": {
+      "script": "templates/scripts/SystemCapability_set.groovy"
+    },
+    "Turn": {
+      "params": {
+        "turnIcon": {
+          "key": "KEY_TURN_IMAGE"
+        }
+      }
+    },
+    "VideoStreamingFormat": {
+      "script": "templates/scripts/VideoStreamingFormat_equals.groovy"
     }
   }
 }

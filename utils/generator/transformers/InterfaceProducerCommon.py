@@ -9,6 +9,7 @@ from model.Array import Array
 from model.Enum import Enum
 from model.Function import Function
 from model.Struct import Struct
+from model.Double import Double
 
 
 class InterfaceProducerCommon(ABC):
@@ -239,6 +240,8 @@ class InterfaceProducerCommon(ABC):
                 return t1.name
             # elif isinstance(t1, Integer) or isinstance(t1, Double):
             #     return 'Number'
+            elif isinstance(t1, Double):
+                 return 'Float'
             else:
                 return type(t1).__name__
 
