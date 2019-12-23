@@ -122,6 +122,9 @@ public class {{class_name}} extends {{extends_class}} {
     public {{p.return_type}} get{{p.title}}() {
         {%- if p.return_type in ['String', 'Boolean', 'Integer'] %}
         return get{{p.return_type}}({{p.key}});
+        {%- elif p.return_type in ['Float'] %}
+        Object object = getValue({{p.key}});
+        return SdlDataTypeConverter.objectToFloat(object);
         {%- else %}
         {%- set clazz = p.return_type %}
         {%- if p.return_type.startswith('List')%}{%set clazz = p.return_type[5:-1]%}{% endif %}

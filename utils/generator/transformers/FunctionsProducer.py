@@ -139,6 +139,8 @@ class FunctionsProducer(InterfaceProducerCommon):
             imports.add('java.util.List')
             p.update({'SuppressWarnings': 'unchecked'})
             tr = t.replace('List<', '').rstrip('>')
+        if t.startswith('Float'):
+            imports.add('com.smartdevicelink.util.SdlDataTypeConverter')
         p.update({'return_type': t})
 
         if tr in self.enum_names:
