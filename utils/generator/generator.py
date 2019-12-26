@@ -18,7 +18,7 @@ try:
     from model.function import Function
 except ModuleNotFoundError as e:
     print('{}.\nprobably you did not initialize submodule'.format(e))
-    exit(1)
+    sys.exit(1)
 
 from transformers.common_producer import InterfaceProducerCommon
 from transformers.enums_producer import EnumsProducer
@@ -50,7 +50,7 @@ class Generator(object):
     def env(self, value):
         if not Path(value).exists():
             self.logger.critical('Directory with templates not found {}'.format(value))
-            exit(1)
+            sys.exit(1)
         else:
             self._env = Environment(loader=FileSystemLoader(value))
 
@@ -104,11 +104,11 @@ class Generator(object):
         if unknown:
             self.logger.critical('found unknown arguments: ' + ' '.join(unknown))
             parser.print_help(sys.stderr)
-            exit(1)
+            sys.exit(1)
 
         if args.skip and args.overwrite:
             self.logger.critical('please select only one option skip or overwrite')
-            exit(1)
+            sys.exit(1)
 
         if not args.enums and not args.structs and not args.functions:
             args.enums = args.structs = args.functions = True
@@ -124,20 +124,20 @@ class Generator(object):
                             break
                         if confirm.lower() == 'n':
                             self.logger.warning('provide argument {}'.format(n.name))
-                            exit(1)
+                            sys.exit(1)
                     except KeyboardInterrupt:
                         print('\nThe user interrupted the execution of the program')
-                        exit(1)
+                        sys.exit(1)
 
         if not Path(args.source_xml).exists():
             self.logger.critical('File not found: {}'.format(args.source_xml))
-            exit(1)
+            sys.exit(1)
         if args.source_xsd and not Path(args.source_xsd).exists():
             self.logger.critical('File not found: {}'.format(args.source_xsd))
-            exit(1)
+            sys.exit(1)
         elif not args.source_xsd and not Path(args.source_xml.replace('.xml', '.xsd')).exists():
             self.logger.critical('File not found: {}'.format(args.source_xml.replace('.xml', '.xsd')))
-            exit(1)
+            sys.exit(1)
         else:
             setattr(args, 'source_xsd', args.source_xml.replace('.xml', '.xsd'))
 
@@ -151,7 +151,7 @@ class Generator(object):
                 p.mkdir(parents=True, exist_ok=True)
             except OSError as e1:
                 self.logger.critical('Failed to create directory {}, {}'.format(p.as_posix(), e1))
-                exit(1)
+                sys.exit(1)
         setattr(args, 'output_directory', p)
 
         self.env = args.templates_directory
@@ -188,7 +188,7 @@ class Generator(object):
         if parser_major > generator_major:
             self.logger.critical('Generator ({}) requires the same or lesser version of Parser ({})'
                                  .format(generator_origin, parser_origin))
-            exit(1)
+            sys.exit(1)
 
         self.logger.info('Parser type: {}, version {}.\tGenerator type: {}, version {}'
                          .format(basename(getfile(Parser().__class__)), parser_origin,
@@ -211,20 +211,20 @@ class Generator(object):
                     if re.match(r'^(\w+)\s?=\s?(.+)', line):
                         if len(line.split('=')) > 2:
                             self.logger.critical('can not evaluate value, too many separators {}'.format(str(line)))
-                            exit(1)
+                            sys.exit(1)
                         name, var = line.partition('=')[::2]
                         if name.strip() in d:
                             self.logger.critical('duplicate key {}'.format(name))
-                            exit(1)
+                            sys.exit(1)
                         d[name.strip().lower()] = var.strip()
         except FileNotFoundError as e1:
             self.logger.critical(e1)
-            exit(1)
+            sys.exit(1)
 
         for line in fields:
             if line not in d:
                 self.logger.critical('in {} missed fields: {} '.format(file, str(line)))
-                exit(1)
+                sys.exit(1)
 
         Paths = namedtuple('Paths', ' '.join(fields))
         return Paths(**d)
@@ -320,7 +320,7 @@ class Generator(object):
             interface = Parser().parse(xml)
         except (InterfaceError, XMLSchemaError, TypeError) as e1:
             self.logger.critical('Invalid XML file content: {}, {}'.format(xml, e1))
-            exit(1)
+            sys.exit(1)
 
         enum_names = tuple(interface.enums.keys())
         struct_names = tuple(interface.structs.keys())

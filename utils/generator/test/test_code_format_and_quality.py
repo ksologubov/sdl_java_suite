@@ -18,8 +18,9 @@ class CodeFormatAndQuality(unittest.TestCase):
         self.list_of_files = []
         for (directory, _, filenames) in walk(Path(__file__).absolute().parents[1].as_posix()):
             self.list_of_files += [join(directory, file) for file in filenames
-                                   if file.endswith('.py') and not file.startswith('test')]
+                        if file.endswith('.py') and not file.startswith('test') and not file.startswith('runner')]
         self.list_of_files.append('--max-line-length=120')
+        #self.list_of_files.append('-E')
 
     def test_check(self):
         """Performing checks by PyLint
