@@ -1,8 +1,9 @@
 from collections import namedtuple
 from unittest import TestCase
 
-from EnumsProducer import EnumsProducer
-from parsers.Model import Enum, EnumElement
+from transformers.enums_producer import EnumsProducer
+from model.enum import Enum
+from model.enum_element import EnumElement
 
 
 class TestEnumsProducer(TestCase):

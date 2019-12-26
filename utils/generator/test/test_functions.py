@@ -1,8 +1,17 @@
 from collections import namedtuple
 from unittest import TestCase
 
-from FunctionsProducer import FunctionsProducer
-from parsers.Model import Enum, EnumElement, Struct, Integer, Param, Array, String, FunctionParam, Function, Boolean
+from transformers.functions_producer import FunctionsProducer
+from model.array import Array
+from model.boolean import Boolean
+from model.enum import Enum
+from model.enum_element import EnumElement
+from model.function import Function
+from model.function_param import FunctionParam
+from model.integer import Integer
+from model.param import Param
+from model.string import String
+from model.struct import Struct
 
 
 class TestFunctionsProducer(TestCase):

@@ -5,11 +5,11 @@ from abc import ABC
 from collections import namedtuple, OrderedDict
 from pathlib import Path
 
-from model.Array import Array
-from model.Enum import Enum
-from model.Function import Function
-from model.Struct import Struct
-from model.Double import Double
+from model.array import Array
+from model.enum import Enum
+from model.function import Function
+from model.struct import Struct
+from model.double import Double
 
 
 class InterfaceProducerCommon(ABC):

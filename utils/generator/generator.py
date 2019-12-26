@@ -12,18 +12,18 @@ root = Path(__file__).absolute().parents[0]
 sys.path.append(root.joinpath('rpc_spec/InterfaceParser').as_posix())
 
 try:
-    from parsers.SDLRPCV2 import Parser
-    from parsers.ParseError import ParseError
-    from model.Interface import Interface
-    from model.Function import Function
+    from parsers.sdl_rpc_v2 import Parser
+    from parsers.parse_error import ParseError
+    from model.interface import Interface
+    from model.function import Function
 except ModuleNotFoundError as e:
     print('{}.\nprobably you did not initialize submodule'.format(e))
     exit(1)
 
-from transformers.InterfaceProducerCommon import InterfaceProducerCommon
-from transformers.EnumsProducer import EnumsProducer
-from transformers.FunctionsProducer import FunctionsProducer
-from transformers.StructsProducer import StructsProducer
+from transformers.common_producer import InterfaceProducerCommon
+from transformers.enums_producer import EnumsProducer
+from transformers.functions_producer import FunctionsProducer
+from transformers.structs_producer import StructsProducer
 
 
 class Generator(object):
@@ -309,7 +309,7 @@ class Generator(object):
             Source xsd      : {1}'''.format(xml, xsd))
 
         from xmlschema import XMLSchema
-        from parsers.ParseError import ParseError as InterfaceError
+        from parsers.parse_error import ParseError as InterfaceError
         from xml.etree.ElementTree import ParseError as XMLSchemaError
 
         interface = Interface()

@@ -1,28 +1,40 @@
+"""
+Main entry point to run all tests
+"""
 import sys
 from pathlib import Path
 from unittest import TestLoader, TestSuite, TextTestRunner
 
-path = Path(__file__).absolute()
+PATH = Path(__file__).absolute()
 
-sys.path.append(path.parents[2].joinpath('lib/rpc_spec/InterfaceParser').as_posix())
-sys.path.append(path.parents[1].as_posix())
+sys.path.append(PATH.parents[1].joinpath('rpc_spec/InterfaceParser').as_posix())
+sys.path.append(PATH.parents[1].as_posix())
 
 try:
-    from test_enums import TestEnumsProducer
-    from test_functions import TestFunctionsProducer
-    from test_structs import TestStructsProducer
-    from EnumsProducer import EnumsProducer
-    from parsers.Model import Interface
-except ModuleNotFoundError as e:
-    print('{}. probably you did not initialize submodule'.format(e.msg))
-    exit(1)
+    from test.test_enums import TestEnumsProducer
+    from test.test_functions import TestFunctionsProducer
+    from test.test_structs import TestStructsProducer
+    from test.test_code_format_and_quality import CodeFormatAndQuality
+except ModuleNotFoundError as message:
+    print('{}. probably you did not initialize submodule'.format(message))
+    sys.exit(1)
 
-if __name__ == '__main__':
+
+def main():
+    """
+    Main entry point to run all tests
+    """
     suite = TestSuite()
 
     suite.addTests(TestLoader().loadTestsFromTestCase(TestFunctionsProducer))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestEnumsProducer))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestStructsProducer))
+    suite.addTests(TestLoader().loadTestsFromTestCase(CodeFormatAndQuality))
 
     runner = TextTestRunner(verbosity=2)
-    testResult = runner.run(suite)
+    test_result = runner.run(suite)
+    print(test_result)
+
+
+if __name__ == '__main__':
+    main()

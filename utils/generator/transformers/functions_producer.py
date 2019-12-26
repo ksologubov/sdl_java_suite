@@ -2,9 +2,9 @@ import logging
 import textwrap
 from collections import namedtuple
 
-from model.Function import Function
-from model.FunctionParam import FunctionParam
-from transformers.InterfaceProducerCommon import InterfaceProducerCommon
+from model.function import Function
+from model.function_param import FunctionParam
+from transformers.common_producer import InterfaceProducerCommon
 
 
 class FunctionsProducer(InterfaceProducerCommon):

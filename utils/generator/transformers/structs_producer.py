@@ -2,8 +2,8 @@ import logging
 import textwrap
 from collections import namedtuple
 
-from model.Struct import Struct
-from transformers.InterfaceProducerCommon import InterfaceProducerCommon
+from model.struct import Struct
+from transformers.common_producer import InterfaceProducerCommon
 
 
 class StructsProducer(InterfaceProducerCommon):

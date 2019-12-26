@@ -2,9 +2,9 @@ import logging
 import textwrap
 from collections import namedtuple
 
-from model.Enum import Enum
-from model.EnumElement import EnumElement
-from transformers.InterfaceProducerCommon import InterfaceProducerCommon
+from model.enum import Enum
+from model.enum_element import EnumElement
+from transformers.common_producer import InterfaceProducerCommon
 
 
 class EnumsProducer(InterfaceProducerCommon):

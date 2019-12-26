@@ -1,8 +1,9 @@
 from collections import namedtuple
 from unittest import TestCase
 
-from StructsProducer import StructsProducer
-from parsers.Model import Struct, Param
+from transformers.structs_producer import StructsProducer
+from model.param import Param
+from model.struct import Struct
 
 
 class TestStructsProducer(TestCase):
