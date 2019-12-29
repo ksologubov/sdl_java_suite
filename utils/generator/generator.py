@@ -14,7 +14,7 @@ from re import findall, match, search
 from time import sleep
 from xml.etree.ElementTree import ParseError as XMLSchemaError
 
-from jinja2 import Environment, FileSystemLoader, UndefinedError
+from jinja2 import Environment, FileSystemLoader, TemplateNotFound, UndefinedError
 from pathlib2 import Path
 from xmlschema import XMLSchema
 
@@ -301,6 +301,7 @@ class Generator:
         :param template: name of template
         :param data: transformed moder ready for apply to Jinja2 template
         """
+        file_name.parents[0].mkdir(parents=True, exist_ok=True)
         try:
             render = self.env.get_template(template).render(data)
             with file_name.open('w', encoding='utf-8') as file:
@@ -397,17 +398,6 @@ class Generator:
                            'functions': tuple(map(lambda i: i.function_id.name, interface.functions.values())),
                            'params': interface.params})
         return enum_names, struct_names, interface
-
-    @staticmethod
-    def evaluate_instance_directory(dir_name):
-        """
-        :param dir_name: property from paths.ini (ENUMS|STRUCTS|FUNCTIONS)_DIR_NAME
-        :return: substring after double dot
-        """
-        pattern = search(r'^([./]*)(.+)', dir_name)
-        if pattern:
-            return pattern.group(2)
-        raise GenerateError('Can not evaluate directory {}'.format(dir_name))
 
     def main(self):
         """
