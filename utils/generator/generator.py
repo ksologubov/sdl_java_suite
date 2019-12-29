@@ -10,7 +10,7 @@ from inspect import getfile
 from json import JSONDecodeError, loads
 from os.path import basename
 from pprint import pformat
-from re import findall, match, search
+from re import findall, match
 from time import sleep
 from xml.etree.ElementTree import ParseError as XMLSchemaError
 
@@ -416,7 +416,7 @@ class Generator:
 
         if args.enums and interface.enums:
             self.process(args.output_directory, args.skip, args.overwrite, tuple(interface.enums.values()),
-                         EnumsProducer(paths.enums_package, mappings))
+                         EnumsProducer(paths, mappings))
         if args.structs and interface.structs:
             self.process(args.output_directory, args.skip, args.overwrite, tuple(interface.structs.values()),
                          StructsProducer(paths, enum_names, struct_names, mappings))

@@ -1,3 +1,7 @@
+"""
+Common transformation
+"""
+
 import logging
 import re
 import textwrap
@@ -7,12 +11,15 @@ from pathlib import Path
 
 from model.array import Array
 from model.enum import Enum
-from model.function import Function
 from model.struct import Struct
 from model.double import Double
 
 
 class InterfaceProducerCommon(ABC):
+    """
+    Common transformation
+    """
+
     version = '1.0.0'
 
     def __init__(self, container_name, enums_package, structs_package, package_name,
@@ -52,117 +59,6 @@ class InterfaceProducerCommon(ABC):
         """
         return namedtuple('Params', 'key value')
 
-    def transform(self, item) -> dict:
-        """
-        :param item: particular element from initial Model
-        :return: dictionary to be applied to jinja2 template
-        """
-        if not getattr(item, self.container_name, None):
-            self.logger.info('{} of type {} has no attribute "{}"'.format(item.name, type(item).__name__,
-                                                                          self.container_name))
-            return {'name': item.name, 'imports': []}
-        imports = {}
-        methods = []
-        params = []
-        scripts = []
-
-        if isinstance(item, Function):
-            mapping_name = item.name + item.message_type.name.capitalize()
-        else:
-            mapping_name = item.name
-
-        if mapping_name in self.mapping:
-            if 'params_additional' in self.mapping[mapping_name]:
-                params.append(self.params(**self.mapping[mapping_name]['params_additional']))
-            if 'script_additional' in self.mapping[mapping_name]:
-                script = self.get_file_content(self.mapping[mapping_name]['script_additional'])
-                if script:
-                    scripts.append(script)
-
-        for param in getattr(item, self.container_name).values():
-            if isinstance(item, Function) and item.message_type.name == 'response' and \
-                            param.name in ('success', 'resultCode', 'info'):
-                self.logger.warning('{} of type {}/{} - skip parameter "{}"'
-                                    .format(item.name, type(item).__name__, item.message_type.name, param.name))
-                continue
-
-            (i, m, p) = self.common_flow(param, type(item))
-
-            if mapping_name in self.mapping and param.name in self.mapping[mapping_name]:
-                mapping = self.mapping[mapping_name][param.name]
-                if 'imports' in mapping:
-                    i = {mapping['imports']['what']: mapping['imports']['wherefrom']}
-                if 'methods' in mapping:
-                    d = m._asdict()
-                    d.update(mapping['methods'])
-                    m = self.methods(**d)
-                if 'params' in mapping:
-                    d = p._asdict()
-                    d.update(mapping['params'])
-                    p = self.params(**d)
-                if 'script' in mapping:
-                    script = self.get_file_content(mapping['script'])
-                    if script:
-                        self.logger.warning('the getter/setter for parameter {} will be replaced by manually provided '
-                                            'from {}'.format(param.name, mapping['script']))
-                        scripts.append(script)
-                        m = None
-            if i:
-                imports.update(i)
-            if m:
-                methods.append(m)
-            params.append(p)
-
-        tmp = {'name': item.name,
-               'imports': [self.imports(what=k, wherefrom=v) for k, v in imports.items()],
-               'methods': methods,
-               'params': params}
-        if getattr(item, 'description', None):
-            tmp.update({'description': self.extract_description(item.description)})
-        if scripts:
-            tmp.update({'scripts': scripts})
-        return tmp
-
-    def common_flow(self, param, item_type):
-        """
-        Main transformation flow, for Struct and Function
-        :param param: sub-element (Param, FunctionParam) of element from initial Model
-        :param item_type: type of parent element from initial Model
-        :return: tuple with 3 element, which going to be applied to jinja2 template
-        """
-        (n, d) = self.extract_name_description(param)
-        t = self.extract_type(param)
-        imports = None
-        if n:
-            if n in self.enum_names:
-                imports = {n: '{}/{}.js'.format(self.enums_package, n)}
-            elif n in self.struct_names:
-                if item_type is Struct:
-                    import_path = '.'
-                else:
-                    import_path = self.structs_package
-                imports = {n: '{}/{}.js'.format(import_path, n)}
-
-        key = self.key(param.name)
-        l = re.sub(r'^\w*([A-Z][a-z]\w*|[A-Z]{3,})$', r'\1', param.name).lower()
-        d = textwrap.wrap(d, 102 - len(t) - len(l))
-        title = param.name[:1].upper() + param.name[1:]
-
-        methods = self.methods(origin=param.name, key=key, method_title=title, external=n, description=d,
-                               param_name=l, type=t)
-        params = self.params(key=key, value="'{}'".format(param.name))
-        return imports, methods, params
-
-    def extract_imports(self, extend):
-        """
-        Extract imports from property PATH_TO_(STRUCT|REQUEST|RESPONSE|NOTIFICATION)_CLASS
-        :param extend: property to be evaluated and converted to self.imports
-        :return: self.imports
-        """
-        tmp = re.match(r'.+/(.+).js', extend)
-        if tmp:
-            return self.imports(what=tmp.group(1), wherefrom=extend)
-
     @staticmethod
     def last(name):
         return re.sub(r'^\w*([A-Z][a-z]\w*|[A-Z]{2,})$', r'\1', name).lower()
@@ -186,7 +82,7 @@ class InterfaceProducerCommon(ABC):
         :param n: string to evaluate and deleting 'ID' from end of string
         :return: if match cut string else original string
         """
-        if re.match('^\w+[a-z]+([A-Z]{2,})?ID$', n):
+        if re.match(r'^\w+[a-z]+([A-Z]{2,})?ID$', n):
             return n[:-2]
         else:
             return n
@@ -199,33 +95,6 @@ class InterfaceProducerCommon(ABC):
         :return: evaluated string
         """
         return re.sub(r'(\s{2,}|\n|\[@TODO.+)', ' ', ''.join(d)).strip() if d else ''
-
-    @staticmethod
-    def extract_name_description(param):
-        """
-        Extracting and evaluating name, description from appropriate place
-        :param param: sub-element (Param, FunctionParam) of element from initial Model
-        :return: tuple with 2 element (name, description)
-        """
-        n = None
-        d = None
-        if getattr(param, 'description', None):
-            d = param.description
-
-        if getattr(param, 'primary_name', None):
-            n = param.primary_name
-        elif getattr(param, 'param_type', None):
-            if getattr(param.param_type, 'name', None):
-                n = param.param_type.name
-                if not d and getattr(param.param_type, 'description', None):
-                    d = param.param_type.description
-            elif getattr(param.param_type, 'element_type', None) and \
-                    getattr(param.param_type.element_type, 'name', None):
-                n = param.param_type.element_type.name
-                if not d and getattr(param.param_type.element_type, 'description', None):
-                    d = param.param_type.element_type.description
-
-        return n, InterfaceProducerCommon.extract_description(d)
 
     @staticmethod
     def extract_type(param):
@@ -241,7 +110,7 @@ class InterfaceProducerCommon(ABC):
             # elif isinstance(t1, Integer) or isinstance(t1, Double):
             #     return 'Number'
             elif isinstance(t1, Double):
-                 return 'Float'
+                return 'Float'
             else:
                 return type(t1).__name__
 
@@ -288,7 +157,7 @@ class InterfaceProducerCommon(ABC):
         if '-params' in custom:
             for name in custom['-params']:
                 if name in render['params']:
-                    self.logger.warning('deleting parameter {}'.format(render['params'][name]))
+                    self.logger.warning('deleting parameter %s', render['params'][name])
                     del render['params'][name]
         if 'params_rename' in custom:
             for name, new_name in custom['params_rename'].items():

@@ -1,3 +1,7 @@
+"""
+Functions transformation
+"""
+
 import logging
 import textwrap
 from collections import namedtuple
@@ -8,6 +12,10 @@ from transformers.common_producer import InterfaceProducerCommon
 
 
 class FunctionsProducer(InterfaceProducerCommon):
+    """
+    Functions transformation
+    """
+
     def __init__(self, paths, enum_names, struct_names, mapping=None):
         super(FunctionsProducer, self).__init__(
             container_name='params',
@@ -55,8 +63,8 @@ class FunctionsProducer(InterfaceProducerCommon):
                 param.name = 'sdlMsgVersion'
             if isinstance(item, Function) and item.message_type.name == 'response' and \
                             param.name in ('success', 'resultCode', 'info'):
-                self.logger.warning('{} of return_type {}/{} - skip parameter "{}"'
-                                    .format(item.name, type(item).__name__, item.message_type.name, param.name))
+                self.logger.warning('%s of return_type %s/%s - skip parameter "%s"',
+                                    item.name, type(item).__name__, item.message_type.name, param.name)
                 continue
             i, p = self.extract_param(param)
             imports.update(i)

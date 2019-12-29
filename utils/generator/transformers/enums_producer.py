@@ -1,3 +1,7 @@
+"""
+Enums transformation
+"""
+
 import logging
 import textwrap
 from collections import namedtuple
@@ -8,12 +12,16 @@ from transformers.common_producer import InterfaceProducerCommon
 
 
 class EnumsProducer(InterfaceProducerCommon):
-    def __init__(self, enums_package, mapping=None):
+    """
+    Enums transformation
+    """
+
+    def __init__(self, paths, mapping=None):
         super(EnumsProducer, self).__init__(
             container_name='elements',
             enums_package=None,
             structs_package=None,
-            package_name=enums_package,
+            package_name=paths.enums_package,
             mapping=mapping['enums'] if mapping and 'enums' in mapping else {})
         self.logger = logging.getLogger('EnumsProducer')
 
@@ -115,7 +123,7 @@ class EnumsProducer(InterfaceProducerCommon):
         custom = self.mapping[render['class_name']]
         if 'kind' in custom:
             if custom['kind'] == 'simple':
-                self.logger.warning('for {} changing kind to {}'.format(render['class_name'], custom['kind']))
+                self.logger.warning('for %s changing kind to %s', render['class_name'], custom['kind'])
                 params = {}
                 for name, value in render['params'].items():
                     d = value._asdict()
@@ -134,7 +142,7 @@ class EnumsProducer(InterfaceProducerCommon):
                 render['params'] = params
                 render['imports'].clear()
             if custom['kind'] == 'custom':
-                self.logger.warning('for {} changing kind to {}'.format(render['class_name'], custom['kind']))
+                self.logger.warning('for %s changing kind to %s', render['class_name'], custom['kind'])
                 params = {}
                 for name, value in render['params'].items():
                     d = value._asdict()

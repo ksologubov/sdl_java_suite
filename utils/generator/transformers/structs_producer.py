@@ -1,3 +1,7 @@
+"""
+Structs transformation
+"""
+
 import logging
 import textwrap
 from collections import namedtuple
@@ -7,6 +11,10 @@ from transformers.common_producer import InterfaceProducerCommon
 
 
 class StructsProducer(InterfaceProducerCommon):
+    """
+    Structs transformation
+    """
+
     def __init__(self, paths, enum_names, struct_names, mapping=None):
         super(StructsProducer, self).__init__(
             container_name='members',
