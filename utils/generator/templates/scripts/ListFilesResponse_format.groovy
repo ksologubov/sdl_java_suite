@@ -16,7 +16,3 @@
         }
         super.format(rpcVersion, formatParams);
     }
-
-    public void setFilenames(List<String> filenames) {
-        setParameters(KEY_FILENAMES, filenames);
-    }
