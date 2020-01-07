@@ -322,12 +322,8 @@ class Generator:
         directory.mkdir(parents=True, exist_ok=True)
         template = type(items[0]).__name__.lower() + '_template.java'
         for item in items:
-            file = item.name + '.java'
-            if isinstance(item, Function) and item.message_type.name == 'response':
-                suffix = item.message_type.name.capitalize()
-                if item.name != "GenericResponse":
-                    file = item.name + suffix + '.java'
             data = transformer.transform(item)
+            file = data['class_name'] + '.java'
             file = directory.joinpath(data['package_name'].replace('.', '/')).joinpath(file)
             if file.is_file():
                 if skip:

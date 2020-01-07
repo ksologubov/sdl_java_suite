@@ -145,6 +145,8 @@ class InterfaceProducerCommon(ABC):
         for name in ('description', 'see', 'since', 'package_name'):
             if name in custom:
                 render[name] = custom[name]
+        if 'rename' in custom:
+            render['class_name'] = custom['rename']
         if 'imports' in custom:
             if 'imports' in render:
                 render['imports'].update(custom['imports'])

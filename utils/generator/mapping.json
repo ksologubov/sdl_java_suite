@@ -428,6 +428,12 @@
       ],
       "script": "templates/scripts/SetMediaClockTimer_time.groovy"
     },
+    "ShowConstantTBT": {
+      "rename": "ShowConstantTbt"
+    },
+    "ShowConstantTBTResponse": {
+      "rename": "ShowConstantTbtResponse"
+    },
     "SystemRequest": {
       "imports": [
         "java.util.List"
@@ -548,6 +554,9 @@
         }
       }
     },
+    "OASISAddress": {
+      "rename": "OasisAddress"
+    },
     "PhoneCapability": {
       "params": {
         "dialNumberEnabled": {
@@ -578,6 +587,9 @@
           "key": "KEY_STATION_ID_NUMBER"
         }
       }
+    },
+    "SyncMsgVersion": {
+      "rename": "SdlMsgVersion"
     },
     "SystemCapability": {
       "script": "templates/scripts/SystemCapability_set.groovy"
