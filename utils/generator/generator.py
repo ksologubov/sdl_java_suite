@@ -350,6 +350,20 @@ class Generator:
                 self.logger.info('Writing new %s', file)
                 self.write_file(file, template, data)
 
+    @staticmethod
+    def rename_elements(enum_names, struct_names, mappings):
+        """
+        Rename elements according to rename mapping
+        :return: list of elements with rename mapping applied
+        """
+        enum_names = list(enum_names)
+        struct_names = list(struct_names)
+        enum_names = [mappings['enums'][element]['rename'] if element in mappings['enums']
+                                and 'rename' in mappings['enums'][element] else element for element in enum_names]
+        struct_names = [mappings['structs'][element]['rename'] if element in mappings['structs']
+                                and 'rename' in mappings['structs'][element] else element for element in struct_names]
+        return tuple(enum_names), tuple(struct_names)
+
     def parser(self, xml, xsd, pattern=None):
         """
         Validate xml to match with xsd. Calling parsers to get Model from xml. If provided pattern, filtering Model.
@@ -409,6 +423,8 @@ class Generator:
 
         paths = self.get_paths()
         mappings = self.get_mappings()
+
+        enum_names, struct_names = self.rename_elements(enum_names, struct_names, mappings)
 
         if args.enums and interface.enums:
             self.process(args.output_directory, args.skip, args.overwrite, tuple(interface.enums.values()),
