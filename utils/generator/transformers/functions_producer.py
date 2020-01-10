@@ -24,7 +24,8 @@ class FunctionsProducer(InterfaceProducerCommon):
             enum_names=enum_names,
             struct_names=struct_names,
             package_name=paths.functions_package,
-            mapping=mapping['functions'] if mapping and 'functions' in mapping else {})
+            mapping=mapping['functions'] if mapping and 'functions' in mapping else {},
+            all_mapping=mapping if mapping else {})
         self.logger = logging.getLogger('FunctionsProducer')
         self.request_class = paths.request_class
         self.response_class = paths.response_class

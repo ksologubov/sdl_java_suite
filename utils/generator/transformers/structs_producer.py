@@ -23,7 +23,8 @@ class StructsProducer(InterfaceProducerCommon):
             enum_names=enum_names,
             struct_names=struct_names,
             package_name=paths.structs_package,
-            mapping=mapping['structs'] if mapping and 'structs' in mapping else {})
+            mapping=mapping['structs'] if mapping and 'structs' in mapping else {},
+            all_mapping=mapping if mapping else {})
         self.logger = logging.getLogger('StructsProducer')
         self.struct_class = paths.struct_class
 

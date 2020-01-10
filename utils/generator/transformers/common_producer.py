@@ -23,7 +23,7 @@ class InterfaceProducerCommon(ABC):
     version = '1.0.0'
 
     def __init__(self, container_name, enums_package, structs_package, package_name,
-                 enum_names=(), struct_names=(), mapping=OrderedDict()):
+                 enum_names=(), struct_names=(), mapping=OrderedDict(), all_mapping={}):
         self.logger = logging.getLogger('Generator.InterfaceProducerCommon')
         self.container_name = container_name
         self.enum_names = enum_names
@@ -31,6 +31,7 @@ class InterfaceProducerCommon(ABC):
         self.enums_package = enums_package
         self.structs_package = structs_package
         self.mapping = mapping
+        self.all_mapping = all_mapping
         self.package_name = package_name
 
     @property
@@ -96,8 +97,7 @@ class InterfaceProducerCommon(ABC):
         """
         return re.sub(r'(\s{2,}|\n|\[@TODO.+)', ' ', ''.join(d)).strip() if d else ''
 
-    @staticmethod
-    def extract_type(param):
+    def extract_type(self, param):
         """
         Evaluate and extract type
         :param param: sub-element (Param, FunctionParam) of element from initial Model
@@ -106,7 +106,11 @@ class InterfaceProducerCommon(ABC):
 
         def evaluate(t1):
             if isinstance(t1, Struct) or isinstance(t1, Enum):
-                return t1.name
+                name = t1.name
+                element_type = 'enums' if isinstance(t1, Enum) else 'structs'
+                if name in self.all_mapping[element_type] and 'rename' in self.all_mapping[element_type][name]:
+                    name = self.all_mapping[element_type][name]['rename']
+                return name
             # elif isinstance(t1, Integer) or isinstance(t1, Double):
             #     return 'Number'
             elif isinstance(t1, Double):
