@@ -23,7 +23,9 @@ class InterfaceProducerCommon(ABC):
     version = '1.0.0'
 
     def __init__(self, container_name, enums_package, structs_package, package_name,
-                 enum_names=(), struct_names=(), mapping=OrderedDict(), all_mapping={}):
+                 enum_names=(), struct_names=(), mapping=OrderedDict(), all_mapping=None):
+        if all_mapping is None:
+            all_mapping = {}
         self.logger = logging.getLogger('Generator.InterfaceProducerCommon')
         self.container_name = container_name
         self.enum_names = enum_names
@@ -189,6 +191,9 @@ class InterfaceProducerCommon(ABC):
                     if 'description' in value:
                         d.update({'description': textwrap.wrap(value['description'], 113)})
                         del value['description']
+                    if 'title' in value:
+                        d.update({'title': value['title']})
+                        del value['title']
                     if 'description_file' in value:
                         d.update({'description': self.get_file_content(value['description_file']).split('\n')})
                         del value['description_file']

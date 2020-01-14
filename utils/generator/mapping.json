@@ -42,7 +42,8 @@
       "params": {
         "IGNITION_OFF": {
           "since": "1.0"
-        }
+        },
+        "USER_EXIT": {}
       }
     },
     "AudioStreamingState": {
@@ -267,14 +268,6 @@
     }
   },
   "functions": {
-    "OnHMIStatus": {
-      "params": {
-        "firstRun": {
-          "return_type": "Boolean"
-        }
-      },
-      "script": "templates/scripts/OnHMIStatus_format.groovy"
-    },
     "AddCommand": {
       "params": {
         "menuParams": {
@@ -321,7 +314,8 @@
         "functionID": {
           "title": "InteractionFunctionID"
         }
-      }
+      },
+      "script": "templates/scripts/CanceInteraction_cancelid.groovy"
     },
     "ChangeRegistration": {
       "params": {
@@ -349,6 +343,12 @@
         }
       },
       "script": "templates/scripts/DeleteFileResponse.groovy"
+    },
+    "EncodedSyncPData": {
+      "function_id": "ENCODED_SYNC_P_DATA"
+    },
+    "EncodedSyncPDataResponse": {
+      "function_id": "ENCODED_SYNC_P_DATA"
     },
     "GetInteriorVehicleDataConsent": {
       "params": {
@@ -379,6 +379,13 @@
     "OnAudioPassThru": {
       "script": "templates/scripts/OnAudioPassThru_aptdata.groovy"
     },
+    "OnButtonPress": {
+      "params": {
+        "customButtonID": {
+          "title": "CustomButtonName"
+        }
+      }
+    },
     "OnKeyboardInput": {
       "script": "templates/scripts/OnKeyboardInput_tostring.groovy"
     },
@@ -391,6 +398,26 @@
           "key": "KEY_LOCKSCREEN_DISMISSIBLE_MSG"
         }
       }
+    },
+    "OnEncodedSyncPData": {
+      "function_id": "ON_ENCODED_SYNC_P_DATA"
+    },
+    "OnHMIStatus": {
+      "params": {
+        "firstRun": {
+          "return_type": "Boolean"
+        }
+      },
+      "script": "templates/scripts/OnHMIStatus_format.groovy"
+    },
+    "OnRCStatus": {
+      "function_id": "ON_RC_STATUS"
+    },
+    "PerformAppServiceInteraction": {
+      "function_id": "PERFORM_APP_SERVICES_INTERACTION"
+    },
+    "PerformAppServiceInteractionResponse": {
+      "function_id": "PERFORM_APP_SERVICES_INTERACTION"
     },
     "PerformInteraction": {
       "params": {
@@ -420,6 +447,9 @@
       "script": "templates/scripts/RegisterAppInterfaceResponse_format.groovy"
     },
     "ReleaseInteriorVehicleDataModule": {
+      "function_id": "RELEASE_INTERIOR_VEHICLE_MODULE"
+    },
+    "ReleaseInteriorVehicleDataModuleResponse": {
       "function_id": "RELEASE_INTERIOR_VEHICLE_MODULE"
     },
     "SetMediaClockTimer": {
@@ -464,6 +494,11 @@
       "script": "templates/scripts/AppServiceCapability_matches.groovy"
     },
     "AppServiceManifest": {
+      "params": {
+        "handledRPCs": {
+          "title": "HandledRpcs"
+        }
+      },
       "imports": [
         "com.smartdevicelink.protocol.enums.FunctionID",
         "com.smartdevicelink.proxy.rpc.enums.AppServiceType",
@@ -502,6 +537,13 @@
         },
         "levelspan": {
           "key": "KEY_LEVEL_SPAN"
+        }
+      }
+    },
+    "PermissionItem": {
+      "params": {
+        "hmiPermissions": {
+          "title": "HMIPermissions"
         }
       }
     },

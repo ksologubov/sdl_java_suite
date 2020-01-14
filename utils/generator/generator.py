@@ -26,7 +26,6 @@ try:
     from parsers.sdl_rpc_v2 import Parser
     from parsers.parse_error import ParseError as InterfaceError
     from model.interface import Interface
-    from model.function import Function
     from transformers.generate_error import GenerateError
     from transformers.common_producer import InterfaceProducerCommon
     from transformers.enums_producer import EnumsProducer
