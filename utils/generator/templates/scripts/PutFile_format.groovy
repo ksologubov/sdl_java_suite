@@ -1,4 +1,29 @@
 
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param offset Optional offset in bytes for resuming partial data chunks
+     */
+    public void setOffset(Integer offset) {
+        if(offset == null){
+            setOffset((Long)null);
+        }else{
+            setOffset(offset.longValue());
+        }
+    }
+
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param length Optional length in bytes for resuming partial data chunks. If offset is set to 0, then length is
+     *               the total length of the file to be downloaded
+     */
+    public void setLength(Integer length) {
+        if(length == null){
+            setLength((Long)null);
+        }else{
+            setLength(length.longValue());
+        }
+    }
+
     public void setFileData(byte[] fileData) {
         setBulkData(fileData);
     }
@@ -51,4 +76,17 @@
             return (Long) o;
         }
         return null;
+    }
+
+    @Override
+    public final void setOnRPCResponseListener(OnRPCResponseListener listener) {
+        super.setOnRPCResponseListener(listener);
+    }
+
+    public void setOnPutFileUpdateListener(OnPutFileUpdateListener listener) {
+        super.setOnRPCResponseListener(listener); //We can use the same method because it get stored as a parent class
+    }
+
+    public OnPutFileUpdateListener getOnPutFileUpdateListener() {
+        return (OnPutFileUpdateListener)getOnRPCResponseListener();
     }

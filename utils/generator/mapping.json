@@ -392,10 +392,12 @@
     "OnDriverDistraction": {
       "params": {
         "lockScreenDismissalEnabled": {
-          "key": "KEY_LOCKSCREEN_DISMISSIBLE"
+          "key": "KEY_LOCKSCREEN_DISMISSIBLE",
+          "title": "LockscreenDismissibility"
         },
         "lockScreenDismissalWarning": {
-          "key": "KEY_LOCKSCREEN_DISMISSIBLE_MSG"
+          "key": "KEY_LOCKSCREEN_DISMISSIBLE_MSG",
+          "title": "LockscreenWarningMessage"
         }
       }
     },
@@ -433,8 +435,18 @@
       }
     },
     "PutFile": {
+      "params":{
+        "length": {
+          "return_type": "Long"
+        },
+        "offset": {
+          "return_type": "Long"
+        }
+      },
       "imports": [
-        "java.util.zip.CRC32"
+        "java.util.zip.CRC32",
+        "com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener",
+        "com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener"
       ],
       "script": "templates/scripts/PutFile_format.groovy"
     },
@@ -544,6 +556,9 @@
         "com.smartdevicelink.util.Version"
       ]
     },
+    "DeviceInfo": {
+      "script": "templates/scripts/DeviceInfo_os.groovy"
+    },
     "Grid": {
       "params": {
         "colspan": {
@@ -637,8 +652,12 @@
         }
       }
     },
-    "StartTime": {
-      "script": "templates/scripts/StartTime_timeinterval.groovy"
+    "ScreenParams": {
+      "params": {
+        "resolution":{
+          "title": "ImageResolution"
+        }
+      }
     },
     "SeatLocationCapability": {
       "params": {
@@ -654,11 +673,20 @@
         }
       }
     },
+    "StartTime": {
+      "script": "templates/scripts/StartTime_timeinterval.groovy"
+    },
     "SyncMsgVersion": {
       "rename": "SdlMsgVersion"
     },
     "SystemCapability": {
       "script": "templates/scripts/SystemCapability_set.groovy"
+    },
+    "TouchEvent": {
+      "imports": [
+        "java.util.ArrayList"
+      ],
+      "script": "templates/scripts/TouchEvent_timestamp.groovy"
     },
     "Turn": {
       "params": {
@@ -669,6 +697,16 @@
     },
     "VideoStreamingFormat": {
       "script": "templates/scripts/VideoStreamingFormat_equals.groovy"
+    },
+    "VideoStreamingCapability": {
+      "params": {
+        "hapticSpatialDataSupported": {
+          "title": "IsHapticSpatialDataSupported"
+        },
+        "scale": {
+          "return_type": "Double"
+        }
+      }
     }
   }
 }
