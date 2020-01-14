@@ -413,6 +413,12 @@
     "OnRCStatus": {
       "function_id": "ON_RC_STATUS"
     },
+    "OnSystemRequest": {
+      "script": "templates/scripts/OnSystemRequest_request.groovy",
+      "imports": [
+        "java.util.List"
+      ]
+    },
     "PerformAppServiceInteraction": {
       "function_id": "PERFORM_APP_SERVICES_INTERACTION"
     },
@@ -425,6 +431,12 @@
           "key": "KEY_INTERACTION_CHOICE_SET_ID_LIST"
         }
       }
+    },
+    "PutFile": {
+      "imports": [
+        "java.util.zip.CRC32"
+      ],
+      "script": "templates/scripts/PutFile_format.groovy"
     },
     "PutFileResponse": {
       "params": {
@@ -440,6 +452,11 @@
       "script": "templates/scripts/PutFileResponse_format.groovy"
     },
     "RegisterAppInterfaceResponse": {
+      "params": {
+        "pcmStreamCapabilities": {
+          "title": "PcmStreamingCapabilities"
+        }
+      },
       "imports": [
         "java.util.ArrayList",
         "com.smartdevicelink.proxy.rpc.enums.ButtonName"
@@ -540,12 +557,8 @@
         }
       }
     },
-    "PermissionItem": {
-      "params": {
-        "hmiPermissions": {
-          "title": "HMIPermissions"
-        }
-      }
+    "HMICapabilities": {
+      "script": "templates/scripts/HMICapabilities_is.groovy"
     },
     "ImageResolution": {
       "script": "templates/scripts/ImageResolution_tostring.groovy"
@@ -564,7 +577,11 @@
         "mainField4": {
           "key": "KEY_MAIN_FIELD_4_TYPE"
         }
-      }
+      },
+      "script": "templates/scripts/MetadataTags_list.groovy",
+      "imports": [
+        "java.util.Collections"
+      ]
     },
     "ModuleInfo": {
       "params": {
@@ -598,6 +615,13 @@
     },
     "OASISAddress": {
       "rename": "OasisAddress"
+    },
+    "PermissionItem": {
+      "params": {
+        "hmiPermissions": {
+          "title": "HMIPermissions"
+        }
+      }
     },
     "PhoneCapability": {
       "params": {

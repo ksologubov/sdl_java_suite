@@ -95,7 +95,7 @@ class StructsProducer(InterfaceProducerCommon):
             sorted_imports.extend(tmp)
         if 'java.util.Hashtable' in imports or 'java.util.List' in imports:
             sorted_imports.append('')
-        for i in ('java.util.Hashtable', 'java.util.List', 'java.util.ArrayList'):
+        for i in ('java.util.Hashtable', 'java.util.List', 'java.util.ArrayList', 'java.util.Collections'):
             if i in imports:
                 sorted_imports.append(i)
         return sorted_imports
