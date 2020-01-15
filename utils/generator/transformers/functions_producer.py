@@ -7,7 +7,7 @@ import textwrap
 from collections import namedtuple
 
 from model.function import Function
-from model.function_param import FunctionParam
+from model.param import Param
 from transformers.common_producer import InterfaceProducerCommon
 
 
@@ -127,7 +127,7 @@ class FunctionsProducer(InterfaceProducerCommon):
                 sorted_imports.append(i)
         return sorted_imports
 
-    def extract_param(self, param: FunctionParam):
+    def extract_param(self, param: Param):
         imports = set()
         p = {'title': param.name[:1].upper() + param.name[1:]}
         p.update({'key': 'KEY_' + self.key(param.name)})

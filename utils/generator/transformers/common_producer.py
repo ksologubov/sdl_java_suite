@@ -23,7 +23,9 @@ class InterfaceProducerCommon(ABC):
     version = '1.0.0'
 
     def __init__(self, container_name, enums_package, structs_package, package_name,
-                 enum_names=(), struct_names=(), mapping=OrderedDict(), all_mapping=None):
+                 enum_names=(), struct_names=(), mapping=None, all_mapping=None):
+        if mapping is None:
+            mapping = OrderedDict()
         if all_mapping is None:
             all_mapping = {}
         self.logger = logging.getLogger('Generator.InterfaceProducerCommon')
@@ -102,7 +104,7 @@ class InterfaceProducerCommon(ABC):
     def extract_type(self, param):
         """
         Evaluate and extract type
-        :param param: sub-element (Param, FunctionParam) of element from initial Model
+        :param param: sub-element Param of element from initial Model
         :return: string with sub-element type
         """
 

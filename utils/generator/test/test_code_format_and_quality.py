@@ -11,6 +11,9 @@ from pylint.lint import Run
 
 
 class CodeFormatAndQuality(unittest.TestCase):
+
+    MINIMUM_SCORE = 9
+
     def setUp(self):
         """Searching for all python files to be checked
 
@@ -28,7 +31,7 @@ class CodeFormatAndQuality(unittest.TestCase):
         """
         results = Run(self.list_of_files, do_exit=False)
         score = results.linter.stats['global_note']
-        self.assertGreaterEqual(score, 9)
+        self.assertGreaterEqual(score, self.MINIMUM_SCORE)
 
 
 if __name__ == "__main__":

@@ -7,7 +7,6 @@ from model.boolean import Boolean
 from model.enum import Enum
 from model.enum_element import EnumElement
 from model.function import Function
-from model.function_param import FunctionParam
 from model.integer import Integer
 from model.param import Param
 from model.string import String
@@ -67,15 +66,15 @@ class TestFunctionsProducer(TestCase):
         item = Function(name='RegisterAppInterface', function_id=None,
                         message_type=EnumElement(name='request'), params=
                         {
-                            'syncMsgVersion': FunctionParam(name='syncMsgVersion', param_type=
+                            'syncMsgVersion': Param(name='syncMsgVersion', param_type=
                             Struct(name='SyncMsgVersion', description=['Specifies the'], members={
                                 'majorVersion': Param(name='majorVersion', param_type=Integer())
                             }), description=['See SyncMsgVersion']),
-                            'fullAppID': FunctionParam(name='fullAppID', description=['ID used'], param_type=String()),
-                            'dayColorScheme': FunctionParam(name='dayColorScheme', param_type=
+                            'fullAppID': Param(name='fullAppID', description=['ID used'], param_type=String()),
+                            'dayColorScheme': Param(name='dayColorScheme', param_type=
                             Struct(name='TemplateColorScheme', description=
                             ['\n            A color scheme for all display layout templates.\n        '])),
-                            'ttsName': FunctionParam(name='ttsName', description=['\n      TTS string for'], param_type=
+                            'ttsName': Param(name='ttsName', description=['\n      TTS string for'], param_type=
                             Array(element_type=Struct(name='TTSChunk', description=['A TTS chunk'])))
                         })
         expected = {
@@ -113,12 +112,12 @@ class TestFunctionsProducer(TestCase):
         item = Function(name='RegisterAppInterface', function_id=None, description=['The response '],
                         message_type=EnumElement(name='response'), params=
                         {
-                            'success': FunctionParam(name='success', param_type=Boolean(), description=[' true if ']),
-                            'language': FunctionParam(name='language', param_type=
+                            'success': Param(name='success', param_type=Boolean(), description=[' true if ']),
+                            'language': Param(name='language', param_type=
                             Enum(name='Language', elements={
                                 'EN-US': EnumElement(name='EN-US', description=['English - US'])
                             }), description=['The currently']),
-                            'supportedDiagModes': FunctionParam(name='supportedDiagModes', param_type=
+                            'supportedDiagModes': Param(name='supportedDiagModes', param_type=
                             Array(element_type=Integer()), description=['\n                Specifies the'], )
                         })
         expected = {
@@ -160,7 +159,7 @@ class TestFunctionsProducer(TestCase):
         item = Function(name='PutFile', function_id=None, description=['\n            Used to'],
                         message_type=EnumElement(name='request'), params=
                         {
-                            'fileType': FunctionParam(name='fileType', param_type=
+                            'fileType': Param(name='fileType', param_type=
                             Enum(name='FileType', description=['Enumeration listing'], elements={
                                 'AUDIO_MP3': EnumElement(name='AUDIO_MP3')
                             }), description=['Selected file type.'])
@@ -187,7 +186,7 @@ class TestFunctionsProducer(TestCase):
         item = Function(name='OnEncodedSyncPData', function_id=None, description=['\n           Callback including \n'],
                         message_type=EnumElement(name='notification'), params=
                         {
-                            'URL': FunctionParam(name='URL', param_type=String(), description=['\n                If '])
+                            'URL': Param(name='URL', param_type=String(), description=['\n                If '])
                         })
         expected = {
             'name': 'OnEncodedSyncPData',
@@ -209,7 +208,7 @@ class TestFunctionsProducer(TestCase):
         item = Function(name='CreateInteractionChoiceSet', function_id=None, description=['creates interaction'],
                         message_type=EnumElement(name='request'), params=
                         {
-                            'choiceSet': FunctionParam(name='choiceSet', param_type=
+                            'choiceSet': Param(name='choiceSet', param_type=
                             Array(element_type=Struct(name='Choice', description=['A choice is an option given to '])))
                         })
         expected = {
