@@ -3,6 +3,7 @@
 """
 
 import logging
+import re
 import sys
 from argparse import ArgumentParser
 from collections import namedtuple
@@ -10,7 +11,6 @@ from inspect import getfile
 from json import JSONDecodeError, loads
 from os.path import basename
 from pprint import pformat
-from re import findall, match
 from time import sleep
 from xml.etree.ElementTree import ParseError as XMLSchemaError
 
@@ -228,8 +228,8 @@ class Generator:
         regex = r'(\d+\.\d+).(\d)'
 
         parser_origin = Parser().get_version
-        parser_split = findall(regex, parser_origin).pop()
-        generator_split = findall(regex, self.get_version).pop()
+        parser_split = re.findall(regex, parser_origin).pop()
+        generator_split = re.findall(regex, self.get_version).pop()
 
         parser_major = float(parser_split[0])
         generator_major = float(generator_split[0])
@@ -256,7 +256,7 @@ class Generator:
                     if line.startswith('#'):
                         self.logger.warning('commented property %s, which will be skipped', line.strip())
                         continue
-                    if match(r'^(\w+)\s?=\s?(.+)', line):
+                    if re.match(r'^(\w+)\s?=\s?(.+)', line):
                         if len(line.split('=')) > 2:
                             self.logger.critical('can not evaluate value, too many separators %s', str(line))
                             sys.exit(1)
@@ -394,7 +394,7 @@ class Generator:
                 if kind == 'params':
                     continue
                 for name, item in content.items():
-                    if match(pattern, item.name):
+                    if re.match(pattern, item.name):
                         self.logger.info('%s/%s match with %s', kind, item.name, pattern)
                         if kind in intermediate:
                             intermediate[kind].update({name: item})
