@@ -1,10 +1,10 @@
 """This is main runner of generator
 
 """
-
 import logging
 import re
 import sys
+import datetime
 from argparse import ArgumentParser
 from collections import namedtuple
 from inspect import getfile
@@ -320,8 +320,10 @@ class Generator:
 
         directory.mkdir(parents=True, exist_ok=True)
         template = type(items[0]).__name__.lower() + '_template.java'
+        year = datetime.datetime.utcnow().year
         for item in items:
             data = transformer.transform(item)
+            data['year'] = year
             file = data['class_name'] + '.java'
             file = directory.joinpath(data['package_name'].replace('.', '/')).joinpath(file)
             if file.is_file():
