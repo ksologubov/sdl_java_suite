@@ -52,7 +52,8 @@ class EnumsProducer(InterfaceProducerCommon):
                   'package_name': self.package_name,
                   'class_name': item.name[:1].upper() + item.name[1:],
                   'params': params,
-                  'since': item.since}
+                  'since': item.since,
+                  'deprecated': item.deprecated}
 
         description = self.extract_description(item.description)
         if description:
@@ -89,6 +90,8 @@ class EnumsProducer(InterfaceProducerCommon):
 
         if getattr(param, 'since', None):
             d.update({'since': param.since})
+        if getattr(param, 'deprecated', None):
+            d.update({'deprecated': param.deprecated})
         if getattr(param, 'description', None):
             d.update({'description': textwrap.wrap(self.extract_description(param.description), 113)})
         Params = namedtuple('Params', sorted(d))
