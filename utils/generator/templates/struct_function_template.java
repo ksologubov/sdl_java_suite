@@ -3,17 +3,17 @@
 public class {{class_name}} extends {{extends_class}} {
     {%- if params is defined %}
     {%- for p in params %}
-    {%- if p.description is defined and p.description|length or p.since is defined or p.see is defined %}
+    {%- if p.description is defined and p.description|length or p.since is defined or p.see is defined or p.deprecated is defined %}
     /**
-     {%- if p.deprecated is not none %}
-     * @deprecated
-     {%- endif %}
      {%- if p.description is defined %}
      {%- for d in p.description %}
      * {{d}}
      {%- endfor %}{% endif -%}
      {%- if p.description is defined and (p.since is defined or p.see is defined) %}
      *
+     {%- endif %}
+     {%- if p.deprecated is not none %}
+     * @deprecated
      {%- endif %}
      {%- if p.since is defined %}
      * @since SmartDeviceLink {{p.since}}
@@ -22,6 +22,9 @@ public class {{class_name}} extends {{extends_class}} {
      * @see {{p.see}}
      {%- endif %}
      */
+    {%- endif %}
+    {%- if p.deprecated is not none %}
+    @Deprecated
     {%- endif %}
     {%- if p.name is defined %}
     private {% if p.modifier is defined %}{{p.modifier}} {% endif %}{{p.return_type}} {{p.name}}{% if p.value is defined %} = {{p.value}}{% endif %};

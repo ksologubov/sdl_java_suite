@@ -37,7 +37,7 @@ import {{i}};{{ '\n' if loop.last }}
 {{''}}
     {%- endif %}
     {%- endfor %}
-    {%- if description is defined or since is defined or see is defined %}
+    {%- if description is defined or since is defined or see is defined or deprecated is defined %}
 /**
  {%- if description is defined %}
  {%- for d in description %}
@@ -70,7 +70,7 @@ import {{i}};{{ '\n' if loop.last }}
  {%- if description is defined and (see is defined or since is defined) %}
  *
  {%- endif %}
- {%- if deprecated is not none and return_type is not defined %}
+ {%- if deprecated is not none %}
  * @deprecated
  {%- endif %}
  {%- if see is defined %}
@@ -80,6 +80,9 @@ import {{i}};{{ '\n' if loop.last }}
  * @since SmartDeviceLink {{since}}
  {%- endif %}
  */
+    {%- endif %}
+    {%- if deprecated is not none %}
+@Deprecated
     {%- endif %}
     {%- block body %}
     {% endblock -%}
