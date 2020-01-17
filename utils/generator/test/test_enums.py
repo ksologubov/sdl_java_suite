@@ -9,10 +9,8 @@ from model.enum_element import EnumElement
 class TestEnumsProducer(TestCase):
     def setUp(self):
         self.maxDiff = None
-        Prop = namedtuple('Prop', 'ENUMS_DIR_NAME STRUCTS_DIR_NAME PATH_TO_ENUM_CLASS')
-        paths = Prop(ENUMS_DIR_NAME='../enums',
-                     STRUCTS_DIR_NAME='../structs',
-                     PATH_TO_ENUM_CLASS='../../util/Enum.js')
+        Prop = namedtuple('Prop', 'enums_package')
+        paths = Prop(enums_package='com.smartdevicelink.proxy.rpc.enums')
         self.producer = EnumsProducer(paths)
 
     def test_FunctionID(self):
@@ -21,6 +19,7 @@ class TestEnumsProducer(TestCase):
             'RegisterAppInterfaceID': EnumElement(name='RegisterAppInterfaceID', hexvalue=1),
             'PerformAudioPassThruID': EnumElement(name='PerformAudioPassThruID', hexvalue=10)
         })
+        result = self.producer.transform(item)
         expected = {
             'name': 'FunctionID',
             'imports': [self.producer.imports(what='Enum', wherefrom='../../util/Enum.js')],
@@ -38,13 +37,13 @@ class TestEnumsProducer(TestCase):
                        self.producer.params(key='PerformAudioPassThru', value='0x10')],
             'extend': 'Enum'
         }
-        result = self.producer.transform(item)
         self.assertEqual(expected, result)
 
     def test_Result(self):
         item = Enum(name='Result', elements={
             'SUCCESS': EnumElement(name='SUCCESS')
         })
+        result = self.producer.transform(item)
         expected = {
             'name': 'Result',
             'imports': [self.producer.imports(what='Enum', wherefrom='../../util/Enum.js')],
@@ -54,7 +53,6 @@ class TestEnumsProducer(TestCase):
             'params': [self.producer.params(key='SUCCESS', value="'SUCCESS'")],
             'extend': 'Enum'
         }
-        result = self.producer.transform(item)
         self.assertEqual(expected, result)
 
 # if __name__ == '__main__':
