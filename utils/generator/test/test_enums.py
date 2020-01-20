@@ -1,12 +1,12 @@
 from collections import namedtuple
-from unittest import TestCase
+import unittest
 
 from transformers.enums_producer import EnumsProducer
 from model.enum import Enum
 from model.enum_element import EnumElement
 
 
-class TestEnumsProducer(TestCase):
+class TestEnumsProducer(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
         Prop = namedtuple('Prop', 'enums_package')
@@ -15,27 +15,21 @@ class TestEnumsProducer(TestCase):
 
     def test_FunctionID(self):
         item = Enum(name='FunctionID', elements={
-            'RESERVED': EnumElement(name='RESERVED', value=0),
+            'RESERVED': EnumElement(name='RESERVED', hexvalue=0),
             'RegisterAppInterfaceID': EnumElement(name='RegisterAppInterfaceID', hexvalue=1),
             'PerformAudioPassThruID': EnumElement(name='PerformAudioPassThruID', hexvalue=10)
         })
         result = self.producer.transform(item)
         expected = {
-            'name': 'FunctionID',
-            'imports': [self.producer.imports(what='Enum', wherefrom='../../util/Enum.js')],
-            'methods': [self.producer.methods(origin='RESERVED',
-                                              method_title='RESERVED',
-                                              description=[], type='Number'),
-                        self.producer.methods(origin='RegisterAppInterfaceID',
-                                              method_title='RegisterAppInterface',
-                                              description=[], type='Number'),
-                        self.producer.methods(origin='PerformAudioPassThruID',
-                                              method_title='PerformAudioPassThru',
-                                              description=[], type='Number')],
-            'params': [self.producer.params(key='RESERVED', value=0),
-                       self.producer.params(key='RegisterAppInterface', value='0x01'),
-                       self.producer.params(key='PerformAudioPassThru', value='0x10')],
-            'extend': 'Enum'
+            'kind': 'simple',
+            'return_type': 'int',
+            'package_name': 'com.smartdevicelink.proxy.rpc.enums',
+            'class_name': 'FunctionID',
+            'params': (self.producer.params(name='RESERVED', origin='RESERVED'),
+                       self.producer.params(name='RegisterAppInterfaceID', origin='RegisterAppInterfaceID'),
+                       self.producer.params(name='PerformAudioPassThruID', origin='PerformAudioPassThruID')),
+            'since': None,
+            'deprecated': None
         }
         self.assertEqual(expected, result)
 
@@ -45,19 +39,17 @@ class TestEnumsProducer(TestCase):
         })
         result = self.producer.transform(item)
         expected = {
-            'name': 'Result',
-            'imports': [self.producer.imports(what='Enum', wherefrom='../../util/Enum.js')],
-            'methods': [self.producer.methods(origin='SUCCESS',
-                                              method_title='SUCCESS',
-                                              description=[], type='String')],
-            'params': [self.producer.params(key='SUCCESS', value="'SUCCESS'")],
-            'extend': 'Enum'
+            'kind': 'simple',
+            'return_type': 'String',
+            'package_name': 'com.smartdevicelink.proxy.rpc.enums',
+            'class_name': 'Result',
+            'params': (self.producer.params(name='SUCCESS', origin='SUCCESS'),),
+            'since': None,
+            'deprecated': None
         }
         self.assertEqual(expected, result)
 
-# if __name__ == '__main__':
-#     testLoad = TestLoader()
-#     suites: TestSuite = testLoad.loadTestsFromTestCase(TestEnumsProducer)
-#
-#     runner = TextTestRunner(verbosity=2)
-#     testResult = runner.run(suites)
+
+if __name__ == '__main__':
+    unittest.main()
+    # unittest.defaultTestLoader.loadTestsFromName(__name__).debug()  # enable debugging

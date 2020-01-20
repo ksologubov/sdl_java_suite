@@ -60,9 +60,9 @@ class InterfaceProducerCommon(ABC):
     @property
     def params(self):
         """
-        :return: namedtuple params(key='', value='')
+        :return: namedtuple params(name='', origin='')
         """
-        return namedtuple('Params', 'key value')
+        return namedtuple('Params', 'name origin')
 
     @staticmethod
     def last(name):
