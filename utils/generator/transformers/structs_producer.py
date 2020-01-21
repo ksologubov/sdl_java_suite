@@ -28,6 +28,15 @@ class StructsProducer(InterfaceProducerCommon):
         self.logger = logging.getLogger('StructsProducer')
         self.struct_class = paths.struct_class
 
+    @property
+    def params(self):
+        """
+        :return: namedtuple params(deprecated='', description='', key='',
+                       last='', mandatory='', origin='', return_type='',
+                       since='', title='')
+        """
+        return namedtuple('Params', 'deprecated description key last mandatory origin return_type since title')
+
     def transform(self, item: Struct) -> dict:
         """
         Override

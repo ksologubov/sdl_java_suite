@@ -112,7 +112,8 @@ class InterfaceProducerCommon(ABC):
             if isinstance(t1, Struct) or isinstance(t1, Enum):
                 name = t1.name
                 element_type = 'enums' if isinstance(t1, Enum) else 'structs'
-                if name in self.all_mapping[element_type] and 'rename' in self.all_mapping[element_type][name]:
+                if element_type in self.all_mapping and name in self.all_mapping[element_type]\
+                        and 'rename' in self.all_mapping[element_type][name]:
                     name = self.all_mapping[element_type][name]['rename']
                 return name
             # elif isinstance(t1, Integer) or isinstance(t1, Double):

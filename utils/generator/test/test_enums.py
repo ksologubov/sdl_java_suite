@@ -9,8 +9,8 @@ from model.enum_element import EnumElement
 class TestEnumsProducer(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
-        Prop = namedtuple('Prop', 'enums_package')
-        paths = Prop(enums_package='com.smartdevicelink.proxy.rpc.enums')
+        Paths = namedtuple('Prop', 'enums_package')
+        paths = Paths(enums_package='com.smartdevicelink.proxy.rpc.enums')
         self.producer = EnumsProducer(paths)
 
     def test_FunctionID(self):

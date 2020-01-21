@@ -1,5 +1,5 @@
 from collections import namedtuple
-from unittest import TestCase
+import unittest
 
 from transformers.functions_producer import FunctionsProducer
 from model.array import Array
@@ -13,18 +13,16 @@ from model.string import String
 from model.struct import Struct
 
 
-class TestFunctionsProducer(TestCase):
+class TestFunctionsProducer(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
-        Prop = namedtuple('Prop',
-                          'FUNCTIONS_DIR_NAME ENUMS_DIR_NAME STRUCTS_DIR_NAME PATH_TO_REQUEST_CLASS '
-                          'PATH_TO_RESPONSE_CLASS PATH_TO_NOTIFICATION_CLASS')
-        paths = Prop(FUNCTIONS_DIR_NAME='../messages',
-                     ENUMS_DIR_NAME='../enums',
-                     STRUCTS_DIR_NAME='../structs',
-                     PATH_TO_REQUEST_CLASS='../RpcRequest.js',
-                     PATH_TO_RESPONSE_CLASS='../RpcResponse.js',
-                     PATH_TO_NOTIFICATION_CLASS='../RpcNotification.js')
+        Paths = namedtuple('Prop', 'enums_package structs_package functions_package request_class response_class notification_class')
+        paths = Paths(enums_package='com.smartdevicelink.proxy.rpc.enums',
+                     structs_package='com.smartdevicelink.proxy.rpc',
+                     functions_package='com.smartdevicelink.proxy.rpc',
+                     request_class='com.smartdevicelink.proxy.RPCRequest',
+                     response_class='com.smartdevicelink.proxy.RPCResponse',
+                     notification_class='com.smartdevicelink.proxy.RPCNotification')
 
         mapping = {"functions": {
             "RegisterAppInterfaceRequest": {
@@ -227,3 +225,8 @@ class TestFunctionsProducer(TestCase):
         }
         result = self.producer.transform(item)
         self.assertEqual(expected, result)
+
+
+if __name__ == '__main__':
+    # unittest.main()
+    unittest.defaultTestLoader.loadTestsFromName(__name__).debug()  # enable debugging
