@@ -31,6 +31,15 @@ class FunctionsProducer(InterfaceProducerCommon):
         self.response_class = paths.response_class
         self.notification_class = paths.notification_class
 
+    @property
+    def params(self):
+        """
+        :return: namedtuple params(deprecated='', description='', key='',
+                       last='', mandatory='', origin='', return_type='',
+                       since='', title='')
+        """
+        return namedtuple('Params', 'deprecated description key last mandatory origin return_type since title')
+
     def transform(self, item: Function) -> dict:
         """
         Override

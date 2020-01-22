@@ -37,4 +37,3 @@ class TestStructsProducer(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-    # unittest.defaultTestLoader.loadTestsFromName(__name__).debug()  # enable debugging
