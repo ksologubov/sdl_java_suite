@@ -1,4 +1,4 @@
 [submodule "utils/generator/rpc_spec"]
 	path = utils/generator/rpc_spec
-	url = git@github.ford.com:SmartDeviceLinkMirror/rpc_spec.git
-	branch = parser/AAW-2
+	url = https://github.com/vladmu/rpc_spec.git
+	branch = master

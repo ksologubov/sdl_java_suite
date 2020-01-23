@@ -114,7 +114,7 @@ class EnumsProducer(InterfaceProducerCommon):
         :param param: sub-element (EnumElement) of element from initial Model
         :return: string with sub-element type
         """
-        if getattr(param, 'hexvalue') is not None or getattr(param, 'value') is not None:
+        if getattr(param, 'hex_value') is not None or getattr(param, 'value') is not None:
             return 'int'
         else:
             return 'String'

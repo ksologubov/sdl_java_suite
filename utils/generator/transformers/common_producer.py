@@ -12,7 +12,6 @@ from pathlib import Path
 from model.array import Array
 from model.enum import Enum
 from model.struct import Struct
-from model.double import Double
 
 
 class InterfaceProducerCommon(ABC):
@@ -116,10 +115,6 @@ class InterfaceProducerCommon(ABC):
                         and 'rename' in self.all_mapping[element_type][name]:
                     name = self.all_mapping[element_type][name]['rename']
                 return name
-            # elif isinstance(t1, Integer) or isinstance(t1, Double):
-            #     return 'Number'
-            elif isinstance(t1, Double):
-                return 'Float'
             else:
                 return type(t1).__name__
 
