@@ -11,10 +11,10 @@ sys.path.append(PATH.parents[1].joinpath('rpc_spec/InterfaceParser').as_posix())
 sys.path.append(PATH.parents[1].as_posix())
 
 try:
-    from test.test_enums import TestEnumsProducer
-    from test.test_functions import TestFunctionsProducer
-    from test.test_structs import TestStructsProducer
-    from test.test_code_format_and_quality import CodeFormatAndQuality
+    from test_enums import TestEnumsProducer
+    from test_functions import TestFunctionsProducer
+    from test_structs import TestStructsProducer
+    from test_code_format_and_quality import CodeFormatAndQuality
 except ModuleNotFoundError as message:
     print('{}. probably you did not initialize submodule'.format(message))
     sys.exit(1)
