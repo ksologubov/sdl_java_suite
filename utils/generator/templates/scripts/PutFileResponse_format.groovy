@@ -1,3 +1,20 @@
+
+	/**
+	 * @deprecated use {@link PutFileResponse#PutFileResponse(Boolean, Result)} <br>
+	 *
+	 * Constructs a new PutFileResponse object
+	 * @param success whether the request is successfully processed
+	 * @param resultCode whether the request is successfully processed
+	 * @param spaceAvailable the spaceAvailable on the head unit
+	 */
+	@Deprecated
+	public PutFileResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer spaceAvailable) {
+		this();
+		setSuccess(success);
+		setResultCode(resultCode);
+		setSpaceAvailable(spaceAvailable);
+	}
+
 	/**
 	 * SpaceAvailable became optional as of RPC Spec 5.0. If a system that expected the value to
 	 * always have a value connects to such a system, it could return null. Check to see if there

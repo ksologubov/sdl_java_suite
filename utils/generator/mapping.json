@@ -350,10 +350,23 @@
     "EncodedSyncPDataResponse": {
       "function_id": "ENCODED_SYNC_P_DATA"
     },
-    "GetInteriorVehicleDataConsent": {
+    "GetCloudAppPropertiesResponse": {
+      "params": {
+        "properties": {
+          "title": "CloudAppProperties"
+        }
+      }
+    },    "GetInteriorVehicleDataConsent": {
       "params": {
         "moduleIds": {
           "key": "KEY_MODULE_ID"
+        }
+      }
+    },
+    "GetInteriorVehicleDataConsentResponse": {
+      "params": {
+        "allowed": {
+          "title": "Allowances"
         }
       }
     },
@@ -434,6 +447,13 @@
         }
       }
     },
+    "PublishAppServiceResponse": {
+      "params": {
+        "appServiceRecord": {
+          "title": "ServiceRecord"
+        }
+      }
+    },
     "PutFile": {
       "params":{
         "length": {
@@ -508,6 +528,9 @@
           "key": "KEY_LON_DEGREES"
         }
       }
+    },
+    "SubscribeVehicleDataResponse": {
+      "script": "templates/scripts/SubscribeVehicleDataResponse_oem.groovy"
     }
   },
   "structs": {
@@ -559,6 +582,12 @@
     "DeviceInfo": {
       "script": "templates/scripts/DeviceInfo_os.groovy"
     },
+    "DisplayCapabilities": {
+      "script": "templates/scripts/DisplayCapabilities_format.groovy",
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ]
+    },
     "Grid": {
       "params": {
         "colspan": {
@@ -573,7 +602,30 @@
       }
     },
     "HMICapabilities": {
-      "script": "templates/scripts/HMICapabilities_is.groovy"
+      "script": "templates/scripts/HMICapabilities_is.groovy",
+      "params": {
+        "appServices": {
+          "title": "AppServicesAvailable"
+        },
+        "navigation": {
+          "title": "NavigationAvailable"
+        },
+        "phoneCall": {
+          "title": "PhoneCallAvailable"
+        },
+        "videoStreaming": {
+          "title": "VideoStreamingAvailable"
+        },
+        "remoteControl": {
+          "title": "RemoteControlAvailable"
+        },
+        "displays": {
+          "title": "DisplaysCapabilityAvailable"
+        },
+        "seatLocation": {
+          "title": "SeatLocationAvailable"
+        }
+      }
     },
     "ImageResolution": {
       "script": "templates/scripts/ImageResolution_tostring.groovy"
@@ -611,13 +663,21 @@
         }
       }
     },
+    "MyKey": {
+      "params": {
+        "e911Override": {
+          "key": "KEY_E_911_OVERRIDE"
+        }
+      }
+    },
     "NavigationCapability": {
       "params": {
         "sendLocationEnabled": {
           "key": "KEY_LOCATION_ENABLED"
         },
         "getWayPointsEnabled": {
-          "key": "KEY_GETWAYPOINTS_ENABLED"
+          "key": "KEY_GETWAYPOINTS_ENABLED",
+          "title": "WayPointsEnabled"
         }
       }
     },
@@ -645,10 +705,41 @@
         }
       }
     },
+    "PresetBankCapabilities": {
+      "script": "templates/scripts/PresetBankCapabilities_on.groovy"
+    },
     "RadioControlCapabilities": {
       "params": {
         "siriusxmRadioAvailable": {
           "key": "KEY_SIRIUS_XM_RADIO_AVAILABLE"
+        }
+      }
+    },
+    "RdsData": {
+      "params": {
+        "TA":{
+          "title": "TrafficAnnouncement"
+        },
+        "TP":{
+          "title": "TrafficProgram"
+        },
+        "PTY":{
+          "title": "ProgramType"
+        },
+        "CT":{
+          "title": "ClockText"
+        },
+        "PI":{
+          "title": "ProgramIdentification"
+        },
+        "PS":{
+          "title": "ProgramService"
+        },
+        "REG":{
+          "title": "Region"
+        },
+        "RT":{
+          "title": "RadioText"
         }
       }
     },
