@@ -1,3 +1,7 @@
+	@Deprecated
+    public String getProxyVersionInfo() {
+		return null;
+    }
 
 	@Override
 	public void format(com.smartdevicelink.util.Version rpcVersion, boolean formatParams){

@@ -344,6 +344,9 @@
       },
       "script": "templates/scripts/DeleteFileResponse.groovy"
     },
+    "DiagnosticMessageResponse": {
+      "script": "templates/scripts/DiagnosticMessageResponse.groovy"
+    },
     "EncodedSyncPData": {
       "function_id": "ENCODED_SYNC_P_DATA"
     },
@@ -356,7 +359,11 @@
           "title": "CloudAppProperties"
         }
       }
-    },    "GetInteriorVehicleDataConsent": {
+    },
+    "GetDTCsResponse": {
+      "script": "templates/scripts/GetDTCsResponse.groovy"
+    },
+    "GetInteriorVehicleDataConsent": {
       "params": {
         "moduleIds": {
           "key": "KEY_MODULE_ID"
@@ -369,6 +376,9 @@
           "title": "Allowances"
         }
       }
+    },
+    "GetInteriorVehicleDataResponse": {
+      "script": "templates/scripts/GetInteriorVehicleDataResponse.groovy"
     },
     "GetVehicleData": {
       "script": "templates/scripts/GetVehicleData_OEM.groovy"
@@ -433,6 +443,9 @@
       "imports": [
         "java.util.List"
       ]
+    },
+    "OnVehicleData": {
+      "script": "templates/scripts/OnVehicleData_oem.groovy"
     },
     "PerformAppServiceInteraction": {
       "function_id": "PERFORM_APP_SERVICES_INTERACTION"
@@ -507,6 +520,9 @@
       ],
       "script": "templates/scripts/SetMediaClockTimer_time.groovy"
     },
+    "SetInteriorVehicleDataResponse": {
+      "script": "templates/scripts/SetInteriorVehicleDataResponse.groovy"
+    },
     "ShowConstantTBT": {
       "rename": "ShowConstantTbt"
     },
@@ -529,8 +545,17 @@
         }
       }
     },
+    "SubscribeVehicleData": {
+      "script": "templates/scripts/SubscribeVehicleData_oem.groovy"
+    },
     "SubscribeVehicleDataResponse": {
       "script": "templates/scripts/SubscribeVehicleDataResponse_oem.groovy"
+    },
+    "UnsubscribeVehicleData": {
+      "script": "templates/scripts/UnsubscribeVehicleData_oem.groovy"
+    },
+    "UnsubscribeVehicleDataResponse": {
+      "script": "templates/scripts/UnsubscribeVehicleDataResponse_oem.groovy"
     }
   },
   "structs": {
@@ -588,16 +613,26 @@
         "com.smartdevicelink.util.Version"
       ]
     },
+    "ECallInfo": {
+      "params": {
+        "auxECallNotificationStatus": {
+          "key": "KEY_AUX_E_CALL_NOTIFICATION_STATUS"
+        }
+      }
+    },
     "Grid": {
       "params": {
         "colspan": {
-          "key": "KEY_COL_SPAN"
+          "key": "KEY_COL_SPAN",
+          "title": "ColSpan"
         },
         "rowspan": {
-          "key":"KEY_ROW_SPAN"
+          "key": "KEY_ROW_SPAN",
+          "title": "RowSpan"
         },
         "levelspan": {
-          "key": "KEY_LEVEL_SPAN"
+          "key": "KEY_LEVEL_SPAN",
+          "title": "LevelSpan"
         }
       }
     },
@@ -630,6 +665,13 @@
     "ImageResolution": {
       "script": "templates/scripts/ImageResolution_tostring.groovy"
     },
+    "LightCapabilities": {
+      "params": {
+        "rgbColorSpaceAvailable": {
+          "title": "RGBColorSpaceAvailable"
+        }
+      }
+    },
     "MetadataTags": {
       "params": {
         "mainField1": {
@@ -653,13 +695,16 @@
     "ModuleInfo": {
       "params": {
         "location": {
-          "key": "KEY_MODULE_LOCATION"
+          "key": "KEY_MODULE_LOCATION",
+          "title": "ModuleLocation"
         },
         "serviceArea": {
-          "key": "KEY_MODULE_SERVICE_AREA"
+          "key": "KEY_MODULE_SERVICE_AREA",
+          "title": "ModuleServiceArea"
         },
         "allowMultipleAccess": {
-          "key": "KEY_MULTIPLE_ACCESS_ALLOWED"
+          "key": "KEY_MULTIPLE_ACCESS_ALLOWED",
+          "title": "MultipleAccessAllowance"
         }
       }
     },
@@ -711,7 +756,8 @@
     "RadioControlCapabilities": {
       "params": {
         "siriusxmRadioAvailable": {
-          "key": "KEY_SIRIUS_XM_RADIO_AVAILABLE"
+          "key": "KEY_SIRIUS_XM_RADIO_AVAILABLE",
+          "title": "SiriusXMRadioAvailable"
         }
       }
     },
@@ -753,7 +799,18 @@
     "SeatLocationCapability": {
       "params": {
         "columns": {
-          "key": "KEY_COLS"
+          "key": "KEY_COLS",
+          "title": "Cols"
+        },
+        "seats": {
+          "title": "SeatLocations"
+        }
+      }
+    },
+    "SingleTireStatus": {
+      "params": {
+        "tpms": {
+          "title": "TPMS"
         }
       }
     },
@@ -764,11 +821,21 @@
         }
       }
     },
+    "SoftButtonCapabilities": {
+      "script": "templates/scripts/SoftButtonCapabilities_format.groovy",
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ]
+    },
     "StartTime": {
       "script": "templates/scripts/StartTime_timeinterval.groovy"
     },
     "SyncMsgVersion": {
-      "rename": "SdlMsgVersion"
+      "rename": "SdlMsgVersion",
+      "script": "templates/scripts/SdlMsgVersion_format.groovy",
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ]
     },
     "SystemCapability": {
       "script": "templates/scripts/SystemCapability_set.groovy"
@@ -783,6 +850,13 @@
       "params": {
         "turnIcon": {
           "key": "KEY_TURN_IMAGE"
+        }
+      }
+    },
+    "VehicleDataResult": {
+      "params": {
+        "oemCustomDataType": {
+          "title": "OEMCustomVehicleDataType"
         }
       }
     },
