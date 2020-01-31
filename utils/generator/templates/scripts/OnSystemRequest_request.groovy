@@ -1,4 +1,24 @@
 
+    public OnSystemRequest(Hashtable<String, Object> hash, byte[] bulkData){
+        super(hash);
+        setBulkData(bulkData);
+    }
+
+    @Deprecated
+    public void setBinData(byte[] aptData) {
+        setBulkData(aptData);
+    }
+
+    @Deprecated
+    public byte[] getBinData() {
+        return getBulkData();
+    }
+
+    @Override
+    public void setBulkData(byte[] bulkData){
+        super.setBulkData(bulkData);
+    }
+
     public static final String KEY_DATA = "data";
 
     private String body;

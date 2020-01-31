@@ -1,3 +1,12 @@
+
+    public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
+        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+    }
+
+    public ComponentVolumeStatus getFuelLevelState() {
+        return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
+    }
+
     /**
      * Sets a value for OEM Custom VehicleData.
      * @param vehicleDataName a String value

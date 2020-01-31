@@ -363,6 +363,13 @@
     "GetDTCsResponse": {
       "script": "templates/scripts/GetDTCsResponse.groovy"
     },
+    "GetFileResponse": {
+      "params": {
+        "crc": {
+          "title": "CRC"
+        }
+      }
+    },
     "GetInteriorVehicleDataConsent": {
       "params": {
         "moduleIds": {
@@ -379,6 +386,9 @@
     },
     "GetInteriorVehicleDataResponse": {
       "script": "templates/scripts/GetInteriorVehicleDataResponse.groovy"
+    },
+    "GetSystemCapabilityResponse": {
+      "script": "templates/scripts/GetSystemCapabilityResponse.groovy"
     },
     "GetVehicleData": {
       "script": "templates/scripts/GetVehicleData_OEM.groovy"
@@ -496,6 +506,12 @@
       ],
       "script": "templates/scripts/PutFileResponse_format.groovy"
     },
+    "RegisterAppInterface": {
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ],
+      "script": "templates/scripts/RegisterAppInterface_format.groovy"
+    },
     "RegisterAppInterfaceResponse": {
       "params": {
         "pcmStreamCapabilities": {
@@ -583,6 +599,34 @@
       ],
       "script": "templates/scripts/AppServiceManifest_rpcs.groovy"
     },
+    "BeltStatus": {
+      "params": {
+        "leftRow2BuckleBelted": {
+          "key": "KEY_LEFT_ROW_2_BUCKLE_BELTED"
+        },
+        "rightRow2BuckleBelted": {
+          "key": "KEY_RIGHT_ROW_2_BUCKLE_BELTED"
+        },
+        "middleRow2BuckleBelted": {
+          "key": "KEY_MIDDLE_ROW_2_BUCKLE_BELTED"
+        },
+        "middleRow3BuckleBelted": {
+          "key": "KEY_MIDDLE_ROW_3_BUCKLE_BELTED"
+        },
+        "leftRow3BuckleBelted": {
+          "key": "KEY_LEFT_ROW_3_BUCKLE_BELTED"
+        },
+        "rightRow3BuckleBelted": {
+          "key": "KEY_RIGHT_ROW_3_BUCKLE_BELTED"
+        },
+        "middleRow1BeltDeployed": {
+          "key": "KEY_MIDDLE_ROW_1_BELT_DEPLOYED"
+        },
+        "middleRow1BuckleBelted": {
+          "key": "KEY_MIDDLE_ROW_1_BUCKLE_BELTED"
+        }
+      }
+    },
     "ClimateControlData": {
       "params": {
         "heatedWindshieldEnable": {
@@ -597,12 +641,28 @@
         }
       }
     },
+    "CloudAppProperties": {
+      "script": "templates/scripts/CloudAppProperties.groovy"
+    },
     "Choice": {
       "script": "templates/scripts/Choice_vritems.groovy",
       "imports": [
         "java.util.ArrayList",
         "com.smartdevicelink.util.Version"
       ]
+    },
+    "DateTime": {
+      "params": {
+        "millisecond": {
+          "title": "MilliSecond"
+        },
+        "tz_hour": {
+          "title": "TzHour"
+        },
+        "tz_minute": {
+          "title": "TzMinute"
+        }
+      }
     },
     "DeviceInfo": {
       "script": "templates/scripts/DeviceInfo_os.groovy"
@@ -620,6 +680,9 @@
         }
       }
     },
+    "GPSData": {
+      "script": "templates/scripts/GPSData.groovy"
+    },
     "Grid": {
       "params": {
         "colspan": {
@@ -633,6 +696,13 @@
         "levelspan": {
           "key": "KEY_LEVEL_SPAN",
           "title": "LevelSpan"
+        }
+      }
+    },
+    "HeadLampStatus": {
+      "params": {
+        "ambientLightSensorStatus": {
+          "title": "AmbientLightStatus"
         }
       }
     },
@@ -788,6 +858,9 @@
           "title": "RadioText"
         }
       }
+    },
+    "RGBColor": {
+      "script": "templates/scripts/RGBColor.groovy"
     },
     "ScreenParams": {
       "params": {
