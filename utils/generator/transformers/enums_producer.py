@@ -4,7 +4,7 @@ Enums transformation
 
 import logging
 import textwrap
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
 from model.enum import Enum
 from model.enum_element import EnumElement
@@ -32,7 +32,7 @@ class EnumsProducer(InterfaceProducerCommon):
         :return: dictionary to be applied to jinja2 template
         """
         imports = set()
-        params = {}
+        params = OrderedDict()
         kind = 'simple'
         return_type = 'String'
 
@@ -127,7 +127,7 @@ class EnumsProducer(InterfaceProducerCommon):
         if 'kind' in custom:
             if custom['kind'] == 'simple':
                 self.logger.warning('for %s changing kind to %s', render['class_name'], custom['kind'])
-                params = {}
+                params = OrderedDict()
                 for name, value in render['params'].items():
                     d = value._asdict()
                     if 'origin' in d:
@@ -146,7 +146,7 @@ class EnumsProducer(InterfaceProducerCommon):
                 render['imports'].clear()
             if custom['kind'] == 'custom':
                 self.logger.warning('for %s changing kind to %s', render['class_name'], custom['kind'])
-                params = {}
+                params = OrderedDict()
                 for name, value in render['params'].items():
                     d = value._asdict()
                     if 'value' in d:

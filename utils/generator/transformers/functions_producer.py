@@ -4,7 +4,7 @@ Functions transformation
 
 import logging
 import textwrap
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
 from model.function import Function
 from model.param import Param
@@ -64,7 +64,7 @@ class FunctionsProducer(InterfaceProducerCommon):
             imports.add(extends_class)
             extends_class = extends_class.rpartition('.')[-1]
 
-        params = {}
+        params = OrderedDict()
 
         for param in getattr(item, self.container_name).values():
             if param.name == 'syncFileName':

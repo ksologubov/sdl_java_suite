@@ -4,8 +4,9 @@ Structs transformation
 
 import logging
 import textwrap
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
+from model.param import Param
 from model.struct import Struct
 from transformers.common_producer import InterfaceProducerCommon
 
@@ -51,7 +52,7 @@ class StructsProducer(InterfaceProducerCommon):
         imports.add(extends_class)
         extends_class = extends_class.rpartition('.')[-1]
 
-        params = {}
+        params = OrderedDict()
 
         for param in getattr(item, self.container_name).values():
             i, p = self.extract_param(param)
@@ -109,7 +110,7 @@ class StructsProducer(InterfaceProducerCommon):
                 sorted_imports.append(i)
         return sorted_imports
 
-    def extract_param(self, param: Struct):
+    def extract_param(self, param: Param):
         imports = set()
         p = {'title': param.name[:1].upper() + param.name[1:]}
         p.update({'key': 'KEY_' + self.key(param.name)})

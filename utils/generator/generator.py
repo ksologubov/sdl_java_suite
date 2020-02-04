@@ -6,7 +6,7 @@ import re
 import sys
 import datetime
 from argparse import ArgumentParser
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 from inspect import getfile
 from json import JSONDecodeError, loads
 from os.path import basename
@@ -249,7 +249,7 @@ class Generator:
         """
         fields = ('struct_class', 'request_class', 'response_class',
                   'notification_class', 'enums_package', 'structs_package', 'functions_package')
-        intermediate = {}
+        intermediate = OrderedDict()
         try:
             with file_name.open('r') as file:
                 for line in file:
@@ -290,7 +290,7 @@ class Generator:
             return loads(''.join(intermediate))
         except (FileNotFoundError, JSONDecodeError) as message1:
             self.logger.error(message1)
-            return {}
+            return OrderedDict()
 
     def write_file(self, file_name, template, data):
         """
@@ -390,7 +390,7 @@ class Generator:
         struct_names = tuple(interface.structs.keys())
 
         if pattern:
-            intermediate = {}
+            intermediate = OrderedDict()
             intermediate.update({'params': interface.params})
             for kind, content in vars(interface).items():
                 if kind == 'params':

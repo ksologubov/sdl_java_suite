@@ -26,7 +26,7 @@ class InterfaceProducerCommon(ABC):
         if mapping is None:
             mapping = OrderedDict()
         if all_mapping is None:
-            all_mapping = {}
+            all_mapping = OrderedDict()
         self.logger = logging.getLogger('Generator.InterfaceProducerCommon')
         self.container_name = container_name
         self.enum_names = enum_names
@@ -111,7 +111,7 @@ class InterfaceProducerCommon(ABC):
             if isinstance(t1, Struct) or isinstance(t1, Enum):
                 name = t1.name
                 element_type = 'enums' if isinstance(t1, Enum) else 'structs'
-                if element_type in self.all_mapping and name in self.all_mapping[element_type]\
+                if element_type in self.all_mapping and name in self.all_mapping[element_type] \
                         and 'rename' in self.all_mapping[element_type][name]:
                     name = self.all_mapping[element_type][name]['rename']
                 return name
