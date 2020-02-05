@@ -36,8 +36,8 @@ class InterfaceProducerCommon(ABC):
         self.mapping = mapping
         self.all_mapping = all_mapping
         self.package_name = package_name
-        self._params = namedtuple('params',
-                                  'deprecated description key last mandatory origin return_type since title param_doc')
+        self._params = namedtuple('params', 'deprecated description key last mandatory origin return_type since title '
+                                            'param_doc name')
 
     @property
     def get_version(self):
@@ -156,8 +156,8 @@ class InterfaceProducerCommon(ABC):
         if 'imports' in custom:
             if 'imports' in render:
                 render['imports'].update(custom['imports'])
-            # else:
-            #     render['imports'] = {custom['imports']}
+                # else:
+                #     render['imports'] = {custom['imports']}
         if '-imports' in custom:
             for i in custom['-imports']:
                 if 'imports' in render:
@@ -210,16 +210,10 @@ class InterfaceProducerCommon(ABC):
                     Params = namedtuple('Params', sorted(d))
                     render['params'][name] = Params(**d)
                 else:
-                    from transformers.enums_producer import EnumsProducer
-                    from transformers.functions_producer import FunctionsProducer
-                    from transformers.structs_producer import StructsProducer
                     for k, v in value.items():
                         if isinstance(v, bool):
                             value[k] = str(v).lower()
-                    if isinstance(self, (FunctionsProducer, StructsProducer)):
-                        value['origin'] = name
-                    if isinstance(self, EnumsProducer):
-                        value['name'] = name
+                    value['name'] = name
                     # if 'title' not in value:
                     #     value['title'] = name[:1].upper() + name[1:]
                     if 'description' in value:

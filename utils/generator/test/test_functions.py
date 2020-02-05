@@ -42,10 +42,10 @@ class TestFunctionsProducer(unittest.TestCase):
             if key in actual:
                 content = self.producer.get_file_content(self.mapping[actual['class_name']][key])
                 self.assertSequenceEqual(content, actual[key])
-        actual_params = dict(zip(map(lambda k: k.origin, actual['params']), actual['params']))
+        actual_params = dict(zip(map(lambda k: k.title, actual['params']), actual['params']))
         for param in expected['params']:
             for field in self.producer.params._fields:
-                self.assertEqual(getattr(param, field), getattr(actual_params[param.origin], field, None))
+                self.assertEqual(getattr(param, field), getattr(actual_params[param.title], field, None))
         expected_filtered = dict(filter(lambda e: e[0] != 'params', expected.items()))
         actual_filtered = dict(filter(lambda e: e[0] not in ('params', 'valueForString', 'scripts'), actual.items()))
 
@@ -116,7 +116,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['params'] = (self.producer.params(deprecated=None, key='KEY_SPEED', description=None,
                                                    last='speed', mandatory=True, SuppressWarnings=None,
                                                    origin='speed', return_type='Float',
-                                                   since=None, title='Speed', param_doc=None),)
+                                                   since=None, title='Speed', param_doc=None, name=None),)
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
 
@@ -140,10 +140,10 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['params'] = (
             self.producer.params(deprecated=None, key='KEY_LANGUAGE', last='language', mandatory=True,
                                  origin='language', return_type='Language', since=None, title='Language',
-                                 description=None, SuppressWarnings=None, param_doc=None),
-            self.producer.params(title='PcmStreamingCapabilities', origin='pcmStreamCapabilities',
+                                 description=None, SuppressWarnings=None, param_doc=None, name=None),
+            self.producer.params(title='PcmStreamingCapabilities', origin=None,
                                  deprecated=None, key=None, last=None, mandatory=None, return_type=None, since=None,
-                                 description=None, SuppressWarnings=None, param_doc=None))
+                                 description=None, SuppressWarnings=None, param_doc=None, name='pcmStreamCapabilities'))
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
 
@@ -168,11 +168,11 @@ class TestFunctionsProducer(unittest.TestCase):
             self.producer.params(deprecated=None, key='KEY_SDL_MSG_VERSION',
                                  last='sdlMsgVersion', mandatory=True, SuppressWarnings=None,
                                  origin='syncMsgVersion', return_type='SyncMsgVersion',
-                                 since=None, title='SdlMsgVersion', description=None, param_doc=None),
+                                 since=None, title='SdlMsgVersion', description=None, param_doc=None, name=None),
             self.producer.params(SuppressWarnings='unchecked', deprecated=None,
                                  key='KEY_TTS_NAME', last='ttsName',
                                  mandatory=True, origin='ttsName', description=None,
-                                 return_type='List<TTSChunk>', since=None, title='TtsName', param_doc=None))
+                                 return_type='List<TTSChunk>', since=None, title='TtsName', param_doc=None, name=None))
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
 
@@ -198,10 +198,10 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['params'] = (
             self.producer.params(deprecated=None, description=['Selected file type.'], key='KEY_FILE_TYPE',
                                  last='fileType', mandatory=True, origin='fileType', SuppressWarnings=None,
-                                 return_type='FileType', since=None, title='FileType', param_doc=None),
+                                 return_type='FileType', since=None, title='FileType', param_doc=None, name=None),
             self.producer.params(deprecated=None, key='KEY_SDL_FILE_NAME', last='sdlFileName', mandatory=True,
                                  origin='syncFileName', return_type='String', description=None,
-                                 since=None, title='SdlFileName', SuppressWarnings=None, param_doc=None))
+                                 since=None, title='SdlFileName', SuppressWarnings=None, param_doc=None, name=None))
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
 
@@ -222,7 +222,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['params'] = (
             self.producer.params(deprecated=None, description=['If'], key='KEY_URL', last='URL', title='URL',
                                  SuppressWarnings=None, mandatory=True, origin='URL', return_type='String',
-                                 since=None, param_doc=None),)
+                                 since=None, param_doc=None, name=None),)
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
 
@@ -246,7 +246,7 @@ class TestFunctionsProducer(unittest.TestCase):
                                      'from Command Menu',
                                      '<p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>'],
                                  return_type='Integer', since=None, title='CmdID', description=None,
-                                 SuppressWarnings=None),)
+                                 SuppressWarnings=None, name=None),)
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
 
@@ -268,7 +268,7 @@ class TestFunctionsProducer(unittest.TestCase):
                                  mandatory=True, origin='alertText2', param_doc=self.producer.get_file_content(
                     self.mapping['Alert']['params']['alertText2']['param_doc_file']).splitlines(),
                                  return_type='String', since=None, title='AlertText2', description=None,
-                                 SuppressWarnings=None),)
+                                 SuppressWarnings=None, name=None),)
         expected['description'] = self.producer.get_file_content(self.mapping['Alert']['description_file']).splitlines()
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
@@ -289,6 +289,6 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['params'] = (
             self.producer.params(deprecated=None, key='KEY_MODULE_TYPE', last='moduleType', mandatory=True,
                                  origin='moduleType', return_type='ModuleType', since=None, title='ModuleType',
-                                 description=None, SuppressWarnings=None, param_doc=None),)
+                                 description=None, SuppressWarnings=None, param_doc=None, name=None),)
         actual = self.producer.transform(item)
         self.comparison(expected, actual)

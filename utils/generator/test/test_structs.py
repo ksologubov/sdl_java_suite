@@ -68,10 +68,10 @@ class TestStructsProducer(unittest.TestCase):
             'params': (self.producer.params(deprecated=None, key='KEY_RANGE',
                                             last='range', mandatory=True,
                                             origin='range', return_type='Float',
-                                            since=None, title='Range', description=None, param_doc=None),
+                                            since=None, title='Range', description=None, param_doc=None, name=None),
                        self.producer.params(deprecated=None, key='KEY_SAMPLING_RATE',
                                             last='samplingRate', mandatory=True,
-                                            origin='samplingRate', return_type='SamplingRate',
+                                            origin='samplingRate', return_type='SamplingRate', name=None,
                                             since=None, title='SamplingRate', description=None, param_doc=None)),
         }
         actual = self.producer.transform(item)
@@ -94,7 +94,7 @@ class TestStructsProducer(unittest.TestCase):
             'since': None,
             'params': (self.producer.params(deprecated=None, key='KEY_NICKNAMES',
                                             last='nicknames', mandatory=True,
-                                            origin='nicknames', return_type='List<String>',
+                                            origin='nicknames', return_type='List<String>', name=None,
                                             since=None, title='Nicknames', description=None, param_doc=None),),
         }
         actual = self.producer.transform(item)
@@ -116,7 +116,7 @@ class TestStructsProducer(unittest.TestCase):
                             'PerformAudioPassThru.'],
             'params': (self.producer.params(deprecated=None, description=['Optional image'], key='KEY_IMAGE',
                                             last='image', mandatory=True, origin='image', return_type='Image',
-                                            since=None, title='Image', param_doc=None),)
+                                            since=None, title='Image', param_doc=None, name=None),)
         }
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
@@ -136,7 +136,7 @@ class TestStructsProducer(unittest.TestCase):
             'params': (
                 self.producer.params(deprecated=None, key='KEY_COUNTRY_NAME', last='countryName', mandatory=True,
                                      origin='countryName', return_type='String', since=None, title='CountryName',
-                                     description=None, param_doc=None),)
+                                     description=None, param_doc=None, name=None),)
         }
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
@@ -156,7 +156,7 @@ class TestStructsProducer(unittest.TestCase):
             'params': (
                 self.producer.params(deprecated=None, key='KEY_SEARCH_ADDRESS', last='searchAddress', mandatory=True,
                                      origin='searchAddress', return_type='OasisAddress', since=None,
-                                     title='SearchAddress', description=None, param_doc=None),)
+                                     title='SearchAddress', description=None, param_doc=None, name=None),)
         }
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
@@ -175,7 +175,8 @@ class TestStructsProducer(unittest.TestCase):
             'deprecated': None,
             'params': (
                 self.producer.params(deprecated=None, key='KEY_TPMS', last='tpms', mandatory=True, origin='tpms',
-                                     return_type='TPMS', since=None, title='TPMS', description=None, param_doc=None),)
+                                     return_type='TPMS', since=None, title='TPMS', description=None, param_doc=None,
+                                     name=None),)
         }
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
