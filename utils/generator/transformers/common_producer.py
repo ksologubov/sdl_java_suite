@@ -23,8 +23,8 @@ class InterfaceProducerCommon(ABC):
 
     def __init__(self, container_name, enums_package, structs_package, package_name,
                  enum_names=(), struct_names=(), mapping=None, all_mapping=None):
-        if mapping is None:
-            mapping = OrderedDict()
+        # if mapping is None:
+        #     mapping = OrderedDict()
         if all_mapping is None:
             all_mapping = OrderedDict()
         self.logger = logging.getLogger('Generator.InterfaceProducerCommon')
@@ -36,36 +36,38 @@ class InterfaceProducerCommon(ABC):
         self.mapping = mapping
         self.all_mapping = all_mapping
         self.package_name = package_name
+        self._params = namedtuple('params',
+                                  'deprecated description key last mandatory origin return_type since title param_doc')
 
     @property
     def get_version(self):
         return self.version
 
-    @property
-    def imports(self):
-        """
-        :return: namedtuple imports(what='', wherefrom='')
-        """
-        return namedtuple('Imports', 'what wherefrom')
-
-    @property
-    def methods(self):
-        """
-        :return: namedtuple methods(
-                            origin='', key='', method_title='', external='', description='', param_name='', type='',)
-        """
-        return namedtuple('Methods', 'origin key method_title external description param_name type')
+    # @property
+    # def imports(self):
+    #     """
+    #     :return: namedtuple imports(what='', wherefrom='')
+    #     """
+    #     return namedtuple('Imports', 'what wherefrom')
+    #
+    # @property
+    # def methods(self):
+    #     """
+    #     :return: namedtuple methods(
+    #                         origin='', key='', method_title='', external='', description='', param_name='', type='',)
+    #     """
+    #     return namedtuple('Methods', 'origin key method_title external description param_name type')
 
     @property
     def params(self):
         """
         :return: namedtuple params(name='', origin='')
         """
-        return namedtuple('Params', 'name origin')
+        return self._params
 
-    @staticmethod
-    def last(name):
-        return re.sub(r'^\w*([A-Z][a-z]\w*|[A-Z]{2,})$', r'\1', name).lower()
+    # @staticmethod
+    # def last(name):
+    #     return re.sub(r'^\w*([A-Z][a-z]\w*|[A-Z]{2,})$', r'\1', name).lower()
 
     @staticmethod
     def key(param: str):
@@ -154,8 +156,8 @@ class InterfaceProducerCommon(ABC):
         if 'imports' in custom:
             if 'imports' in render:
                 render['imports'].update(custom['imports'])
-            else:
-                render['imports'] = {custom['imports']}
+            # else:
+            #     render['imports'] = {custom['imports']}
         if '-imports' in custom:
             for i in custom['-imports']:
                 if 'imports' in render:
@@ -173,7 +175,7 @@ class InterfaceProducerCommon(ABC):
         if 'script' in custom:
             script = self.get_file_content(custom['script'])
             if script:
-                render.update({'scripts': [script]})
+                render['scripts'] = [script]
         if 'description_file' in custom:
             render['description'] = self.get_file_content(custom['description_file']).split('\n')
         if 'function_id' in custom:
@@ -184,40 +186,46 @@ class InterfaceProducerCommon(ABC):
                     for k, v in value.items():
                         if isinstance(v, bool):
                             render['return_type'] = 'bool'
-                            value.update({k: str(v).lower()})
+                            value[k] = str(v).lower()
                     d = render['params'][name]._asdict()
                     if 'description' in value:
-                        d.update({'description': textwrap.wrap(value['description'], 113)})
+                        d['description'] = textwrap.wrap(value['description'], 113)
                         del value['description']
                     if 'title' in value:
-                        d.update({'title': value['title']})
+                        d['title'] = value['title']
                         del value['title']
                     if 'description_file' in value:
-                        d.update({'description': self.get_file_content(value['description_file']).split('\n')})
+                        d['description'] = self.get_file_content(value['description_file']).split('\n')
                         del value['description_file']
                     if 'param_doc_file' in value:
-                        d.update({'param_doc': self.get_file_content(value['param_doc_file']).split('\n')})
+                        d['param_doc'] = self.get_file_content(value['param_doc_file']).split('\n')
                         del value['param_doc_file']
                     if 'param_doc' in value:
-                        d.update({'param_doc': textwrap.wrap(value['param_doc'], 100)})  # len(d['last'])
+                        d['param_doc'] = textwrap.wrap(value['param_doc'], 100)  # len(d['last'])
                         del value['param_doc']
-                    if '-SuppressWarnings' in value:
-                        del d['SuppressWarnings']
-                        del value['-SuppressWarnings']
+                    # if '-SuppressWarnings' in value:
+                    #     del d['SuppressWarnings']
+                    #     del value['-SuppressWarnings']
                     d.update(value)
                     Params = namedtuple('Params', sorted(d))
-                    render['params'].update({name: Params(**d)})
+                    render['params'][name] = Params(**d)
                 else:
+                    from transformers.enums_producer import EnumsProducer
+                    from transformers.functions_producer import FunctionsProducer
+                    from transformers.structs_producer import StructsProducer
                     for k, v in value.items():
                         if isinstance(v, bool):
-                            value.update({k: str(v).lower()})
-                    value.update({'name': name})
+                            value[k] = str(v).lower()
+                    if isinstance(self, (FunctionsProducer, StructsProducer)):
+                        value['origin'] = name
+                    if isinstance(self, EnumsProducer):
+                        value['name'] = name
                     # if 'title' not in value:
-                    #     value.update({'title': name[:1].upper() + name[1:]})
+                    #     value['title'] = name[:1].upper() + name[1:]
                     if 'description' in value:
-                        value.update({'description': textwrap.wrap(value['description'], 113)})
-                    if 'description_file' in value:
-                        value.update({'description': self.get_file_content(custom['description_file']).split('\n')})
-                        del value['description_file']
+                        value['description'] = textwrap.wrap(value['description'], 113)
+                    # if 'description_file' in value:
+                    #     value['description'] = self.get_file_content(custom['description_file']).split('\n')
+                    #     del value['description_file']
                     Params = namedtuple('Params', sorted(value))
-                    render['params'].update({name: Params(**value)})
+                    render['params'][name] = Params(**value)

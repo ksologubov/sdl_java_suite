@@ -5,8 +5,6 @@ import sys
 from pathlib import Path
 from unittest import TestLoader, TestSuite, TextTestRunner
 
-from concurrencytest import ConcurrentTestSuite, fork_for_tests
-
 PATH = Path(__file__).absolute()
 
 sys.path.append(PATH.parents[1].joinpath('rpc_spec/InterfaceParser').as_posix())
@@ -29,17 +27,14 @@ def main():
     """
 
     suite = TestSuite()
-    suite.addTests(TestLoader().loadTestsFromTestCase(TestOrder))
+    # suite.addTests(TestLoader().loadTestsFromTestCase(TestOrder))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestFunctionsProducer))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestEnumsProducer))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestStructsProducer))
-    suite.addTests(TestLoader().loadTestsFromTestCase(CodeFormatAndQuality))
-
-    concurrent_suite = ConcurrentTestSuite(suite, fork_for_tests(4))
+    # suite.addTests(TestLoader().loadTestsFromTestCase(CodeFormatAndQuality))
 
     runner = TextTestRunner(verbosity=2)
-    test_result = runner.run(concurrent_suite)
-    print(test_result)
+    runner.run(suite)
 
 
 if __name__ == '__main__':

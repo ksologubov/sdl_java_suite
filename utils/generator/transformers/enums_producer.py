@@ -24,6 +24,7 @@ class EnumsProducer(InterfaceProducerCommon):
             package_name=paths.enums_package,
             mapping=mapping['enums'] if mapping and 'enums' in mapping else {})
         self.logger = logging.getLogger('EnumsProducer')
+        self._params = namedtuple('params', 'origin name internal description since value deprecated')
 
     def transform(self, item: Enum) -> dict:
         """
@@ -44,25 +45,26 @@ class EnumsProducer(InterfaceProducerCommon):
                 kind = t
             return_type = self.extract_type(param)
 
-            params.update({p.name: p})
+            params[p.name] = p
             imports.update(self.extract_imports(param))
 
-        render = {'kind': kind,
-                  'return_type': return_type,
-                  'package_name': self.package_name,
-                  'class_name': item.name[:1].upper() + item.name[1:],
-                  'params': params,
-                  'since': item.since,
-                  'deprecated': item.deprecated}
+        render = OrderedDict()
+        render['kind'] = kind
+        render['return_type'] = return_type
+        render['package_name'] = self.package_name
+        render['class_name'] = item.name[:1].upper() + item.name[1:]
+        render['params'] = params
+        render['since'] = item.since
+        render['deprecated'] = item.deprecated
 
         description = self.extract_description(item.description)
         if description:
-            render.update({'description': description})
+            render['description'] = description
         if imports:
-            render.update({'imports': imports})
+            render['imports'] = imports
 
         self.custom_mapping(render)
-        render.update({'params': tuple(render['params'].values())})
+        render['params'] = tuple(render['params'].values())
         if 'description' in render and isinstance(render['description'], str):
             render['description'] = textwrap.wrap(render['description'], 113)
 
@@ -73,27 +75,27 @@ class EnumsProducer(InterfaceProducerCommon):
         kind = 'simple'
         if getattr(param, 'value', None) is not None:
             n = self.ending_cutter(param.name)
-            d.update({'name': self.key(n)})
-            d.update({'value': param.value})
-            d.update({'internal': '"{}"'.format(n)})
+            d['name'] = self.key(n)
+            d['value'] = param.value
+            d['internal'] = '"{}"'.format(n)
             kind = 'complex'
         elif getattr(param, 'internal_name', None) is not None:
             if param.internal_name.startswith(item_name):
                 n = param.internal_name[len(item_name):]
             else:
                 n = param.internal_name
-            d.update({'name': n})
-            d.update({'internal': '"{}"'.format(param.name)})
+            d['name'] = n
+            d['internal'] = '"{}"'.format(param.name)
             kind = 'custom'
         else:
-            d.update({'name': param.name})
+            d['name'] = param.name
 
         if getattr(param, 'since', None):
-            d.update({'since': param.since})
+            d['since'] = param.since
         if getattr(param, 'deprecated', None):
-            d.update({'deprecated': param.deprecated})
+            d['deprecated'] = param.deprecated
         if getattr(param, 'description', None):
-            d.update({'description': textwrap.wrap(self.extract_description(param.description), 113)})
+            d['description'] = textwrap.wrap(self.extract_description(param.description), 113)
         Params = namedtuple('Params', sorted(d))
         return kind, Params(**d)
 
@@ -122,7 +124,6 @@ class EnumsProducer(InterfaceProducerCommon):
     def custom_mapping(self, render):
         if not render['class_name'] in self.mapping:
             return
-        super(EnumsProducer, self).custom_mapping(render)
         custom = self.mapping[render['class_name']]
         if 'kind' in custom:
             if custom['kind'] == 'simple':
@@ -132,15 +133,15 @@ class EnumsProducer(InterfaceProducerCommon):
                     d = value._asdict()
                     if 'origin' in d:
                         d['name'] = d['origin']
-                    else:
-                        d['name'] = name
+                    # else:
+                    #     d['name'] = name
                     if 'internal' in d:
                         del d['internal']
                     if 'value' in d:
                         del d['value']
                     Params = namedtuple('Params', sorted(d))
                     d = Params(**d)
-                    params.update({d.name: d})
+                    params[d.name] = d
                 render['kind'] = custom['kind']
                 render['params'] = params
                 render['imports'].clear()
@@ -156,7 +157,7 @@ class EnumsProducer(InterfaceProducerCommon):
                     d['name'] = self.key(d['name'])
                     Params = namedtuple('Params', sorted(d))
                     d = Params(**d)
-                    params.update({d.name: d})
+                    params[d.name] = d
                 render['kind'] = custom['kind']
                 render['params'] = params
                 render['imports'] = set()
@@ -167,3 +168,5 @@ class EnumsProducer(InterfaceProducerCommon):
             script = self.get_file_content(custom['valueForString'])
             if script:
                 render['valueForString'] = script
+
+        super(EnumsProducer, self).custom_mapping(render)

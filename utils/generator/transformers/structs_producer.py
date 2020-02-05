@@ -29,15 +29,6 @@ class StructsProducer(InterfaceProducerCommon):
         self.logger = logging.getLogger('StructsProducer')
         self.struct_class = paths.struct_class
 
-    @property
-    def params(self):
-        """
-        :return: namedtuple params(deprecated='', description='', key='',
-                       last='', mandatory='', origin='', return_type='',
-                       since='', title='')
-        """
-        return namedtuple('Params', 'deprecated description key last mandatory origin return_type since title')
-
     def transform(self, item: Struct) -> dict:
         """
         Override
@@ -57,34 +48,35 @@ class StructsProducer(InterfaceProducerCommon):
         for param in getattr(item, self.container_name).values():
             i, p = self.extract_param(param)
             imports.update(i)
-            params.update({param.name: p})
+            params[param.name] = p
 
-        for n1, v1 in params.items():
-            for n2, v2, in params.items():
-                if n1 != n2 and v1.last == v2.last:
-                    d = v2._replace(last=v2.origin)
-                    params.update({n2: d})
+        # for n1, v1 in params.items():
+        #     for n2, v2, in params.items():
+        #         if n1 != n2 and v1.last == v2.last:
+        #             d = v2._replace(last=v2.origin)
+        #             params[n2] = d
 
-        render = {'package_name': self.package_name,
-                  'imports': imports,
-                  'class_name': class_name,
-                  'extends_class': extends_class,
-                  'since': item.since,
-                  'deprecated': item.deprecated}
+        render = OrderedDict()
+        render['class_name'] = class_name
+        render['extends_class'] = extends_class
+        render['package_name'] = self.package_name
+        render['imports'] = imports
+        render['deprecated'] = item.deprecated
+        render['since'] = item.since
 
         description = self.extract_description(item.description)
         if description:
-            render.update({'description': description})
+            render['description'] = description
         if imports:
-            render.update({'imports': imports})
+            render['imports'] = imports
         if params:
-            render.update({'params': params})
+            render['params'] = params
 
         self.custom_mapping(render)
         if 'imports' in render:
-            render.update({'imports': self.sort_imports(render['imports'])})
+            render['imports'] = self.sort_imports(render['imports'])
         if params:
-            render.update({'params': tuple(render['params'].values())})
+            render['params'] = tuple(render['params'].values())
         if 'description' in render and isinstance(render['description'], str):
             render['description'] = textwrap.wrap(render['description'], 113)
 
@@ -112,25 +104,27 @@ class StructsProducer(InterfaceProducerCommon):
 
     def extract_param(self, param: Param):
         imports = set()
-        p = {'title': param.name[:1].upper() + param.name[1:]}
-        p.update({'key': 'KEY_' + self.key(param.name)})
-        p.update({'mandatory': param.is_mandatory})
-        p.update({'last': param.name})
-        p.update({'since': param.since})
-        p.update({'deprecated': param.deprecated})
-        p.update({'origin': param.name})
+        p = OrderedDict()
+        p['title'] = param.name[:1].upper() + param.name[1:]
+        p['key'] = 'KEY_' + self.key(param.name)
+        p['mandatory'] = param.is_mandatory
+        p['last'] = param.name
+        p['since'] = param.since
+        p['deprecated'] = param.deprecated
+        p['origin'] = param.name
+
         d = self.extract_description(param.description)
         if d:
-            p.update({'description': textwrap.wrap(d, 113)})
+            p['description'] = textwrap.wrap(d, 113)
         t = self.extract_type(param)
         tr = t
         if t.startswith('List'):
             imports.add('java.util.List')
-            p.update({'SuppressWarnings': 'unchecked'})
+            p['SuppressWarnings'] = 'unchecked'
             tr = t.replace('List<', '').rstrip('>')
         if t.startswith('Float'):
             imports.add('com.smartdevicelink.util.SdlDataTypeConverter')
-        p.update({'return_type': t})
+        p['return_type'] = t
 
         if tr in self.enum_names:
             imports.add('{}.{}'.format(self.enums_package, tr))

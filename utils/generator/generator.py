@@ -32,8 +32,7 @@ try:
     from transformers.functions_producer import FunctionsProducer
     from transformers.structs_producer import StructsProducer
 except ImportError as message:
-
-    print('%s.\nprobably you did not initialize submodule', message)
+    print('{}. probably you did not initialize submodule'.format(message))
     sys.exit(1)
 
 
