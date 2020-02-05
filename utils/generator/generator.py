@@ -31,7 +31,8 @@ try:
     from transformers.enums_producer import EnumsProducer
     from transformers.functions_producer import FunctionsProducer
     from transformers.structs_producer import StructsProducer
-except ModuleNotFoundError as message:
+except ImportError as message:
+
     print('%s.\nprobably you did not initialize submodule', message)
     sys.exit(1)
 

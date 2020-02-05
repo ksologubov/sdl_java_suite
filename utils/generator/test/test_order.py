@@ -15,7 +15,7 @@ try:
     from model.enum_element import EnumElement
     from transformers.structs_producer import StructsProducer
     from transformers.functions_producer import FunctionsProducer
-except ModuleNotFoundError as message:
+except ImportError as message:
     print('{}. probably you did not initialize submodule'.format(message))
     sys.exit(1)
 
