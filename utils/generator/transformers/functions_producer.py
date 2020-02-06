@@ -72,12 +72,6 @@ class FunctionsProducer(InterfaceProducerCommon):
             imports.update(i)
             params.update({param.name: p})
 
-        # for n1, v1 in params.items():
-        #     for n2, v2, in params.items():
-        #         if n1 != n2 and v1.last == v2.last:
-        #             d = v2._replace(last=v2.origin)
-        #             params[n2] = d
-
         render = OrderedDict()
         render['kind'] = item.message_type.name
         render['package_name'] = self.package_name
@@ -170,4 +164,3 @@ class FunctionsProducer(InterfaceProducerCommon):
         if not render['class_name'] in self.mapping:
             return
         super(FunctionsProducer, self).custom_mapping(render)
-        #     custom = self.mapping[render['class_name']]

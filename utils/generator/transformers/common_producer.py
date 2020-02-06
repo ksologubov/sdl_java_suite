@@ -23,8 +23,6 @@ class InterfaceProducerCommon(ABC):
 
     def __init__(self, container_name, enums_package, structs_package, package_name,
                  enum_names=(), struct_names=(), mapping=None, all_mapping=None):
-        # if mapping is None:
-        #     mapping = OrderedDict()
         if all_mapping is None:
             all_mapping = OrderedDict()
         self.logger = logging.getLogger('Generator.InterfaceProducerCommon')
@@ -43,31 +41,12 @@ class InterfaceProducerCommon(ABC):
     def get_version(self):
         return self.version
 
-    # @property
-    # def imports(self):
-    #     """
-    #     :return: namedtuple imports(what='', wherefrom='')
-    #     """
-    #     return namedtuple('Imports', 'what wherefrom')
-    #
-    # @property
-    # def methods(self):
-    #     """
-    #     :return: namedtuple methods(
-    #                         origin='', key='', method_title='', external='', description='', param_name='', type='',)
-    #     """
-    #     return namedtuple('Methods', 'origin key method_title external description param_name type')
-
     @property
     def params(self):
         """
         :return: namedtuple params(name='', origin='')
         """
         return self._params
-
-    # @staticmethod
-    # def last(name):
-    #     return re.sub(r'^\w*([A-Z][a-z]\w*|[A-Z]{2,})$', r'\1', name).lower()
 
     @staticmethod
     def key(param: str):
@@ -156,8 +135,6 @@ class InterfaceProducerCommon(ABC):
         if 'imports' in custom:
             if 'imports' in render:
                 render['imports'].update(custom['imports'])
-                # else:
-                #     render['imports'] = {custom['imports']}
         if '-imports' in custom:
             for i in custom['-imports']:
                 if 'imports' in render:
@@ -203,9 +180,6 @@ class InterfaceProducerCommon(ABC):
                     if 'param_doc' in value:
                         d['param_doc'] = textwrap.wrap(value['param_doc'], 100)  # len(d['last'])
                         del value['param_doc']
-                    # if '-SuppressWarnings' in value:
-                    #     del d['SuppressWarnings']
-                    #     del value['-SuppressWarnings']
                     d.update(value)
                     Params = namedtuple('Params', sorted(d))
                     render['params'][name] = Params(**d)
@@ -214,12 +188,7 @@ class InterfaceProducerCommon(ABC):
                         if isinstance(v, bool):
                             value[k] = str(v).lower()
                     value['name'] = name
-                    # if 'title' not in value:
-                    #     value['title'] = name[:1].upper() + name[1:]
                     if 'description' in value:
                         value['description'] = textwrap.wrap(value['description'], 113)
-                    # if 'description_file' in value:
-                    #     value['description'] = self.get_file_content(custom['description_file']).split('\n')
-                    #     del value['description_file']
                     Params = namedtuple('Params', sorted(value))
                     render['params'][name] = Params(**value)

@@ -50,12 +50,6 @@ class StructsProducer(InterfaceProducerCommon):
             imports.update(i)
             params[param.name] = p
 
-        # for n1, v1 in params.items():
-        #     for n2, v2, in params.items():
-        #         if n1 != n2 and v1.last == v2.last:
-        #             d = v2._replace(last=v2.origin)
-        #             params[n2] = d
-
         render = OrderedDict()
         render['class_name'] = class_name
         render['extends_class'] = extends_class
@@ -140,4 +134,3 @@ class StructsProducer(InterfaceProducerCommon):
         if not render['class_name'] in self.mapping:
             return
         super(StructsProducer, self).custom_mapping(render)
-        #     custom = self.mapping[render['class_name']]

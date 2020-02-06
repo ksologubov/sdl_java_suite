@@ -27,11 +27,11 @@ def main():
     """
 
     suite = TestSuite()
-    # suite.addTests(TestLoader().loadTestsFromTestCase(TestOrder))
+    suite.addTests(TestLoader().loadTestsFromTestCase(TestOrder))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestFunctionsProducer))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestEnumsProducer))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestStructsProducer))
-    # suite.addTests(TestLoader().loadTestsFromTestCase(CodeFormatAndQuality))
+    suite.addTests(TestLoader().loadTestsFromTestCase(CodeFormatAndQuality))
 
     runner = TextTestRunner(verbosity=2)
     runner.run(suite)
