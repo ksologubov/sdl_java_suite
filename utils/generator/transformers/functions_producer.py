@@ -59,10 +59,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         params = OrderedDict()
 
         for param in getattr(item, self.container_name).values():
-            if param.name == 'syncFileName':
-                param.name = 'sdlFileName'
-            if param.name == 'syncMsgVersion':
-                param.name = 'sdlMsgVersion'
+            param.name = self.replace_sync(param.name)
             if isinstance(item, Function) and item.message_type.name == 'response' and \
                             param.name in ('success', 'resultCode', 'info'):
                 self.logger.warning('%s of return_type %s/%s - skip parameter "%s"',

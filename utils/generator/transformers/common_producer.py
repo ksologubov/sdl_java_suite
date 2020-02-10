@@ -81,6 +81,16 @@ class InterfaceProducerCommon(ABC):
         """
         return re.sub(r'(\s{2,}|\n|\[@TODO.+)', ' ', ''.join(d)).strip() if d else ''
 
+    @staticmethod
+    def replace_sync(name):
+        """
+        :param name: string with item name
+        :return: string with replaced 'sync' to 'Sdl'
+        """
+        if name:
+            return re.sub(r'^(s|S)ync(.+)$', r'\1dl\2', name)
+        return name
+
     def extract_type(self, param):
         """
         Evaluate and extract type
