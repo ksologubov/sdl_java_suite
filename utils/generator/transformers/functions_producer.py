@@ -59,6 +59,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         params = OrderedDict()
 
         for param in getattr(item, self.container_name).values():
+            param.origin = param.name
             param.name = self.replace_sync(param.name)
             if isinstance(item, Function) and item.message_type.name == 'response' and \
                             param.name in ('success', 'resultCode', 'info'):
@@ -129,11 +130,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         p['last'] = param.name
         p['since'] = param.since
         p['deprecated'] = param.deprecated
-        if param.name == 'sdlFileName':
-            param.name = 'syncFileName'
-        if param.name == 'sdlMsgVersion':
-            param.name = 'syncMsgVersion'
-        p['origin'] = param.name
+        p['origin'] = param.origin
         d = self.extract_description(param.description)
         if d:
             p['description'] = textwrap.wrap(d, 113)
