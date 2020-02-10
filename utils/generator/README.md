@@ -53,7 +53,64 @@ These are the general transformation rules for RPC classes of SDL Java Suite Lib
 
 The JavaDoc is used for inline documentation of generated code. All non-XML values should follow Contributing to SDL Projects [CONTRIBUTING.md](ttps://github.com/smartdevicelink/sdl_android/blob/master/.github/CONTRIBUTING.md)
 
-These rules based on the current `develop` branch state (commit:`e4ef8d455dba485619ea446bf445f113263241ff`) of [`smartdevicelink/sdl_java_suite`](https://github.com/smartdevicelink/sdl_java_suite) repository.
+These rules based on the current `develop` branch state (commit:`7e6a16c027bcdd0fb523a9993dc59b0171167aea`) of [`smartdevicelink/sdl_java_suite`](https://github.com/smartdevicelink/sdl_java_suite) repository.
+
+## Output Directory Structure and Package definitions
+
+The generator script creates corresponding RPC classes for `<enum>`, `<struct>` and `<function>` elements of `MOBILE_API.xml`.
+According to existing structure of Java Suite the output directory will contain following folders and files:
+
+* com
+  * smartdevicelink
+    * protocol
+      * enums
+        * FunctionID.java
+    * proxy
+      * rpc
+        * enums
+          * `[- all <enum> classes except FunctionID and MessageType -]`
+        * `[- all <struct> classes -]`
+        * `[- all <function> classes -]`
+
+Each Enum class should be stored as a single script file in the folder named `com/smartdevicelink/rpc/enums` and the name of the script file should be equal to the value from the `"name"` attribute of `<enum>` followed by the extension `.java`.
+
+Example:
+```shell script
+# <enum name="ImageType" />
+com/smartdevicelink/rpc/enums/ImageType.java
+```
+
+Each Enum class should include the package definition:
+```java
+package com.smartdevicelink.proxy.rpc.enums;
+``` 
+
+The only exception is the `<enum>` named `FunctionID`. This class should be stored in `com/smartdevicelink/protocol/enums` folder, as defined in the directory structure above.
+
+The package definition for FunctionID class also is different:
+```java
+package com.smartdevicelink.protocol.enums;
+``` 
+
+Each Struct or Function class should be stored as a single script file in the folder named `com/smartdevicelink/proxy/rpc` and the name of the script file should be equal to the value from the `"name"` attribute of `<struct>` or `<function>` (followed by additional suffix `Response` if the `"messagetype"` attribute is set to `response`) followed by the extension `.java`.
+
+Example:
+```shell script
+# <struct name="VehicleDataResult" />
+com/smartdevicelink/rpc/VehicleDataResult.java
+
+# <function name="AddCommand" messagetype="request" />
+com/smartdevicelink/rpc/AddCommand.java
+# <function name="AddCommand" messagetype="response" />
+com/smartdevicelink/rpc/AddCommandResponse.java
+# <function name="OnLanguageChange" messagetype="notification" />
+com/smartdevicelink/rpc/OnLanguageChange.java
+```
+
+The package definition for Struct or Function classes is:
+```java
+package com.smartdevicelink.proxy.rpc;
+``` 
 
 ## The License Header
 All files should start from the comment with the license information.
@@ -94,9 +151,7 @@ All files should start from the comment with the license information.
 Where `[year]` in the copyright line is the current year.
 
 ## `<enum>`
-Each Enum class should be stored as a single script file in the folder named `enums` and the name of the script file should be equal to the value from the `"name"` attribute of `<enum>` followed by the extension `.java`.
 
-Example:
-```shell script
-enums/ImageType.java
-```
+## `<struct>`
+
+## `<function>`
