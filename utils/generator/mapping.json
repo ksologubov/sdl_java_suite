@@ -136,19 +136,8 @@
       "kind": "simple"
     },
     "MessageType": {
-      "package_name": "com.smartdevicelink.protocol.enums",
-      "kind": "simple",
-      "-params": [
-        "notification",
-        "request",
-        "response"
-      ],
-      "params": {
-        "UNDEFINED": {},
-        "BULK": {},
-        "RPC": {}
-      }
-    },
+      "kind": "custom"
+   },
     "MetadataType": {
       "kind": "custom"
     },
