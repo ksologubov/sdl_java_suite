@@ -66,17 +66,6 @@
     "ComponentVolumeStatus": {
       "kind": "simple"
     },
-    "Dimension": {
-      "params": {
-        "NO_FIX": {
-          "internal": "\"NO_FIX\"",
-          "description": "No GPS at all"
-        }
-      },
-      "-params": [
-        "_NO_FIX"
-      ]
-    },
     "DisplayType": {
       "kind": "custom",
       "valueForString": "templates/scripts/DisplayType_valueForString.groovy",

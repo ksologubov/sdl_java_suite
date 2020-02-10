@@ -84,6 +84,8 @@ class EnumsProducer(InterfaceProducerCommon):
                 n = param.internal_name[len(item_name):]
             else:
                 n = param.internal_name
+            if n.startswith('_') and n[1].isalpha():
+                n = n[1:]
             d['name'] = n
             d['internal'] = '"{}"'.format(param.name)
             kind = 'custom'
