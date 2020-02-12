@@ -82,11 +82,11 @@ public enum {{class_name}} {
     }
     {%- elif return_type == "int" %}
 
-    final int VALUE;
+    private final int VALUE;
     /**
      * Private constructor
      */
-    {{class_name}} (int value) {
+    private {{class_name}} (int value) {
         this.VALUE = value;
     }
 
