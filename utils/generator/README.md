@@ -967,7 +967,7 @@ Where:
 * `[Y|N]` means exactly `Y` character, if `"mandatory"` attribute of the `<param>` exists and is "true", `N` character otherwise.
 * `[param_since]` should be present, if the `"since"` attribute of the `<param>` exists, and `[since]` is the `Major.Minor.Patch` formatted value of this attribute.
 
-There are all Enum and Struct classes that are used in the represented structure should be imported. 
+There are all Enum classes that are used in the represented structure should be additionally imported. 
 
 The class should have the `@Deprecated` decorator if the `"deprecated"` attribute of the `<enum>` exists and is "true".
 
@@ -1444,14 +1444,12 @@ import java.util.List;
  *      <td>List<HMILevel></td>
  *      <td>A set of all HMI levels that are permitted for this given RPC.</td>
  *      <td>Y</td>
- *      <td>SmartDeviceLink </td>
  *  </tr>
  *  <tr>
  *      <td>userDisallowed</td>
  *      <td>List<HMILevel></td>
  *      <td>A set of all HMI levels that are prohibited for this given RPC.</td>
  *      <td>Y</td>
- *      <td>SmartDeviceLink </td>
  *  </tr>
  *
  * </table>
@@ -1610,14 +1608,12 @@ import java.util.Hashtable;
  *      <td>FuelType</td>
  *      <td></td>
  *      <td>N</td>
- *      <td>SmartDeviceLink </td>
  *  </tr>
  *  <tr>
  *      <td>range</td>
  *      <td>Float</td>
  *      <td>The estimate range in KM the vehicle can travel based on fuel level and consumption.</td>
  *      <td>N</td>
- *      <td>SmartDeviceLink </td>
  *  </tr>
  *
  * </table>
@@ -1690,3 +1686,953 @@ public class FuelRange extends RPCStruct {
 ```
 
 ## `<function>`
+
+Based on the value of the `"messagetype"` attribute of `<function>`the Function class should extend the class `RPCRequest`, `RPCResponse` or `RPCNotification`:
+```java
+import com.smartdevicelink.proxy.RPCRequest;
+// or
+import com.smartdevicelink.proxy.RPCResponse;
+// or
+import com.smartdevicelink.proxy.RPCNotification;
+```
+
+The name of the class is the value from the `"name"` attribute of `<function>` (followed by additional suffix `Response` if the `"messagetype"` attribute is set to `response`).
+
+The script should import `FunctionID` Enum class to get the `functionID` hex value of the current RPC function. The key of the required `<element>` of `FunctionID` enum is the value of the `"functionID"` attribute of `<function>`.
+```java
+import com.smartdevicelink.protocol.enums.FunctionID;
+```
+
+The class should have the next JavaDoc comment:
+```java
+/**
+ * [description]
+ *
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>[param_name]</td>
+ *      <td>[param_type|List<[param_type]>]</td>
+ *      <td>[param_description]</td>
+ *      <td>[Y|N]</td>
+ *      <td>SmartDeviceLink [param_since]</td>
+ *  </tr>
+ * </table>
+ *
+ * @deprecated
+ * @since SmartDeviceLink [since_version]
+ * @see [see_reference]
+ */
+```
+Where:
+* `[description]` is `<description>` of the current `<struct>`, if exists.
+* `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and is "true".
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
+* `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+* The `Parameter List` table should include all set of `<param>`.
+* `[param_name]` is `"name"` attribute of the `<param>`.
+* `[param_type]` is `"type"` attribute of the `<param>`, `[List<[param_type]>]` applied if `"array"` attribute of `<param>` is "true".
+* `[param_description]` is `<description>` of the `<param>`, could be empty if not exists.
+* `[Y|N]` means exactly `Y` character, if `"mandatory"` attribute of the `<param>` exists and is "true", `N` character otherwise.
+* `[param_since]` should be present, if the `"since"` attribute of the `<param>` exists, and `[since]` is the `Major.Minor.Patch` formatted value of this attribute.
+
+There are all Enum classes that are used in the represented structure should be additionally imported. 
+
+The class should have the `@Deprecated` decorator if the `"deprecated"` attribute of the `<enum>` exists and is "true".
+
+The set of `<param>` should be mapped to the `public static final String` fields of the new class by following rules:
+
+1. The name of the fields is the `SCREAMING_SNAKE_CASE` formatted value of the `"name"` attribute of `<param>` with the `KEY_` prefix.
+1. The value of the fields is the value of the `"name"` attribute of `<param>`
+1. Uses of the "sync" prefix shall be replaced with "sdl" (where it would not break functionality). E.g. `KEY_SYNC_MSG_VERSION -> KEY_SDL_MSG_VERSION`. This applies to member variables and their accessors. The key used when creating the RPC message JSON should match that of the RPC Spec.
+1. The exclusion are `<param>` with name `success`, `resultCode` and `info` of `<function>` with the attribute `messagetype="response"`, in this case they should be omitted because they are already predefined in the parent class.
+
+Field definition template:
+```java
+/**
+ * [description]
+ *
+ * @deprecated
+ * @since SmartDeviceLink [since_version]
+ * @see [see_reference]
+ */
+@Deprecated
+public static final String [normalized_name] = "[name]";
+```
+Where:
+* `[normalized_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`.
+* `[name]` is the `"name"` attribute of `<param>`.
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and is "true".
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
+* `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+
+The field definition should have the `@Deprecated` decorator if the `"deprecated"` attribute of the `<param>` exists and is "true".
+
+The Function class contains 3 different constructors:
+* without parameters.
+* with `Hashtable` parameter.
+* with all required parameters, based on `"mandatory"` attribute of the `<param>`
+
+The `response` Function class has additional constructor with `success` and `resultCode` parameters.
+
+### Constructor without parameters
+
+This constructor should pass the corresponding stringified constant value of the `FunctionID` Enum class into parent class.
+
+Template:
+```java
+    /**
+     * Constructs a new [name] object
+     */
+    public [name]() {
+        super(FunctionID.[normalized_name].toString());
+    }
+```
+Where:
+* `[name]` is `"name"` attribute of the `<function>`.
+* `[normalized_name]` is the `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of the `<function>`.
+
+### Constructor with `Hashtable` parameter
+
+This constructor requires the import of `Hashtable` class
+```java
+import java.util.Hashtable;
+```
+
+Template:
+```java
+    /**
+     * Constructs a new [name] object indicated by the Hashtable parameter\
+     *
+     * @param hash The Hashtable to use
+     */
+    public [name](Hashtable<String, Object> hash) {
+        super(hash);
+    }
+```
+Where `[name]` is the value from the `"name"` attribute of `<function>`.
+
+### Constructor with all required parameters, based on `"mandatory"` attribute of the `<param>`
+This constructor requires the import of `NonNull` annotation
+```java
+import android.support.annotation.NonNull;
+```
+
+The constructor should include all set of `<param>` with the `"mandatory"` attribute is "true". JavaDoc should include all constructor parameters and the constructor should call all corresponding setters inside itself.
+
+Template:
+```java
+    /**
+     * Constructs a new [name] object
+     *
+     * @param [param_name]
+     */
+    public [name](@NonNull [param_type|List<[param_type]>] [param_name]) {
+        this();
+        [setter_name]([param_name]);
+    }
+```
+Where:
+* `[name]` is the value from the `"name"` attribute of `<function>`.
+* `[param_name]` is `"name"` attribute of the `<param>`.
+* `[param_type]` is `"type"` attribute of the `<param>`, `[List<[param_type]>]` applied if `"array"` attribute of `<param>` is "true".
+* `[setter_name]` is the name of the corresponding setter method
+
+### Additional constructor of the `response` Function class
+
+```java
+    /**
+     * Constructs a new [name] object
+     *
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public [name](@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
+```
+Where `[name]` is the value from the `"name"` attribute of `<function>`.
+
+For each `<param>` the getter and setter methods should be defined in the class:
+
+1. The name of the setter/getter is the `PascalCase` formatted value of the `"name"` attribute with the `get` prefix for the getter, for the setter the prefix should be `set`.
+1. Uses of the "sync" prefix shall be replaced with "sdl" (where it would not break functionality). E.g. `SyncMsgVersion -> SdlMsgVersion`. This applies to member variables and their accessors. The key used when creating the RPC message JSON should match that of the RPC Spec.
+1. The setter method:
+    * Accepts the single parameter with the type defined in the `"type"` attribute and the name defined in the `"name"` attribute of the `<param>`;
+    * The parameter should be decorated by `@NonNull` annotation if the `"mandatory"` attribute of the `<param>` is "true";
+    * Should call the `setParameters` method, where the first parameter is the value of the corresponding static field described above, the second is the value passed into setter;
+1. The getter method:
+    * If `"type"` attribute of the `<param>` has the one of `Boolean`, `Integer` or `String`
+        * the getter should call and return the corresponding `getBoolean`, `getInteger` or `getString` method, the parameter of that method is the value of the corresponding static field described above;
+    * If `"type"` attribute of the `<param>` is `Float`:
+        * the getter should call the `getValue` method, the parameter of that method is the value of the corresponding static field described above;
+        * the getter should return `SdlDataTypeConverter.objectToFloat(object)` where the `object` is the value previously received from `getValue`;
+    * If the `<param>` has the `"type"` attribute value as the one of `<enum>` or `<struct>` name:
+        * The getter should call and return the result of the `getObject` method, where the first parameter is the corresponding Struct or Enum class, the second is the value of the corresponding static field described above;
+1. The exclusion are `<param>` with name `success`, `resultCode` and `info` of `<function>` with the attribute `messagetype="response"`, in this case they should be omitted because they are already predefined in the parent class.
+
+Setter template:
+```java
+    /**
+     * Sets the [name].
+     * [description]
+     *
+     * @param [name]
+     */
+    public void [setter_name]([type|List<[type]>] [name]) {
+        setParameters([field_name], [name]);
+    }
+```
+Where:
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `[name]` is `"name"` attribute of the `<param>`.
+* `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
+* `[setter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `set` prefix.
+* `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
+
+
+`Boolean`, `Integer` or `String` type getter template:
+```java
+     /**
+     * Gets the [name].
+     *
+     * @return [type|List<[type]>]
+     */
+    @SuppressWarnings("unchecked")
+    public [type|List<[type]>] [getter_name]() {
+        return get[type]([field_name]);
+    }
+```
+Where:
+* `[name]` is `"name"` attribute of the `<param>`.
+* `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
+* `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
+* `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
+* `@SuppressWarnings("unchecked")` applied if `"array"` attribute is "true".
+
+
+`Float` type getter template:
+```java
+     /**
+     * Gets the [name].
+     *
+     * @return [Float|List<Float>]
+     */
+    @SuppressWarnings("unchecked")
+    public Float|List<Float> [getter_name]() {
+        Object object = getValue([field_name]);
+        return SdlDataTypeConverter.objectToFloat(object);
+    }
+```
+Where:
+* `[name]` is `"name"` attribute of the `<param>`.
+* `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
+* `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
+* `[List<Float>]` applied if `"array"` attribute is "true".
+* `@SuppressWarnings("unchecked")` applied if `"array"` attribute is "true".
+
+`<enum>` or `<struct>` type getter template:
+```java
+     /**
+     * Gets the [name].
+     *
+     * @return [type|List<[type]>]
+     */
+    @SuppressWarnings("unchecked")
+    public [type|List<[type]>] [getter_name]() {
+        return ([type|List<[type]>]) getObject([type].class, [field_name]);
+    }
+```
+Where:
+* `[name]` is `"name"` attribute of the `<param>`.
+* `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
+* `@SuppressWarnings("unchecked")` applied if `"array"` attribute is "true".
+* `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
+* `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
+
+Take a note if some parameters have `"array"` attribute is true, the class requires the `List` collection to be imported:
+```java
+import java.util.List;
+```
+
+### Below are full examples for Request, Response and Notification.
+#### Request Example:
+
+XML:
+```xml
+<function name="AddCommand" functionID="AddCommandID" messagetype="request" since="1.0">
+    <description>
+        Adds a command to the in application menu.
+        Either menuParams or vrCommands must be provided.
+    </description>
+     
+    <param name="cmdID" type="Integer" minvalue="0" maxvalue="2000000000" mandatory="true">
+        <description>unique ID of the command to add.</description>
+    </param>
+     
+    <param name="menuParams" type="MenuParams" mandatory="false">
+        <description>Optional sub value containing menu parameters</description>
+    </param>
+     
+    <param name="vrCommands" type="String" minsize="1" maxsize="100" maxlength="99" array="true" mandatory="false">
+        <description>
+            An array of strings to be used as VR synonyms for this command.
+            If this array is provided, it may not be empty.
+        </description>
+    </param>
+     
+    <param name="cmdIcon" type="Image" mandatory="false" since="2.0">
+        <description>
+            Image struct determining whether static or dynamic icon.
+            If omitted on supported displays, no (or the default if applicable) icon shall be displayed.
+        </description>
+    </param>
+     
+</function>
+```
+
+Output:
+```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.proxy.rpc;
+
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
+import java.util.List;
+
+/**
+ * Adds a command to the in application menu. Either menuParams or vrCommands must be provided.
+ *
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>cmdID</td>
+ *      <td>Integer</td>
+ *      <td>unique ID of the command to add.</td>
+ *      <td>Y</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *  <tr>
+ *      <td>menuParams</td>
+ *      <td>MenuParams</td>
+ *      <td>Optional sub value containing menu parameters</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *  <tr>
+ *      <td>vrCommands</td>
+ *      <td>List<String></td>
+ *      <td>An array of strings to be used as VR synonyms for this command. If this array is provided, it may not be empty.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *  <tr>
+ *      <td>cmdIcon</td>
+ *      <td>Image</td>
+ *      <td>Image struct determining whether static or dynamic icon. If omitted on supported displays, no (or the default ifapplicable) icon shall be displayed.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 2.0.0</td>
+ *  </tr>
+ *
+ * </table>
+ *
+ * @since SmartDeviceLink 1.0.0
+ */
+public class AddCommand extends RPCRequest {
+    /**
+     * unique ID of the command to add.
+     */
+    public static final String KEY_CMD_ID = "cmdID";
+    /**
+     * Optional sub value containing menu parameters
+     */
+    public static final String KEY_MENU_PARAMS = "menuParams";
+    /**
+     * An array of strings to be used as VR synonyms for this command. If this array is provided, it may not be empty.
+     */
+    public static final String KEY_VR_COMMANDS = "vrCommands";
+    /**
+     * Image struct determining whether static or dynamic icon. If omitted on supported displays, no (or the default if
+     * applicable) icon shall be displayed.
+     *
+     * @since SmartDeviceLink 2.0.0
+     */
+    public static final String KEY_CMD_ICON = "cmdIcon";
+
+    /**
+     * Constructs a new AddCommand object
+     */
+    public AddCommand() {
+        super(FunctionID.ADD_COMMAND.toString());
+    }
+    
+
+    /**
+     * Constructs a new AddCommand object indicated by the Hashtable parameter\
+     *
+     * @param hash The Hashtable to use
+     */
+    public AddCommand(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    /**
+     * Constructs a new AddCommand object
+     *
+     * @param cmdID
+     */
+    public AddCommand(@NonNull Integer cmdID) {
+        this();
+        setCmdID(cmdID);
+    }
+    
+
+    /**
+     * Sets the cmdID.
+     * unique ID of the command to add.
+     *
+     * @param cmdID
+     */
+    public void setCmdID(@NonNull Integer cmdID) {
+        setParameters(KEY_CMD_ID, cmdID);
+    }
+
+     /**
+     * Gets the cmdID.
+     *
+     * @return Integer
+    */
+    public Integer getCmdID() {
+        return getInteger(KEY_CMD_ID);
+    }
+
+    /**
+     * Sets the menuParams.
+     * Optional sub value containing menu parameters
+     *
+     * @param menuParams
+     */
+    public void setMenuParams(MenuParams menuParams) {
+        setParameters(KEY_MENU_PARAMS, menuParams);
+    }
+
+     /**
+     * Gets the menuParams.
+     *
+     * @return MenuParams
+    */
+    @SuppressWarnings("unchecked")
+    public MenuParams getMenuParams() {
+        return (MenuParams) getObject(MenuParams.class, KEY_MENU_PARAMS);
+    }
+
+    /**
+     * Sets the vrCommands.
+     * An array of strings to be used as VR synonyms for this command. If this array is provided, it may not be empty.
+     *
+     * @param vrCommands
+     */
+    public void setVrCommands(List<String> vrCommands) {
+        setParameters(KEY_VR_COMMANDS, vrCommands);
+    }
+
+     /**
+     * Gets the vrCommands.
+     *
+     * @return List<String>
+    */
+    @SuppressWarnings("unchecked")
+    public List<String> getVrCommands() {
+        return (List<String>) getObject(String.class, KEY_VR_COMMANDS);
+    }
+
+    /**
+     * Sets the cmdIcon.
+     * Image struct determining whether static or dynamic icon. If omitted on supported displays, no (or the default if
+     * applicable) icon shall be displayed.
+     *
+     * @param cmdIcon
+     */
+    public void setCmdIcon(Image cmdIcon) {
+        setParameters(KEY_CMD_ICON, cmdIcon);
+    }
+
+     /**
+     * Gets the cmdIcon.
+     *
+     * @return Image
+    */
+    public Image getCmdIcon() {
+        return (Image) getObject(Image.class, KEY_CMD_ICON);
+    }
+    
+}
+```
+
+#### Response Example:
+
+> Please pay attention that no other parameters for this example except "info", "success" and "resultCode", thus they were omitted and only the constructor and other parameters are present)
+
+XML:
+```xml
+<function name="PerformInteraction" functionID="PerformInteractionID" messagetype="response" since="1.0">
+    <param name="success" type="Boolean" platform="documentation" mandatory="true">
+        <description> true if successful; false, if failed </description>
+    </param>
+    
+    <param name="resultCode" type="Result" platform="documentation" mandatory="true">
+        <description>See Result</description>
+        <element name="SUCCESS"/>
+        <element name="INVALID_DATA"/>
+        <element name="OUT_OF_MEMORY"/>
+        <element name="TOO_MANY_PENDING_REQUESTS"/>
+        <element name="APPLICATION_NOT_REGISTERED"/>
+        <element name="GENERIC_ERROR"/>
+        <element name="REJECTED"/>
+        <element name="INVALID_ID"/>
+        <element name="DUPLICATE_NAME"/>
+        <element name="TIMED_OUT"/>
+        <element name="ABORTED"/>
+        <element name="UNSUPPORTED_RESOURCE"/>
+        <element name="WARNINGS"/>
+    </param>
+    
+    <param name="info" type="String" maxlength="1000" mandatory="false" platform="documentation">
+        <description>Provides additional human readable info regarding the result.</description>
+    </param>
+    
+    <param name="choiceID" type="Integer" minvalue="0" maxvalue="2000000000" mandatory="false">
+        <description>
+            ID of the choice that was selected in response to PerformInteraction.
+            Only is valid if general result is "success:true".
+        </description>
+    </param>
+    
+    <param name="manualTextEntry" type="String" maxlength="500" mandatory="false" since="3.0">
+        <description>
+            Manually entered text selection, e.g. through keyboard
+            Can be returned in lieu of choiceID, depending on trigger source
+        </description>
+    </param>
+    
+    <param name="triggerSource" type="TriggerSource" mandatory="false">
+        <description>
+            See TriggerSource
+            Only is valid if resultCode is SUCCESS.
+        </description>
+    </param>
+    
+</function>
+```
+
+The Output:
+```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.proxy.rpc;
+
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
+
+import java.util.Hashtable;
+
+/**
+ *
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>choiceID</td>
+ *      <td>Integer</td>
+ *      <td>ID of the choice that was selected in response to PerformInteraction. Only is valid if general result is"success:true".</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *  <tr>
+ *      <td>manualTextEntry</td>
+ *      <td>String</td>
+ *      <td>Manually entered text selection, e.g. through keyboard Can be returned in lieu of choiceID, depending on triggersource</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 3.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>triggerSource</td>
+ *      <td>TriggerSource</td>
+ *      <td>See TriggerSource Only is valid if resultCode is SUCCESS.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *
+ * </table>
+ * @since SmartDeviceLink 1.0.0
+ */
+public class PerformInteractionResponse extends RPCResponse {
+    /**
+     * ID of the choice that was selected in response to PerformInteraction. Only is valid if general result is
+     * "success:true".
+     */
+    public static final String KEY_CHOICE_ID = "choiceID";
+    /**
+     * Manually entered text selection, e.g. through keyboard Can be returned in lieu of choiceID, depending on trigger
+     * source
+     *
+     * @since SmartDeviceLink 3.0.0
+     */
+    public static final String KEY_MANUAL_TEXT_ENTRY = "manualTextEntry";
+    /**
+     * See TriggerSource Only is valid if resultCode is SUCCESS.
+     */
+    public static final String KEY_TRIGGER_SOURCE = "triggerSource";
+
+    /**
+     * Constructs a new PerformInteractionResponse object
+     */
+    public PerformInteractionResponse() {
+        super(FunctionID.PERFORM_INTERACTION.toString());
+    }
+    
+
+    /**
+     * Constructs a new PerformInteractionResponse object indicated by the Hashtable parameter\
+     *
+     * @param hash The Hashtable to use
+     */
+    public PerformInteractionResponse(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    /**
+     * Constructs a new PerformInteractionResponse object
+     *
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public PerformInteractionResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
+    
+
+    /**
+     * Sets the choiceID.
+     * ID of the choice that was selected in response to PerformInteraction. Only is valid if general result is
+     * "success:true".
+     *
+     * @param choiceID
+     */
+    public void setChoiceID(Integer choiceID) {
+        setParameters(KEY_CHOICE_ID, choiceID);
+    }
+
+     /**
+     * Gets the choiceID.
+     *
+     * @return Integer
+    */
+    public Integer getChoiceID() {
+        return getInteger(KEY_CHOICE_ID);
+    }
+
+    /**
+     * Sets the manualTextEntry.
+     * Manually entered text selection, e.g. through keyboard Can be returned in lieu of choiceID, depending on trigger
+     * source
+     *
+     * @param manualTextEntry
+     */
+    public void setManualTextEntry(String manualTextEntry) {
+        setParameters(KEY_MANUAL_TEXT_ENTRY, manualTextEntry);
+    }
+
+     /**
+     * Gets the manualTextEntry.
+     *
+     * @return String
+    */
+    public String getManualTextEntry() {
+        return getString(KEY_MANUAL_TEXT_ENTRY);
+    }
+
+    /**
+     * Sets the triggerSource.
+     * See TriggerSource Only is valid if resultCode is SUCCESS.
+     *
+     * @param triggerSource
+     */
+    public void setTriggerSource(TriggerSource triggerSource) {
+        setParameters(KEY_TRIGGER_SOURCE, triggerSource);
+    }
+
+     /**
+     * Gets the triggerSource.
+     *
+     * @return TriggerSource
+    */
+    public TriggerSource getTriggerSource() {
+        return (TriggerSource) getObject(TriggerSource.class, KEY_TRIGGER_SOURCE);
+    }
+    
+}
+```
+
+#### Notification Example:
+
+XML:
+```xml
+<function name="OnLanguageChange" functionID="OnLanguageChangeID" messagetype="notification" since="2.0">
+    <param name="language" type="Language" mandatory="true">
+        <description>Current SDL voice engine (VR+TTS) language</description>
+    </param>
+    <param name="hmiDisplayLanguage" type="Language" mandatory="true">
+        <description>Current display language</description>
+    </param>
+</function>
+```
+
+The Output:
+```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.proxy.rpc;
+
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+
+import java.util.Hashtable;
+
+/**
+ *
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>language</td>
+ *      <td>Language</td>
+ *      <td>Current SDL voice engine (VR+TTS) language</td>
+ *      <td>Y</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *  <tr>
+ *      <td>hmiDisplayLanguage</td>
+ *      <td>Language</td>
+ *      <td>Current display language</td>
+ *      <td>Y</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *
+ * </table>
+ * @since SmartDeviceLink 2.0.0
+ */
+public class OnLanguageChange extends RPCNotification {
+    /**
+     * Current SDL voice engine (VR+TTS) language
+     */
+    public static final String KEY_LANGUAGE = "language";
+    /**
+     * Current display language
+     */
+    public static final String KEY_HMI_DISPLAY_LANGUAGE = "hmiDisplayLanguage";
+
+    /**
+     * Constructs a new OnLanguageChange object
+     */
+    public OnLanguageChange() {
+        super(FunctionID.ON_LANGUAGE_CHANGE.toString());
+    }
+    
+
+    /**
+     * Constructs a new OnLanguageChange object indicated by the Hashtable parameter\
+     *
+     * @param hash The Hashtable to use
+     */
+    public OnLanguageChange(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    /**
+     * Constructs a new OnLanguageChange object
+     *
+     * @param language
+     * @param hmiDisplayLanguage
+     */
+    public OnLanguageChange(@NonNull Language language, @NonNull Language hmiDisplayLanguage) {
+        this();
+        setLanguage(language);
+        setHmiDisplayLanguage(hmiDisplayLanguage);
+    }
+    
+
+    /**
+     * Sets the language.
+     * Current SDL voice engine (VR+TTS) language
+     *
+     * @param language
+     */
+    public void setLanguage(@NonNull Language language) {
+        setParameters(KEY_LANGUAGE, language);
+    }
+
+     /**
+     * Gets the language.
+     *
+     * @return Language
+    */
+    public Language getLanguage() {
+        return (Language) getObject(Language.class, KEY_LANGUAGE);
+    }
+
+    /**
+     * Sets the hmiDisplayLanguage.
+     * Current display language
+     *
+     * @param hmiDisplayLanguage
+     */
+    public void setHmiDisplayLanguage(@NonNull Language hmiDisplayLanguage) {
+        setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
+    }
+
+     /**
+     * Gets the hmiDisplayLanguage.
+     *
+     * @return Language
+    */
+    public Language getHmiDisplayLanguage() {
+        return (Language) getObject(Language.class, KEY_HMI_DISPLAY_LANGUAGE);
+    }
+    
+}
+```
