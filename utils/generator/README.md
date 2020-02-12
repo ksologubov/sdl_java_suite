@@ -113,6 +113,7 @@ package com.smartdevicelink.proxy.rpc;
 ``` 
 
 ## The License Header
+
 All files should start from the comment with the license information.
 
 ```java
@@ -151,6 +152,7 @@ All files should start from the comment with the license information.
 Where `[year]` in the copyright line is the current year.
 
 ## `<enum>`
+
 The name of the class is the value from the `"name"` attribute of `<enum>`.
 
 The class should have the next JavaDoc comment:
@@ -166,23 +168,14 @@ The class should have the next JavaDoc comment:
 Where:
 * `[description]` is `<description>` of the current `<enum>`, if exists.
 * `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and has the value.
-* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the value of this attribute.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
 
 The set of `<element>` should be mapped to the set of Enum constants. Based on the `<element>` attributes, constants could be with or without fields.
 
 The following list are general rules for constant names and its fields:
 1. The `"name"` attribute of `<element>` is the default name of the constant.
-2. In case if the `"internal_name"` attribute exists, this should be used for the constant name and the `"name"` attribute should be passed as a field into Enum constant.
-3. The `"internal_name"` attribute should be normalized by following rules:
-    * If it starts with the same prefix as `<enum>` name, this prefix should be removed.
-    * After the prefix removal, if the value starts with `_` (underscore) separator and the next character is a letter of alphabet, the leading `_` (underscore) character should be removed.
-4. In case if the `"value"` attribute exists, this attribute should be passed as the constant field.
-5. Uses of the "sync" prefix shall be replaced with "sdl" (where it would not break functionality). E.g. `SyncMsgVersion -> SdlMsgVersion`. This applies to member variables and their accessors. The key used when creating the RPC message JSON should match that of the RPC Spec.
-
-The exception is the `<enum>` named `FunctionID`. Additionally to rules above:
-  1. Uses of the `"name"` attribute shall be normalized by the removal of the ID suffix, e.g. `RegisterAppInterfaceID -> RegisterAppInterface`. 
-  2. The constant name should be `SCREAMING_SNIKE_CASE` formatted and has 2 fields, the first is the `"value"` attribute and the second is the normalized `"name"` attribute.
+1. Uses of the "sync" prefix shall be replaced with "sdl" (where it would not break functionality). E.g. `SyncMsgVersion -> SdlMsgVersion`. This applies to member variables and their accessors. The key used when creating the RPC message JSON should match that of the RPC Spec.
 
 The constant definition could have the next JavaDoc comment:
 ```java
@@ -195,47 +188,428 @@ The constant definition could have the next JavaDoc comment:
 ```
 Where:
 * `[description]` is `<description>` of the current `<element>`, if exists.
-* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the value of this attribute.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
 
-The constant definition should have the `@deprecated` decorator if the `"deprecated"` attribute exists and has the value.
+The constant definition should have the `@Deprecated` decorator if the `"deprecated"` attribute exists and has the value.
 
-Constants with fields require private constructor to be defined in the Enum class.
+### Constants without fields:
 
-### Examples:
-#### Constants without fields:
+This type of enums doesn't require constructor and requires additional method `valueForString` to be defined. It should return the Enum constant based on its string name, or `null` if the constant is not found.
 ```java
     /**
-     * The button name for the physical Play/Pause toggle that can be used by media apps.
+     * Convert String to [enum_name]
      *
-     * @since SmartDeviceLink 5.0.0
+     * @param value String
+     * @return [enum_name]
      */
-    PLAY_PAUSE,
-    SEEKLEFT,
-    SEEKRIGHT,
-    TUNEUP;
+    public static [enum_name] valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+```
+Where `[enum_name]` is the `"name"` attribute of `<enum>`
+
+Example:
+
+XML:
+```xml
+    <enum name="AppHMIType" since="2.0">
+        <description>Enumeration listing possible app types.</description>
+        <element name="DEFAULT" />
+        <element name="COMMUNICATION" />
+        <element name="MEDIA" />
+        <element name="MESSAGING" />
+        <element name="NAVIGATION" />
+        <element name="INFORMATION" />
+        <element name="SOCIAL" />
+        <element name="BACKGROUND_PROCESS" />
+        <element name="TESTING" />
+        <element name="SYSTEM" />
+        <element name="PROJECTION" since="4.5" />
+        <element name="REMOTE_CONTROL" since="4.5" />
+    </enum>
 ```
 
-#### Constants with field based on internal_name and name:
+Output:
 ```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.proxy.rpc.enums;
+ 
+/**
+ * Enumeration listing possible app types.
+ *
+ *
+ * @since SmartDeviceLink 2.0.0
+ */
+public enum AppHMIType {
     /**
-     * Audio sample is 8 bits wide, unsigned.
+     * The App will have default rights.
      */
-    _8_BIT("8_BIT"),
+    DEFAULT,
     /**
-     * Audio sample is 16 bits wide, signed, and in little endian.
+     * Communication type of App
      */
-    _16_BIT("16_BIT");
+    COMMUNICATION,
+    /**
+     * App dealing with Media
+     */
+    MEDIA,
+    /**
+     * Messaging App
+     */
+    MESSAGING,
+    /**
+     * Navigation App
+     */
+    NAVIGATION,
+    /**
+     * Information App
+     */
+    INFORMATION,
+    /**
+     * App dealing with social media
+     */
+    SOCIAL,
+    BACKGROUND_PROCESS,
+    /**
+     * App only for Testing purposes
+     */
+    TESTING,
+    /**
+     * System App
+     */
+    SYSTEM,
+    /**
+     * Custom App Interfaces
+     *
+     * @since SmartDeviceLink 4.5.0
+     */
+    PROJECTION,
+    /**
+     * @since SmartDeviceLink 4.5.0
+     */
+    REMOTE_CONTROL;
 
+    /**
+     * Convert String to AppHMIType
+     *
+     * @param value String
+     * @return AppHMIType
+     */
+    public static AppHMIType valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+}
+```
+### Constants with fields
+
+This type of enums is divided into 3 additional types:
+* field based on `"internal_name"` and `"name"` attributes of `<element>`
+* field based on `"value"` attribute of `<element>`
+* Special `FunctionID` Enum class
+
+#### Constants with field based on `"internal_name"` and `"name"` attributes
+
+In case if the `"internal_name"` attribute exists, this should be used for the constant name and the `"name"` attribute should be passed as a `String` field into Enum constant.
+
+The `"internal_name"` attribute should be normalized by following rules:
+* If it starts with the same prefix as `<enum>` name, this prefix should be removed.
+* After the prefix removal:
+    * if the value starts from digit, the leading `_` (underscore) separator should be added.
+    * if the value starts with `_` (underscore) separator and the next character is a letter of alphabet, the leading `_` (underscore) character should be removed.
+
+Constant definition:
+```java
+    [internal_name]("[name]")
+```
+Where `[internal_name]` is the normalized `"internal_name"` attribute of `<element>`, `[name]` is the `"name"` attribute.
+
+Private field:
+```java
     private final String INTERNAL_NAME;
+```
 
-    private BitsPerSample(String internalName) {
+The private constructor should be defined to accept the value from the constant and and set the private field.
+```java
+    private [enum_name](String internalName) {
         this.INTERNAL_NAME = internalName;
     }
 ```
+Where `[enum_name]` is the `"name"` attribute of `<enum>`.
 
-#### Constants with field based on value:
+The `toString` 1method should be overridden to return the private field instead of the constant name.
 ```java
+    @Override
+    public String toString() {
+        return INTERNAL_NAME;
+    }
+```
+
+The additional `valueForString` should be defined. It should return the Enum constant based on the private field above, or `null` if the constant is not found.
+```java
+    public static [enum_name] valueForString(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        for ([enum_name] anEnum : EnumSet.allOf([enum_name].class)) {
+            if (anEnum.toString().equals(value)) {
+                return anEnum;
+            }
+        }
+        return null;
+    }
+```
+Where `[enum_name]` is the `"name"` attribute of `<enum>`.
+
+The `valueForString` method requires the import of `EnumSet` collection:
+```java
+import java.util.EnumSet;
+```
+
+Full example:
+
+XML:
+```xml
+    <enum name="Dimension" since="2.0">
+        <description>The supported dimensions of the GPS</description>
+        <element name="NO_FIX" internal_name="Dimension_NO_FIX">
+            <description>No GPS at all</description>
+        </element>
+        <element name="2D" internal_name="Dimension_2D">
+            <description>Longitude and latitude</description>
+        </element>
+        <element name="3D" internal_name="Dimension_3D">
+            <description>Longitude and latitude and altitude</description>
+        </element>
+    </enum>
+```
+
+Output:
+```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.proxy.rpc.enums;
+
+import java.util.EnumSet;
+
+/**
+ * The supported dimensions of the GPS
+ *
+ *
+ * @since SmartDeviceLink 2.0.0
+ */
+public enum Dimension {
+    /**
+     * Longitude and latitude
+     */
+    _2D("2D"),
+    /**
+     * Longitude and latitude and altitude
+     */
+    _3D("3D"),
+    /**
+     * No GPS at all
+     */
+    NO_FIX("NO_FIX");
+
+    private final String INTERNAL_NAME;
+
+    private Dimension(String internalName) {
+        this.INTERNAL_NAME = internalName;
+    }
+
+    public static Dimension valueForString(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        for (Dimension anEnum : EnumSet.allOf(Dimension.class)) {
+            if (anEnum.toString().equals(value)) {
+                return anEnum;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return INTERNAL_NAME;
+    }
+}
+```
+
+#### Constants with field based on `"value"` attribute
+
+In case if the `"value"` attribute exists, this attribute should be passed as the `int` constant field.
+
+Constant definition:
+```java
+    [name]([value])
+```
+Where `[name]` is the `"name"` attribute of `<element>`, `[value]` is the `"value"` attribute.
+
+Private field:
+```java
+    final int VALUE;
+```
+
+The private constructor should be defined to accept the value from the constant and and set the private field.
+```java
+    private [enum_name](int value) {
+        this.VALUE = value;
+    }
+```
+Where `[enum_name]` is the `"name"` attribute of `<enum>`.
+
+The `getValue` 1method should be defined to return the private field value.
+```java
+    public int getValue(){
+        return VALUE;
+    }
+```
+
+The additional `valueForInt` should be defined. It should return the Enum constant based on the private field above, or `null` if the constant is not found.
+```java
+    public static [enum_name] valueForString(int value) {
+        for ([enum_name] anEnum : EnumSet.allOf([enum_name].class)) {
+            if (anEnum.toString().equals(value)) {
+                return anEnum;
+            }
+        }
+        return null;
+    }
+```
+Where `[enum_name]` is the `"name"` attribute of `<enum>`.
+
+The `valueForInt` method requires the import of `EnumSet` collection:
+```java
+import java.util.EnumSet;
+```
+
+Full example:
+
+XML:
+```xml
+    <enum name="PredefinedWindows" since="6.0">
+        <element name="DEFAULT_WINDOW" value="0">
+            <description>The default window is a main window pre-created on behalf of the app.</description>
+        </element>
+        <element name="PRIMARY_WIDGET" value="1">
+            <description>The primary widget of the app.</description>
+        </element>
+    </enum>
+```
+
+Output:
+```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.proxy.rpc.enums;
+
+import java.util.EnumSet;
+
+/**
+ *
+ * @since SmartDeviceLink 6.0.0
+ */
+public enum PredefinedWindows {
     /**
      * The default window is a main window pre-created on behalf of the app.
      */
@@ -246,18 +620,220 @@ Constants with fields require private constructor to be defined in the Enum clas
     PRIMARY_WIDGET(1);
 
     final int VALUE;
-
-    private PredefinedWindows (int value) {
+    /**
+     * Private constructor
+     */
+    PredefinedWindows (int value) {
         this.VALUE = value;
+    }
+
+    public static PredefinedWindows valueForInt(int value) {
+        for (PredefinedWindows anEnum : EnumSet.allOf(PredefinedWindows.class)) {
+            if (anEnum.getValue() == value) {
+                return anEnum;
+            }
+        }
+        return null;
+    }
+
+    public int getValue(){
+        return VALUE;
+    }
+}
+```
+
+### `FunctionID` Enum class
+
+Additionally to general rules for constant names and its fields there are some rules for the `FunctionID` Enum class:
+  1. Uses of the `"name"` attribute shall be normalized by the removal of the ID suffix, e.g. `RegisterAppInterfaceID -> RegisterAppInterface`. 
+  1. The constant name should be `SCREAMING_SNIKE_CASE` formatted;
+  1. The constant has 2 fields, the first is the `int` value of the `"value"` attribute and the second is the `String` value of normalized `"name"` attribute.
+
+Constant definition:
+```java
+    [constant_name]([value], "[name]")
+```
+Where `[constant_name]` is the normalized and `SCREAMING_SNIKE_CASE` formatted `"name"` attribute of `<element>`, `[name]` is the just normalized `"name"` attribute, `[value]` is the `"value"` attribute.
+
+Private fields:
+```java
+    private final int ID;
+    private final String JSON_NAME;
+```
+
+The private constructor should be defined to accept the value and name from the constant and and set the private fields.
+```java
+    private FunctionID(int id, String jsonName) {
+        this.ID = id;
+        this.JSON_NAME = jsonName;
     }
 ```
 
-#### FunctionID constants with 2 fields:
+The next custom imports, fields and methods are required for `FunctionID` Enum class:
+
+Imports:
 ```java
+import java.util.EnumSet;
+import java.util.Map.Entry;
+import java.util.Iterator;
+import java.util.HashMap;
+```
+
+Fields:
+```java
+    // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
+    ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),
+    ON_SDL_CHOICE_CHOSEN(-1, "OnSdlChoiceChosen"),
+    ON_STREAM_RPC(-1, "OnStreamRPC"),
+    STREAM_RPC(-1, "StreamRPC");
+
+    public static final int INVALID_ID = -1;
+```
+
+Methods:
+```java
+    public int getId(){
+        return this.ID;
+    }
+
+    @Override
+    public String toString() {
+        return this.JSON_NAME;
+    }
+
+    private static void initFunctionMap() {
+        functionMap = new HashMap<String, Integer>(values().length);
+
+        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
+            functionMap.put(value.toString(), value.getId());
+        }
+    }
+
+    public static String getFunctionName(int i) {
+        if(functionMap == null) {
+            initFunctionMap();
+        }
+
+        Iterator<Entry<String, Integer>> iterator = functionMap.entrySet().iterator();
+        while(iterator.hasNext()) {
+            Entry<String, Integer> thisEntry = iterator.next();
+            if(Integer.valueOf(i).equals(thisEntry.getValue())) {
+                return thisEntry.getKey();
+            }
+        }
+
+        return null;
+    }
+
+    public static int getFunctionId(String functionName) {
+        if(functionMap == null) {
+            initFunctionMap();
+        }
+
+        Integer result = functionMap.get(functionName);
+        return ( result == null ) ? INVALID_ID : result;
+    }
+
+    /**
+     * This method gives the corresponding FunctionID enum value for a string RPC
+     *
+     * @param name String value represents the name of the RPC
+     * @return FunctionID represents the equivalent enum value for the provided string
+     */
+    public static FunctionID getEnumForString(String name) {
+        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
+            if(value.JSON_NAME.equals(name)){
+                return value;
+            }
+        }
+        return null;
+    }
+```
+
+
+
+Full example:
+
+XML:
+```xml
+<enum name="FunctionID" internal_scope="base" since="1.0">
+    <description>Enumeration linking function names with function IDs in SmartDeviceLink protocol. Assumes enumeration starts at value 0.</description>
+    <element name="RESERVED" value="0" since="1.0" />
+    <element name="RegisterAppInterfaceID" value="1" hexvalue="1" since="1.0" />
+    <element name="SliderID" value="26" hexvalue="1A" since="2.0" />
+</enum>
+```
+
+Output:
+```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.protocol.enums;
+
+import java.util.EnumSet;
+import java.util.Map.Entry;
+import java.util.Iterator;
+import java.util.HashMap;
+
+/**
+ * Enumeration linking function names with function IDs in SmartDeviceLink protocol. Assumes enumeration starts at
+ * value 0.
+ *
+ *
+ * @since SmartDeviceLink 1.0.0
+ */
+public enum FunctionID {
+    /**
+     * @since SmartDeviceLink 1.0.0
+     */
+    RESERVED(0, "RESERVED"),
     /**
      * @since SmartDeviceLink 1.0.0
      */
     REGISTER_APP_INTERFACE(1, "RegisterAppInterface");
+    /**
+     * @since SmartDeviceLink 2.0.0
+     */
+    SLIDER(26, "Slider"),
+
+    // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
+    ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),
+    ON_SDL_CHOICE_CHOSEN(-1, "OnSdlChoiceChosen"),
+    ON_STREAM_RPC(-1, "OnStreamRPC"),
+    STREAM_RPC(-1, "StreamRPC");
+
+    public static final int                 INVALID_ID = -1;
+
+    private static HashMap<String, Integer> functionMap;
 
     private final int                       ID;
     private final String                    JSON_NAME;
@@ -266,6 +842,64 @@ Constants with fields require private constructor to be defined in the Enum clas
         this.ID = id;
         this.JSON_NAME = jsonName;
     }
+
+    public int getId(){
+        return this.ID;
+    }
+
+    @Override
+    public String toString() {
+        return this.JSON_NAME;
+    }
+
+    private static void initFunctionMap() {
+        functionMap = new HashMap<String, Integer>(values().length);
+
+        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
+            functionMap.put(value.toString(), value.getId());
+        }
+    }
+
+    public static String getFunctionName(int i) {
+        if(functionMap == null) {
+            initFunctionMap();
+        }
+
+        Iterator<Entry<String, Integer>> iterator = functionMap.entrySet().iterator();
+        while(iterator.hasNext()) {
+            Entry<String, Integer> thisEntry = iterator.next();
+            if(Integer.valueOf(i).equals(thisEntry.getValue())) {
+                return thisEntry.getKey();
+            }
+        }
+
+        return null;
+    }
+
+    public static int getFunctionId(String functionName) {
+        if(functionMap == null) {
+            initFunctionMap();
+        }
+
+        Integer result = functionMap.get(functionName);
+        return ( result == null ) ? INVALID_ID : result;
+    }
+
+    /**
+     * This method gives the corresponding FunctionID enum value for a string RPC
+     *
+     * @param name String value represents the name of the RPC
+     * @return FunctionID represents the equivalent enum value for the provided string
+     */
+    public static FunctionID getEnumForString(String name) {
+        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
+            if(value.JSON_NAME.equals(name)){
+                return value;
+            }
+        }
+        return null;
+    }
+}
 ```
 
 
