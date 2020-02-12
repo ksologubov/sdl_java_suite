@@ -167,9 +167,11 @@ The class should have the next JavaDoc comment:
 ```
 Where:
 * `[description]` is `<description>` of the current `<enum>`, if exists.
-* `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and has the value.
+* `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and is "true".
 * `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+
+The class should have the `@Deprecated` decorator if the `"deprecated"` attribute of the `<enum>` exists and is "true".
 
 The set of `<element>` should be mapped to the set of Enum constants. Based on the `<element>` attributes, constants could be with or without fields.
 
@@ -191,7 +193,7 @@ Where:
 * `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
 
-The constant definition should have the `@Deprecated` decorator if the `"deprecated"` attribute exists and has the value.
+The constant definition should have the `@Deprecated` decorator if the `"deprecated"` attribute exists and is "true".
 
 ### Constants without fields:
 
@@ -217,20 +219,32 @@ Example:
 
 XML:
 ```xml
-    <enum name="AppHMIType" since="2.0">
-        <description>Enumeration listing possible app types.</description>
-        <element name="DEFAULT" />
-        <element name="COMMUNICATION" />
-        <element name="MEDIA" />
-        <element name="MESSAGING" />
-        <element name="NAVIGATION" />
-        <element name="INFORMATION" />
-        <element name="SOCIAL" />
-        <element name="BACKGROUND_PROCESS" />
-        <element name="TESTING" />
-        <element name="SYSTEM" />
-        <element name="PROJECTION" since="4.5" />
-        <element name="REMOTE_CONTROL" since="4.5" />
+    <enum name="GlobalProperty" since="1.0">
+        <description>The different global properties.</description>
+        <element name="USER_LOCATION" since="6.0">
+            <description>Location of the user's seat of setGlobalProperties</description>
+        </element>
+        <element name="HELPPROMPT" since="1.0">
+            <description>The property helpPrompt of setGlobalProperties</description>
+        </element>
+        <element name="TIMEOUTPROMPT" since="1.0">
+            <description>The property timeoutPrompt of setGlobalProperties</description>
+        </element>
+        <element name="VRHELPTITLE" since="2.0">
+            <description>The property vrHelpTitle of setGlobalProperties</description>
+        </element>
+        <element name="VRHELPITEMS" since="2.0">
+            <description>The property array of vrHelp of setGlobalProperties</description>
+        </element>
+        <element name="MENUNAME" since="3.0">
+            <description>The property in-app menu name of setGlobalProperties</description>
+        </element>
+        <element name="MENUICON" since="3.0">
+            <description>The property in-app menu icon of setGlobalProperties</description>
+        </element>
+        <element name="KEYBOARDPROPERTIES" since="3.0">
+            <description>The on-screen keyboard configuration of setGlobalProperties</description>
+        </element>
     </enum>
 ```
 
@@ -268,69 +282,70 @@ Output:
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
- 
+
 /**
- * Enumeration listing possible app types.
+ * The different global properties.
  *
  *
- * @since SmartDeviceLink 2.0.0
+ * @since SmartDeviceLink 1.0.0
  */
-public enum AppHMIType {
+public enum GlobalProperty {
     /**
-     * The App will have default rights.
-     */
-    DEFAULT,
-    /**
-     * Communication type of App
-     */
-    COMMUNICATION,
-    /**
-     * App dealing with Media
-     */
-    MEDIA,
-    /**
-     * Messaging App
-     */
-    MESSAGING,
-    /**
-     * Navigation App
-     */
-    NAVIGATION,
-    /**
-     * Information App
-     */
-    INFORMATION,
-    /**
-     * App dealing with social media
-     */
-    SOCIAL,
-    BACKGROUND_PROCESS,
-    /**
-     * App only for Testing purposes
-     */
-    TESTING,
-    /**
-     * System App
-     */
-    SYSTEM,
-    /**
-     * Custom App Interfaces
+     * Location of the user's seat of setGlobalProperties
      *
-     * @since SmartDeviceLink 4.5.0
+     * @since SmartDeviceLink 6.0.0
      */
-    PROJECTION,
+    USER_LOCATION,
     /**
-     * @since SmartDeviceLink 4.5.0
+     * The property helpPrompt of setGlobalProperties
+     *
+     * @since SmartDeviceLink 1.0.0
      */
-    REMOTE_CONTROL;
+    HELPPROMPT,
+    /**
+     * The property timeoutPrompt of setGlobalProperties
+     *
+     * @since SmartDeviceLink 1.0.0
+     */
+    TIMEOUTPROMPT,
+    /**
+     * The property vrHelpTitle of setGlobalProperties
+     *
+     * @since SmartDeviceLink 2.0.0
+     */
+    VRHELPTITLE,
+    /**
+     * The property array of vrHelp of setGlobalProperties
+     *
+     * @since SmartDeviceLink 2.0.0
+     */
+    VRHELPITEMS,
+    /**
+     * The property in-app menu name of setGlobalProperties
+     *
+     * @since SmartDeviceLink 3.0.0
+     */
+    MENUNAME,
+    /**
+     * The property in-app menu icon of setGlobalProperties
+     *
+     * @since SmartDeviceLink 3.0.0
+     */
+    MENUICON,
+    /**
+     * The on-screen keyboard configuration of setGlobalProperties
+     *
+     * @since SmartDeviceLink 3.0.0
+     */
+    KEYBOARDPROPERTIES;
 
     /**
-     * Convert String to AppHMIType
+     * Convert String to GlobalProperty
      *
      * @param value String
-     * @return AppHMIType
+     * @return GlobalProperty
      */
-    public static AppHMIType valueForString(String value) {
+    public static GlobalProperty valueForString(String value) {
         try {
             return valueOf(value);
         } catch (Exception e) {
@@ -353,8 +368,8 @@ In case if the `"internal_name"` attribute exists, this should be used for the c
 The `"internal_name"` attribute should be normalized by following rules:
 * If it starts with the same prefix as `<enum>` name, this prefix should be removed.
 * After the prefix removal:
-    * if the value starts from digit, the leading `_` (underscore) separator should be added.
-    * if the value starts with `_` (underscore) separator and the next character is a letter of alphabet, the leading `_` (underscore) character should be removed.
+    * if the value starts from digit, the leading `_` (underscore) symbol should be added.
+    * if the value starts with `_` (underscore) symbol and the next character is a letter of alphabet, the leading `_` (underscore) symbol should be removed.
 
 Constant definition:
 ```java
@@ -518,7 +533,7 @@ Where `[name]` is the `"name"` attribute of `<element>`, `[value]` is the `"valu
 
 Private field:
 ```java
-    final int VALUE;
+    private final int VALUE;
 ```
 
 The private constructor should be defined to accept the value from the constant and and set the private field.
@@ -619,11 +634,11 @@ public enum PredefinedWindows {
      */
     PRIMARY_WIDGET(1);
 
-    final int VALUE;
+    private final int VALUE;
     /**
      * Private constructor
      */
-    PredefinedWindows (int value) {
+    private PredefinedWindows (int value) {
         this.VALUE = value;
     }
 
@@ -902,7 +917,776 @@ public enum FunctionID {
 }
 ```
 
-
 ## `<struct>`
+
+The Struct class should should extend the base `RPCStruct` class:
+```java
+import com.smartdevicelink.proxy.RPCStruct;
+```
+
+The name of the class is the value from the `"name"` attribute of `<struct>`. 
+
+The class should have the next JavaDoc comment:
+```java
+/**
+ * [description]
+ *
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>[param_name]</td>
+ *      <td>[param_type|List<[param_type]>]</td>
+ *      <td>[param_description]</td>
+ *      <td>[Y|N]</td>
+ *      <td>SmartDeviceLink [param_since]</td>
+ *  </tr>
+ * </table>
+ *
+ * @deprecated
+ * @since SmartDeviceLink [since_version]
+ * @see [see_reference]
+ */
+```
+Where:
+* `[description]` is `<description>` of the current `<struct>`, if exists.
+* `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and is "true".
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
+* `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+* The `Parameter List` table should include all set of `<param>`.
+* `[param_name]` is `"name"` attribute of the `<param>`.
+* `[param_type]` is `"type"` attribute of the `<param>`, `[List<[param_type]>]` applied if `"array"` attribute of `<param>` is "true".
+* `[param_description]` is `<description>` of the `<param>`, could be empty if not exists.
+* `[Y|N]` means exactly `Y` character, if `"mandatory"` attribute of the `<param>` exists and is "true", `N` character otherwise.
+* `[param_since]` should be present, if the `"since"` attribute of the `<param>` exists, and `[since]` is the `Major.Minor.Patch` formatted value of this attribute.
+
+There are all Enum and Struct classes that are used in the represented structure should be imported. 
+
+The class should have the `@Deprecated` decorator if the `"deprecated"` attribute of the `<enum>` exists and is "true".
+
+The set of `<param>` should be mapped to the `public static final String` fields of the new class by following rules:
+
+1. The name of the fields is the `SCREAMING_SNAKE_CASE` formatted value of the `"name"` attribute of `<param>` with the `KEY_` prefix.
+1. The value of the fields is the value of the `"name"` attribute of `<param>`
+1. Uses of the "sync" prefix shall be replaced with "sdl" (where it would not break functionality). E.g. `KEY_SYNC_MSG_VERSION -> KEY_SDL_MSG_VERSION`. This applies to member variables and their accessors. The key used when creating the RPC message JSON should match that of the RPC Spec.
+
+Field definition template:
+```java
+/**
+ * [description]
+ *
+ * @deprecated
+ * @since SmartDeviceLink [since_version]
+ * @see [see_reference]
+ */
+@Deprecated
+public static final String [normalized_name] = "[name]";
+```
+Where:
+* `[normalized_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`.
+* `[name]` is the `"name"` attribute of `<param>`.
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and is "true".
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
+* `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+
+The field definition should have the `@Deprecated` decorator if the `"deprecated"` attribute of the `<param>` exists and is "true".
+
+The Struct class contains 3 different constructors:
+* without parameters.
+* with `Hashtable` parameter.
+* with all required parameters, based on `"mandatory"` attribute of the `<param>`
+
+### Constructor without parameters
+
+Template:
+```java
+    /**
+     * Constructs a new [name] object
+     */
+    public [name]() { }
+```
+Where `[name]` is the value from the `"name"` attribute of `<struct>`.
+
+### Constructor with `Hashtable` parameter
+
+This constructor requires the import of `Hashtable` class
+```java
+import java.util.Hashtable;
+```
+
+Template:
+```java
+    /**
+     * Constructs a new [name] object indicated by the Hashtable parameter\
+     *
+     * @param hash The Hashtable to use
+     */
+    public [name](Hashtable<String, Object> hash) {
+        super(hash);
+    }
+```
+Where `[name]` is the value from the `"name"` attribute of `<struct>`.
+
+### Constructor with all required parameters, based on `"mandatory"` attribute of the `<param>`
+This constructor requires the import of `NonNull` annotation
+```java
+import android.support.annotation.NonNull;
+```
+
+The constructor should include all set of `<param>` with the `"mandatory"` attribute is "true". JavaDoc should include all constructor parameters and the constructor should call all corresponding setters inside itself.
+
+Template:
+```java
+    /**
+     * Constructs a new [name] object
+     *
+     * @param [param_name]
+     */
+    public [name](@NonNull [param_type|List<[param_type]>] [param_name]) {
+        this();
+        [setter_name]([param_name]);
+    }
+```
+Where:
+* `[name]` is the value from the `"name"` attribute of `<struct>`.
+* `[param_name]` is `"name"` attribute of the `<param>`.
+* `[param_type]` is `"type"` attribute of the `<param>`, `[List<[param_type]>]` applied if `"array"` attribute of `<param>` is "true".
+* `[setter_name]` is the name of the corresponding setter method
+
+For each `<param>` the getter and setter methods should be defined in the class:
+
+1. The name of the setter/getter is the `PascalCase` formatted value of the `"name"` attribute with the `get` prefix for the getter, for the setter the prefix should be `set`.
+1. Uses of the "sync" prefix shall be replaced with "sdl" (where it would not break functionality). E.g. `SyncMsgVersion -> SdlMsgVersion`. This applies to member variables and their accessors. The key used when creating the RPC message JSON should match that of the RPC Spec.
+1. The setter method:
+    * Accepts the single parameter with the type defined in the `"type"` attribute and the name defined in the `"name"` attribute of the `<param>`;
+    * The parameter should be decorated by `@NonNull` annotation if the `"mandatory"` attribute of the `<param>` is "true";
+    * Should call the `setValue` method, where the first parameter is the value of the corresponding static field described above, the second is the value passed into setter;
+1. The getter method:
+    * If `"type"` attribute of the `<param>` has the one of `Boolean`, `Integer` or `String`
+        * the getter should call and return the corresponding `getBoolean`, `getInteger` or `getString` method, the parameter of that method is the value of the corresponding static field described above;
+    * If `"type"` attribute of the `<param>` is `Float`:
+        * the getter should call the `getValue` method, the parameter of that method is the value of the corresponding static field described above;
+        * the getter should return `SdlDataTypeConverter.objectToFloat(object)` where the `object` is the value previously received from `getValue`;
+    * If the `<param>` has the `"type"` attribute value as the one of `<enum>` or `<struct>` name:
+        * The getter should call and return the result of the `getObject` method, where the first parameter is the corresponding Struct or Enum class, the second is the value of the corresponding static field described above;
+
+Setter template:
+```java
+    /**
+     * Sets the [name].
+     * [description]
+     *
+     * @param [name]
+     */
+    public void [setter_name]([type|List<[type]>] [name]) {
+        setValue([field_name], [name]);
+    }
+```
+Where:
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `[name]` is `"name"` attribute of the `<param>`.
+* `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
+* `[setter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `set` prefix.
+* `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
+
+
+`Boolean`, `Integer` or `String` type getter template:
+```java
+     /**
+     * Gets the [name].
+     *
+     * @return [type|List<[type]>]
+     */
+    @SuppressWarnings("unchecked")
+    public [type|List<[type]>] [getter_name]() {
+        return get[type]([field_name]);
+    }
+```
+Where:
+* `[name]` is `"name"` attribute of the `<param>`.
+* `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
+* `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
+* `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
+* `@SuppressWarnings("unchecked")` applied if `"array"` attribute is "true".
+
+
+`Float` type getter template:
+```java
+     /**
+     * Gets the [name].
+     *
+     * @return [Float|List<Float>]
+     */
+    @SuppressWarnings("unchecked")
+    public Float|List<Float> [getter_name]() {
+        Object object = getValue([field_name]);
+        return SdlDataTypeConverter.objectToFloat(object);
+    }
+```
+Where:
+* `[name]` is `"name"` attribute of the `<param>`.
+* `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
+* `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
+* `[List<Float>]` applied if `"array"` attribute is "true".
+* `@SuppressWarnings("unchecked")` applied if `"array"` attribute is "true".
+
+`<enum>` or `<struct>` type getter template:
+```java
+     /**
+     * Gets the [name].
+     *
+     * @return [type|List<[type]>]
+     */
+    @SuppressWarnings("unchecked")
+    public [type|List<[type]>] [getter_name]() {
+        return ([type|List<[type]>]) getObject([type].class, [field_name]);
+    }
+```
+Where:
+* `[name]` is `"name"` attribute of the `<param>`.
+* `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
+* `@SuppressWarnings("unchecked")` applied if `"array"` attribute is "true".
+* `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
+* `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
+
+Take a note if some parameters have `"array"` attribute is true, the class requires the `List` collection to be imported:
+```java
+import java.util.List;
+```
+
+### Below is the full example of the Struct class with simple and Enum parameters inside:
+
+XML:
+```xml
+    <struct name="VehicleDataResult" since="2.0">
+        <description>Individual published data request result</description>
+        <param name="dataType" type="VehicleDataType" mandatory="true">
+            <description>Defined published data element type.</description>
+        </param>
+        <param name="resultCode" type="VehicleDataResultCode" mandatory="true">
+            <description>Published data result code.</description>
+        </param>
+        <param name="oemCustomDataType" type="String" mandatory="false" since="6.0">
+            <description>Type of requested oem specific parameter </description>
+        </param>
+    </struct>
+```
+
+The Output:
+```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.proxy.rpc;
+
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
+
+import java.util.Hashtable;
+
+/**
+ * Individual published data request result
+ *
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>dataType</td>
+ *      <td>VehicleDataType</td>
+ *      <td>Defined published data element type.</td>
+ *      <td>Y</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>resultCode</td>
+ *      <td>VehicleDataResultCode</td>
+ *      <td>Published data result code.</td>
+ *      <td>Y</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>oemCustomDataType</td>
+ *      <td>String</td>
+ *      <td>Type of requested oem specific parameter</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 6.0.0</td>
+ *  </tr>
+ *
+ * </table>
+ *
+ * @since SmartDeviceLink 2.0.0
+ */
+public class VehicleDataResult extends RPCStruct {
+    /**
+     * Defined published data element type.
+     *
+     */
+    public static final String KEY_DATA_TYPE = "dataType";
+    /**
+     * Published data result code.
+     *
+     */
+    public static final String KEY_RESULT_CODE = "resultCode";
+    /**
+     * Type of requested oem specific parameter
+     *
+     * @since SmartDeviceLink 6.0.0
+     */
+    public static final String KEY_OEM_CUSTOM_DATA_TYPE = "oemCustomDataType";
+
+    /**
+     * Constructs a new VehicleDataResult object
+     */
+    public VehicleDataResult() { }
+    
+
+    /**
+     * Constructs a new VehicleDataResult object indicated by the Hashtable parameter\
+     *
+     * @param hash The Hashtable to use
+     */
+    public VehicleDataResult(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    /**
+     * Constructs a new VehicleDataResult object
+     *
+     * @param dataType
+     * @param resultCode
+     */
+    public VehicleDataResult(@NonNull VehicleDataType dataType, @NonNull VehicleDataResultCode resultCode) {
+        this();
+        setDataType(dataType);
+        setResultCode(resultCode);
+    }
+    
+
+    /**
+     * Sets the dataType.
+     * Defined published data element type.
+     *
+     * @param dataType
+     */
+    public void setDataType(@NonNull VehicleDataType dataType) {
+        setValue(KEY_DATA_TYPE, dataType);
+    }
+
+     /**
+     * Gets the dataType.
+     *
+     * @return VehicleDataType
+    */
+    public VehicleDataType getDataType() {
+        return (VehicleDataType) getObject(VehicleDataType.class, KEY_DATA_TYPE);
+    }
+
+    /**
+     * Sets the resultCode.
+     * Published data result code.
+     *
+     * @param resultCode
+     */
+    public void setResultCode(@NonNull VehicleDataResultCode resultCode) {
+        setValue(KEY_RESULT_CODE, resultCode);
+    }
+
+     /**
+     * Gets the resultCode.
+     *
+     * @return VehicleDataResultCode
+    */
+    public VehicleDataResultCode getResultCode() {
+        return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
+    }
+
+    /**
+     * Sets the oemCustomDataType.
+     * Type of requested oem specific parameter
+     *
+     * @param oemCustomDataType
+     */
+    public void setOEMCustomVehicleDataType(String oemCustomDataType) {
+        setValue(KEY_OEM_CUSTOM_DATA_TYPE, oemCustomDataType);
+    }
+
+     /**
+     * Gets the oemCustomDataType.
+     *
+     * @return String
+    */
+    public String getOEMCustomVehicleDataType() {
+        return getString(KEY_OEM_CUSTOM_DATA_TYPE);
+    }
+    
+}
+```
+
+### Below is the full example of the Struct class with arrays in parameters:
+
+XML:
+```xml
+    <struct name="HMIPermissions" since="2.0">
+        <param name="allowed" type="HMILevel" minsize="0" maxsize="100" array="true" mandatory="true">
+            <description>A set of all HMI levels that are permitted for this given RPC.</description>
+        </param>
+        <param name="userDisallowed" type="HMILevel" minsize="0" maxsize="100" array="true" mandatory="true">
+            <description>A set of all HMI levels that are prohibited for this given RPC.</description>
+        </param>
+    </struct>
+
+```
+
+Output:
+
+```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.proxy.rpc;
+
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+
+import java.util.Hashtable;
+import java.util.List;
+
+/**
+ *
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>allowed</td>
+ *      <td>List<HMILevel></td>
+ *      <td>A set of all HMI levels that are permitted for this given RPC.</td>
+ *      <td>Y</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *  <tr>
+ *      <td>userDisallowed</td>
+ *      <td>List<HMILevel></td>
+ *      <td>A set of all HMI levels that are prohibited for this given RPC.</td>
+ *      <td>Y</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *
+ * </table>
+ * @since SmartDeviceLink 2.0.0
+ */
+public class HMIPermissions extends RPCStruct {
+    /**
+     * A set of all HMI levels that are permitted for this given RPC.
+     */
+    public static final String KEY_ALLOWED = "allowed";
+    /**
+     * A set of all HMI levels that are prohibited for this given RPC.
+     */
+    public static final String KEY_USER_DISALLOWED = "userDisallowed";
+
+    /**
+     * Constructs a new HMIPermissions object
+     */
+    public HMIPermissions() { }
+    
+
+    /**
+     * Constructs a new HMIPermissions object indicated by the Hashtable parameter\
+     *
+     * @param hash The Hashtable to use
+     */
+    public HMIPermissions(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    /**
+     * Constructs a new HMIPermissions object
+     *
+     * @param allowed
+     * @param userDisallowed
+     */
+    public HMIPermissions(@NonNull List<HMILevel> allowed, @NonNull List<HMILevel> userDisallowed) {
+        this();
+        setAllowed(allowed);
+        setUserDisallowed(userDisallowed);
+    }
+    
+
+    /**
+     * Sets the allowed.
+     * A set of all HMI levels that are permitted for this given RPC.
+     *
+     * @param allowed
+     */
+    public void setAllowed(@NonNull List<HMILevel> allowed) {
+        setValue(KEY_ALLOWED, allowed);
+    }
+
+     /**
+     * Gets the allowed.
+     *
+     * @return List<HMILevel>
+    */
+    @SuppressWarnings("unchecked")
+    public List<HMILevel> getAllowed() {
+        return (List<HMILevel>) getObject(HMILevel.class, KEY_ALLOWED);
+    }
+
+    /**
+     * Sets the userDisallowed.
+     * A set of all HMI levels that are prohibited for this given RPC.
+     *
+     * @param userDisallowed
+     */
+    public void setUserDisallowed(@NonNull List<HMILevel> userDisallowed) {
+        setValue(KEY_USER_DISALLOWED, userDisallowed);
+    }
+
+     /**
+     * Gets the userDisallowed.
+     *
+     * @return List<HMILevel>
+    */
+    @SuppressWarnings("unchecked")
+    public List<HMILevel> getUserDisallowed() {
+        return (List<HMILevel>) getObject(HMILevel.class, KEY_USER_DISALLOWED);
+    }
+    
+}
+```
+
+### Below is the full example of the Struct class with Float and Enum parameters:
+
+XML:
+```xml
+    <struct name="FuelRange" since="5.0">
+        <param name="type" type="FuelType" mandatory="false"/>
+        <param name="range" type="Float" minvalue="0" maxvalue="10000" mandatory="false">
+            <description>
+                The estimate range in KM the vehicle can travel based on fuel level and consumption.
+            </description>
+        </param>
+    </struct>
+```
+
+Output:
+```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.proxy.rpc;
+
+import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.FuelType;
+import com.smartdevicelink.util.SdlDataTypeConverter;
+
+import java.util.Hashtable;
+
+/**
+ *
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>type</td>
+ *      <td>FuelType</td>
+ *      <td></td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *  <tr>
+ *      <td>range</td>
+ *      <td>Float</td>
+ *      <td>The estimate range in KM the vehicle can travel based on fuel level and consumption.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink </td>
+ *  </tr>
+ *
+ * </table>
+ * @since SmartDeviceLink 5.0.0
+ */
+public class FuelRange extends RPCStruct {
+    /**
+     */
+    public static final String KEY_TYPE = "type";
+    /**
+     * The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     */
+    public static final String KEY_RANGE = "range";
+
+    /**
+     * Constructs a new FuelRange object
+     */
+    public FuelRange() { }
+    
+
+    /**
+     * Constructs a new FuelRange object indicated by the Hashtable parameter\
+     *
+     * @param hash The Hashtable to use
+     */
+    public FuelRange(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+    
+
+    /**
+     * Sets the type.
+     *
+     * @param type
+     */
+    public void setType(FuelType type) {
+        setValue(KEY_TYPE, type);
+    }
+
+     /**
+     * Gets the type.
+     *
+     * @return FuelType
+    */
+    public FuelType getType() {
+        return (FuelType) getObject(FuelType.class, KEY_TYPE);
+    }
+
+    /**
+     * Sets the range.
+     * The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     *
+     * @param range
+     */
+    public void setRange(Float range) {
+        setValue(KEY_RANGE, range);
+    }
+
+     /**
+     * Gets the range.
+     *
+     * @return Float
+    */
+    public Float getRange() {
+        Object object = getValue(KEY_RANGE);
+        return SdlDataTypeConverter.objectToFloat(object);
+    }
+    
+}
+```
 
 ## `<function>`
