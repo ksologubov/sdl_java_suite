@@ -4,11 +4,11 @@
      * @deprecated Use {@link #GPSData(@NonNull Float, @NonNull Float)()} instead
      */
     @Deprecated
-    public GPSData(@NonNull Float longitudeDegrees, @NonNull Float latitudeDegrees, @NonNull Integer utcYear,
+    public GPSData(@NonNull Double longitudeDegrees, @NonNull Double latitudeDegrees, @NonNull Integer utcYear,
                    @NonNull Integer utcMonth, @NonNull Integer utcDay, @NonNull Integer utcHours,
                    @NonNull Integer utcMinutes, @NonNull Integer utcSeconds, @NonNull CompassDirection compassDirection,
-                   @NonNull Float pdop, @NonNull Float hdop, @NonNull Float vdop, @NonNull Boolean actual,
-                   @NonNull Integer satellites, @NonNull Dimension dimension, @NonNull Float altitude, @NonNull Float heading, @NonNull Float speed) {
+                   @NonNull Double pdop, @NonNull Double hdop, @NonNull Double vdop, @NonNull Boolean actual,
+                   @NonNull Integer satellites, @NonNull Dimension dimension, @NonNull Double altitude, @NonNull Double heading, @NonNull Double speed) {
         this();
         setLongitudeDegrees(longitudeDegrees);
         setLatitudeDegrees(latitudeDegrees);

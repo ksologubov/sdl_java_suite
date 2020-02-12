@@ -1,11 +1,11 @@
 
     public void setClusterModeStatus(VehicleDataResult clusterModeStatus) {
-        setParameters(KEY_CLUSTER_MODES, clusterModeStatus);
+        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
 
     @SuppressWarnings("unchecked")
     public VehicleDataResult getClusterModeStatus() {
-        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODES);
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODE_STATUS);
     }
 
     /**

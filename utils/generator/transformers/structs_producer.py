@@ -103,7 +103,8 @@ class StructsProducer(InterfaceProducerCommon):
         p['key'] = 'KEY_' + self.key(param.name)
         p['mandatory'] = param.is_mandatory
         p['last'] = param.name
-        p['since'] = param.since
+        if param.since:
+            p['since'] = param.since
         p['deprecated'] = param.deprecated
         p['origin'] = param.name
 

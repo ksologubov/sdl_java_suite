@@ -118,6 +118,11 @@
         }
       }
     },
+    "GlobalProperty": {
+      "params_rename": {
+        "USER_LOCATION": "USERLOCATION"
+      }
+    },
     "IgnitionStatus": {
       "kind": "simple"
     },
@@ -287,6 +292,9 @@
         }
       }
     },
+    "ButtonPressResponse": {
+      "script": "templates/scripts/ButtonPressResponse.groovy"
+    },
     "CancelInteraction": {
       "params": {
         "functionID": {
@@ -372,7 +380,30 @@
       "script": "templates/scripts/GetVehicleData_OEM.groovy"
     },
     "GetVehicleDataResponse": {
-      "script": "templates/scripts/GetVehicleDataResponse_OEM.groovy"
+      "script": "templates/scripts/GetVehicleDataResponse_OEM.groovy",
+      "params": {
+        "accPedalPosition": {
+          "return_type": "Double"
+        },
+        "engineTorque": {
+          "return_type": "Double"
+        },
+        "externalTemperature": {
+          "return_type": "Double"
+        },
+        "fuelLevel": {
+          "return_type": "Double"
+        },
+        "instantFuelConsumption": {
+          "return_type": "Double"
+        },
+        "speed": {
+          "return_type": "Double"
+        },
+        "steeringWheelAngle": {
+          "return_type": "Double"
+        }
+      }
     },
     "ListFilesResponse": {
       "params": {
@@ -430,10 +461,41 @@
       "script": "templates/scripts/OnSystemRequest_request.groovy",
       "imports": [
         "java.util.List"
-      ]
+      ],
+      "params": {
+        "offset": {
+          "return_type": "Long"
+        },
+        "length": {
+          "return_type": "Long"
+        }
+      }
     },
     "OnVehicleData": {
-      "script": "templates/scripts/OnVehicleData_oem.groovy"
+      "script": "templates/scripts/OnVehicleData_oem.groovy",
+      "params": {
+        "accPedalPosition": {
+          "return_type": "Double"
+        },
+        "engineTorque": {
+          "return_type": "Double"
+        },
+        "externalTemperature": {
+          "return_type": "Double"
+        },
+        "fuelLevel": {
+          "return_type": "Double"
+        },
+        "instantFuelConsumption": {
+          "return_type": "Double"
+        },
+        "speed": {
+          "return_type": "Double"
+        },
+        "steeringWheelAngle": {
+          "return_type": "Double"
+        }
+      }
     },
     "PerformAppServiceInteraction": {
       "function_id": "PERFORM_APP_SERVICES_INTERACTION"
@@ -518,7 +580,29 @@
       "script": "templates/scripts/SetInteriorVehicleDataResponse.groovy"
     },
     "ShowConstantTBT": {
-      "rename": "ShowConstantTbt"
+      "rename": "ShowConstantTbt",
+      "params": {
+        "distanceToManeuver": {
+          "return_type": "Double",
+          "key": "KEY_MANEUVER_DISTANCE"
+        },
+        "distanceToManeuverScale": {
+          "return_type": "Double",
+          "key": "KEY_MANEUVER_DISTANCE_SCALE"
+        },
+        "navigationText1": {
+          "key": "KEY_TEXT1"
+        },
+        "navigationText2": {
+          "key": "KEY_TEXT2"
+        },
+        "turnIcon": {
+          "key": "KEY_MANEUVER_IMAGE"
+        },
+        "nextTurnIcon": {
+          "key": "KEY_NEXT_MANEUVER_IMAGE"
+        }
+      }
     },
     "ShowConstantTBTResponse": {
       "rename": "ShowConstantTbtResponse"
@@ -532,10 +616,12 @@
     "SendLocation": {
       "params": {
         "latitudeDegrees": {
-          "key": "KEY_LAT_DEGREES"
+          "key": "KEY_LAT_DEGREES",
+          "return_type": "Double"
         },
         "longitudeDegrees": {
-          "key": "KEY_LON_DEGREES"
+          "key": "KEY_LON_DEGREES",
+          "return_type": "Double"
         }
       }
     },
@@ -543,13 +629,23 @@
       "script": "templates/scripts/SubscribeVehicleData_oem.groovy"
     },
     "SubscribeVehicleDataResponse": {
-      "script": "templates/scripts/SubscribeVehicleDataResponse_oem.groovy"
+      "script": "templates/scripts/SubscribeVehicleDataResponse_oem.groovy",
+      "params": {
+        "clusterModes": {
+          "key": "KEY_CLUSTER_MODE_STATUS"
+        }
+      }
     },
     "UnsubscribeVehicleData": {
       "script": "templates/scripts/UnsubscribeVehicleData_oem.groovy"
     },
     "UnsubscribeVehicleDataResponse": {
-      "script": "templates/scripts/UnsubscribeVehicleDataResponse_oem.groovy"
+      "script": "templates/scripts/UnsubscribeVehicleDataResponse_oem.groovy",
+      "params": {
+        "clusterModes": {
+          "key": "KEY_CLUSTER_MODE_STATUS"
+        }
+      }
     }
   },
   "structs": {
@@ -659,7 +755,33 @@
       }
     },
     "GPSData": {
-      "script": "templates/scripts/GPSData.groovy"
+      "script": "templates/scripts/GPSData.groovy",
+      "params": {
+        "altitude": {
+          "return_type": "Double"
+        },
+        "hdop": {
+          "return_type": "Double"
+        },
+        "pdop": {
+          "return_type": "Double"
+        },
+        "vdop": {
+          "return_type": "Double"
+        },
+        "heading": {
+          "return_type": "Double"
+        },
+        "speed": {
+          "return_type": "Double"
+        },
+        "latitudeDegrees": {
+          "return_type": "Double"
+        },
+        "longitudeDegrees": {
+          "return_type": "Double"
+        }
+      }
     },
     "Grid": {
       "params": {
@@ -691,10 +813,10 @@
           "title": "AppServicesAvailable"
         },
         "navigation": {
-          "title": "NavigationAvailable"
+          "title": "NavigationAvilable"
         },
         "phoneCall": {
-          "title": "PhoneCallAvailable"
+          "title": "PhoneCallAvilable"
         },
         "videoStreaming": {
           "title": "VideoStreamingAvailable"
@@ -782,7 +904,15 @@
       }
     },
     "OASISAddress": {
-      "rename": "OasisAddress"
+      "rename": "OasisAddress",
+      "params": {
+        "thoroughfare": {
+          "key": "KEY_THOROUGH_FARE"
+        },
+        "subThoroughfare": {
+          "key": "KEY_SUB_THOROUGH_FARE"
+        }
+      }
     },
     "PermissionItem": {
       "params": {
@@ -852,11 +982,9 @@
         "columns": {
           "key": "KEY_COLS",
           "title": "Cols"
-        },
-        "seats": {
-          "title": "SeatLocations"
         }
-      }
+      },
+      "script": "templates/scripts/SeatLocationCapability_seats.groovy"
     },
     "SingleTireStatus": {
       "params": {
@@ -891,11 +1019,24 @@
     "SystemCapability": {
       "script": "templates/scripts/SystemCapability_set.groovy"
     },
+    "TireStatus": {
+      "params": {
+        "pressureTelltale": {
+          "key": "KEY_PRESSURE_TELL_TALE",
+          "title": "PressureTellTale"
+        }
+      }
+    },
     "TouchEvent": {
       "imports": [
         "java.util.ArrayList"
       ],
-      "script": "templates/scripts/TouchEvent_timestamp.groovy"
+      "script": "templates/scripts/TouchEvent_timestamp.groovy",
+      "params": {
+        "ts": {
+          "return_type": "List<Long>"
+        }
+      }
     },
     "Turn": {
       "params": {
@@ -919,10 +1060,22 @@
         "hapticSpatialDataSupported": {
           "title": "IsHapticSpatialDataSupported"
         },
+        "diagonalScreenSize": {
+          "return_type": "Double"
+        },
+        "pixelPerInch": {
+          "return_type": "Double"
+        },
         "scale": {
           "return_type": "Double"
         }
       }
+    },
+    "WeatherAlert": {
+      "script": "templates/scripts/WeatherAlert.groovy",
+      "imports": [
+        "android.support.annotation.NonNull"
+      ]
     }
   }
 }
