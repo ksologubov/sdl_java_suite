@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """This is main runner of generator
 
 """
@@ -296,9 +297,9 @@ class Generator:
         """
         Calling producer/transformer instance to transform initial Model to dict used in jinja2 templates.
         Applying transformed dict to jinja2 templates and writing to appropriate file
-        :param file_name: output js file
+        :param file_name: output java file
         :param template: name of template
-        :param data: transformed moder ready for apply to Jinja2 template
+        :param data: transformed model ready for apply to Jinja2 template
         """
         file_name.parents[0].mkdir(parents=True, exist_ok=True)
         try:
@@ -359,11 +360,12 @@ class Generator:
         """
         enum_names = list(enum_names)
         struct_names = list(struct_names)
-        enum_names = [mappings['enums'][element]['rename'] if 'enums' in mappings and element in mappings['enums']
-                      and 'rename' in mappings['enums'][element] else element for element in enum_names]
-        struct_names = [mappings['structs'][element]['rename'] if 'structs' in mappings
-                        and element in mappings['structs'] and 'rename' in mappings['structs'][element]
-                        else element for element in struct_names]
+        enum_names = [mappings['enums'][element]['rename']
+                      if 'enums' in mappings and element in mappings['enums'] and 'rename'
+                      in mappings['enums'][element] else element for element in enum_names]
+        struct_names = [mappings['structs'][element]['rename']
+                        if 'structs' in mappings and element in mappings['structs'] and 'rename'
+                        in mappings['structs'][element] else element for element in struct_names]
         return tuple(enum_names), tuple(struct_names)
 
     def parser(self, xml, xsd, pattern=None):

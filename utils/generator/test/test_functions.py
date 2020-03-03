@@ -201,8 +201,8 @@ class TestFunctionsProducer(unittest.TestCase):
     def test_OnEncodedSyncPDataNotification(self):
         item = Function(name='OnEncodedSyncPData', function_id=None, description=['\n           Callback including \n'],
                         message_type=EnumElement(name='notification'), params={
-                'URL': Param(name='URL', param_type=String(), description=['\n                If '])
-            })
+                        'URL': Param(name='URL', param_type=String(), description=['\n                If '])
+                        })
         expected = self.expected_template.copy()
         expected['kind'] = 'notification'
         expected['function_id'] = 'ON_ENCODED_SYNC_PDATA'
@@ -222,8 +222,8 @@ class TestFunctionsProducer(unittest.TestCase):
     def test_DeleteCommand(self):
         item = Function(name='DeleteCommand', function_id=None,
                         message_type=EnumElement(name='request'), params={
-                'cmdID': Param(name='cmdID', param_type=Integer(max_value=2000000000, min_value=0))
-            })
+                            'cmdID': Param(name='cmdID', param_type=Integer(max_value=2000000000, min_value=0))
+                        })
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
         expected['function_id'] = 'DELETE_COMMAND'
@@ -246,8 +246,8 @@ class TestFunctionsProducer(unittest.TestCase):
     def test_Alert(self):
         item = Function(name='Alert', function_id=None,
                         message_type=EnumElement(name='request'), params={
-                'alertText2': Param(name='alertText2', param_type=String(max_length=500))
-            })
+                            'alertText2': Param(name='alertText2', param_type=String(max_length=500))
+                        })
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
         expected['function_id'] = 'ALERT'
@@ -267,8 +267,8 @@ class TestFunctionsProducer(unittest.TestCase):
     def test_ReleaseInteriorVehicleDataModule(self):
         item = Function(name='ReleaseInteriorVehicleDataModule', function_id=None,
                         message_type=EnumElement(name='request'), params={
-                'moduleType': Param(name='moduleType', param_type=Enum(name='ModuleType'))
-            })
+                            'moduleType': Param(name='moduleType', param_type=Enum(name='ModuleType'))
+                        })
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
         expected['function_id'] = 'RELEASE_INTERIOR_VEHICLE_MODULE'

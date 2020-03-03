@@ -308,28 +308,6 @@ class TestEnumsProducer(unittest.TestCase):
         self.comparison(expected, actual)
 
     def test_VrCapabilities(self):
-        item = Enum(name='VrCapabilities', elements={
-            'TEXT': EnumElement(name='TEXT', internal_name='VR_TEXT')
-        })
-        expected = {
-            'kind': 'simple',
-            'return_type': 'String',
-            'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'VrCapabilities',
-            'imports': set(),
-            'params': (
-                self.producer.params(name='TEXT', origin='TEXT', description=None,
-                                     since=None, value=None, deprecated=None, internal=None),
-                self.producer.params(name='Text', origin='TEXT', description=None,
-                                     since='1.0', value=None, deprecated='any', internal=None)),
-            'since': None,
-            'deprecated': None
-        }
-        actual = self.producer.transform(item)
-
-        self.comparison(expected, actual)
-
-    def test_VrCapabilities(self):
         item = Enum(name='MessageType', elements={
             'NOTIFICATION': EnumElement(name='notification', internal_name='NOTIFICATION', value=2)
         })

@@ -2,18 +2,18 @@
      {%- if p.description is defined %}
      {%- for d in p.description %}
      {%- if loop.index == 1 -%}
-     * @return {{p.last}} {{d}}
+     * @return {{p.return_type}} {{d}}
      {%- else -%}
      * {{d}}
      {%- endif -%}{%- endfor -%}
      {%- else %}
-     * @return {{p.last}}
+     * @return {{p.return_type}}
      {%- endif -%}
      {%- else -%}
-     {%- set l = p.last|length + 8 -%}
+     {%- set l = p.return_type|length + 8 -%}
      * {% for v in p.param_doc -%}
      {%- if loop.index == 1 -%}
-     @return {{p.last}} {{v}}
+     @return {{p.return_type}} {{v}}
      {%- else -%}
      * {{v|indent(l,True)}}
      {%- endif -%}{% endfor -%}
